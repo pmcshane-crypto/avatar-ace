@@ -16,6 +16,15 @@ interface ClanMember {
   daily_reduction: number;
   weekly_avg: number;
   current_streak: number;
+  level: number;
+  xp: number;
+}
+
+interface ClanPreview {
+  user_id: string;
+  username: string;
+  avatar_type: string;
+  level: number;
 }
 
 interface Clan {
@@ -23,6 +32,7 @@ interface Clan {
   name: string;
   description: string;
   member_count: number;
+  preview_members: ClanPreview[];
 }
 
 export default function Clans() {
@@ -58,7 +68,11 @@ export default function Clans() {
         id,
         name,
         description,
-        clan_members(count)
+        clan_members(
+          count,
+          user_id,
+          profiles(username, avatar_type)
+        )
       `);
 
     if (error) {
@@ -66,12 +80,43 @@ export default function Clans() {
       return;
     }
 
-    const formattedClans = data?.map(clan => ({
-      id: clan.id,
-      name: clan.name,
-      description: clan.description || "",
-      member_count: clan.clan_members?.[0]?.count || 0
-    })) || [];
+    const formattedClans = data?.map(clan => {
+      const members = clan.clan_members || [];
+      const memberCount = members.length;
+      
+      // Get up to 5 members for preview
+      const previewMembers = members
+        .filter((m: any) => m.profiles)
+        .slice(0, 5)
+        .map((m: any) => {
+          // Calculate level from localStorage or default
+          const savedAvatar = localStorage.getItem('avatar');
+          let level = 1;
+          if (savedAvatar) {
+            try {
+              const avatarData = JSON.parse(savedAvatar);
+              level = avatarData.level || 1;
+            } catch (e) {
+              level = 1;
+            }
+          }
+          
+          return {
+            user_id: m.user_id,
+            username: m.profiles.username,
+            avatar_type: m.profiles.avatar_type,
+            level: level
+          };
+        });
+
+      return {
+        id: clan.id,
+        name: clan.name,
+        description: clan.description || "",
+        member_count: memberCount,
+        preview_members: previewMembers
+      };
+    }) || [];
 
     setClans(formattedClans);
   };
@@ -128,7 +173,9 @@ export default function Clans() {
         avatar_type: profile.avatar_type,
         daily_reduction: Math.round(dailyReduction),
         weekly_avg: Math.round(weeklyAvg),
-        current_streak: currentStreak
+        current_streak: currentStreak,
+        level: 1,  // Will be calculated from screen time data
+        xp: 0
       };
     }) || [];
 
@@ -383,6 +430,41 @@ export default function Clans() {
                     <p className="text-sm text-muted-foreground">
                       {clan.description || "No description"}
                     </p>
+                    
+                    {/* Member Avatars Preview */}
+                    {clan.preview_members.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground font-medium">Members:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {clan.preview_members.map((member) => (
+                            <div 
+                              key={member.user_id}
+                              className="flex items-center gap-2 bg-background/50 rounded-lg px-3 py-2 border border-border/50"
+                            >
+                              <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
+                                member.avatar_type === 'fire' 
+                                  ? 'border-avatar-fire bg-avatar-fire/20 text-avatar-fire' 
+                                  : member.avatar_type === 'water'
+                                  ? 'border-avatar-water bg-avatar-water/20 text-avatar-water'
+                                  : 'border-avatar-nature bg-avatar-nature/20 text-avatar-nature'
+                              }`}>
+                                {member.avatar_type === 'fire' ? '🔥' : member.avatar_type === 'water' ? '💧' : '🌿'}
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-xs font-medium">{member.username}</span>
+                                <span className="text-[10px] text-muted-foreground">Lvl {member.level}</span>
+                              </div>
+                            </div>
+                          ))}
+                          {clan.member_count > 5 && (
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-xs font-bold">
+                              +{clan.member_count - 5}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="flex gap-2">
                       <Button 
                         onClick={() => setSelectedClan(clan.id)}
