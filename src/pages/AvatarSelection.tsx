@@ -12,19 +12,19 @@ import avatarNature from "@/assets/avatar-nature.png";
 const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string }> = [
   {
     type: 'fire',
-    name: 'Blaze',
+    name: 'Hot Pocket',
     description: 'A fierce companion that thrives on your determination',
     image: avatarFire
   },
   {
     type: 'water',
-    name: 'Aqua',
+    name: 'Nugget',
     description: 'A calm presence that grows with your focus',
     image: avatarWater
   },
   {
     type: 'nature',
-    name: 'Terra',
+    name: 'Twiggle',
     description: 'A grounded friend that evolves with your progress',
     image: avatarNature
   }
