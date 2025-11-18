@@ -1,0 +1,104 @@
+import { Avatar, EnergyLevel } from "@/types/avatar";
+import { cn } from "@/lib/utils";
+import { Zap, TrendingUp } from "lucide-react";
+
+interface AvatarCardProps {
+  avatar: Avatar;
+  showStats?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  animate?: boolean;
+}
+
+const getEnergyColor = (energy: EnergyLevel) => {
+  switch (energy) {
+    case 'high':
+      return 'text-energy-high';
+    case 'medium':
+      return 'text-energy-medium';
+    case 'low':
+      return 'text-energy-low';
+  }
+};
+
+const getEnergyLabel = (energy: EnergyLevel) => {
+  switch (energy) {
+    case 'high':
+      return 'HIGH ENERGY';
+    case 'medium':
+      return 'MEDIUM ENERGY';
+    case 'low':
+      return 'LOW ENERGY';
+  }
+};
+
+export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = true }: AvatarCardProps) => {
+  const sizeClasses = {
+    sm: 'w-24 h-24',
+    md: 'w-40 h-40',
+    lg: 'w-64 h-64'
+  };
+
+  return (
+    <div className="relative">
+      {/* Avatar Container */}
+      <div className={cn(
+        "relative mx-auto",
+        sizeClasses[size],
+        animate && "animate-float"
+      )}>
+        {/* Glow Effect */}
+        <div className={cn(
+          "absolute inset-0 rounded-full blur-2xl opacity-60",
+          avatar.type === 'fire' && "bg-avatar-fire",
+          avatar.type === 'water' && "bg-avatar-water",
+          avatar.type === 'nature' && "bg-avatar-nature",
+          animate && "animate-pulse-glow"
+        )} />
+        
+        {/* Avatar SVG Placeholder - Would be replaced with actual avatar images */}
+        <div className={cn(
+          "relative w-full h-full rounded-full flex items-center justify-center text-6xl font-bold shadow-energy",
+          avatar.type === 'fire' && "bg-avatar-fire/20 border-4 border-avatar-fire",
+          avatar.type === 'water' && "bg-avatar-water/20 border-4 border-avatar-water",
+          avatar.type === 'nature' && "bg-avatar-nature/20 border-4 border-avatar-nature"
+        )}>
+          {avatar.type === 'fire' && '🔥'}
+          {avatar.type === 'water' && '💧'}
+          {avatar.type === 'nature' && '🌿'}
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      {showStats && (
+        <div className="mt-6 space-y-3">
+          {/* Energy Status */}
+          <div className="flex items-center justify-center gap-2">
+            <Zap className={cn("w-5 h-5", getEnergyColor(avatar.energy))} />
+            <span className={cn("font-bold text-sm", getEnergyColor(avatar.energy))}>
+              {getEnergyLabel(avatar.energy)}
+            </span>
+          </div>
+
+          {/* Level & XP */}
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <TrendingUp className="w-4 h-4 text-primary" />
+              <span className="text-foreground font-semibold">Level {avatar.level}</span>
+            </div>
+            
+            {/* XP Bar */}
+            <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+              <div 
+                className="h-full bg-gradient-energy transition-all duration-500"
+                style={{ width: `${(avatar.xp / avatar.xpToNextLevel) * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {avatar.xp} / {avatar.xpToNextLevel} XP
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
