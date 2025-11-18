@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingDown, Flame, Award, Calendar } from "lucide-react";
+import { TrendingDown, Flame, Award, Calendar, Clock } from "lucide-react";
 import { UserStats } from "@/types/avatar";
 
 interface StatsCardProps {
@@ -7,6 +8,30 @@ interface StatsCardProps {
 }
 
 export const StatsCard = ({ stats }: StatsCardProps) => {
+  const [hoursUntilReset, setHoursUntilReset] = useState(0);
+
+  useEffect(() => {
+    const calculateHoursUntilReset = () => {
+      const now = new Date();
+      const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const daysUntilSunday = currentDay === 0 ? 7 : 7 - currentDay;
+      
+      const nextSunday = new Date(now);
+      nextSunday.setDate(now.getDate() + daysUntilSunday);
+      nextSunday.setHours(0, 0, 0, 0);
+      
+      const msUntilReset = nextSunday.getTime() - now.getTime();
+      const hours = Math.floor(msUntilReset / (1000 * 60 * 60));
+      
+      setHoursUntilReset(hours);
+    };
+
+    calculateHoursUntilReset();
+    const interval = setInterval(calculateHoursUntilReset, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
   const statItems = [
     {
       icon: TrendingDown,
@@ -31,6 +56,12 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
       label: "Weekly Avg",
       value: `${Math.floor(stats.weeklyAverage / 60)}h ${stats.weeklyAverage % 60}m`,
       color: "text-accent",
+      subtitle: (
+        <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground/60 mt-1">
+          <Clock className="w-3 h-3" />
+          <span>{hoursUntilReset}h until reset</span>
+        </div>
+      ),
     },
   ];
 
@@ -42,6 +73,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
             <item.icon className={`w-5 h-5 ${item.color}`} />
             <div className="text-xs text-muted-foreground">{item.label}</div>
             <div className={`text-lg font-bold ${item.color}`}>{item.value}</div>
+            {'subtitle' in item && item.subtitle}
           </div>
         </Card>
       ))}
