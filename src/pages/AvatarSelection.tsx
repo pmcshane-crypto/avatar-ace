@@ -5,26 +5,28 @@ import { Card } from "@/components/ui/card";
 import { AvatarType } from "@/types/avatar";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import avatarsFull from "@/assets/avatars-full.png";
+import avatarFire from "@/assets/avatar-fire.png";
+import avatarWater from "@/assets/avatar-water.png";
+import avatarNature from "@/assets/avatar-nature.png";
 
-const avatarOptions: Array<{ type: AvatarType; name: string; description: string; imagePosition: string }> = [
+const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string }> = [
   {
     type: 'fire',
     name: 'Blaze',
     description: 'A fierce companion that thrives on your determination',
-    imagePosition: '0%'
+    image: avatarFire
   },
   {
     type: 'water',
     name: 'Aqua',
     description: 'A calm presence that grows with your focus',
-    imagePosition: '50%'
+    image: avatarWater
   },
   {
     type: 'nature',
     name: 'Terra',
     description: 'A grounded friend that evolves with your progress',
-    imagePosition: '100%'
+    image: avatarNature
   }
 ];
 
@@ -68,14 +70,11 @@ const AvatarSelection = () => {
               onClick={() => setSelectedAvatar(avatar.type)}
             >
               <div className="space-y-4">
-                <div className="w-full h-48 overflow-hidden rounded-lg flex items-center justify-center">
-                  <div 
-                    className="w-full h-full bg-cover bg-center transition-transform duration-300 hover:scale-110"
-                    style={{
-                      backgroundImage: `url(${avatarsFull})`,
-                      backgroundPosition: `${avatar.imagePosition} center`,
-                      backgroundSize: '300%'
-                    }}
+                <div className="w-full h-48 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle">
+                  <img 
+                    src={avatar.image} 
+                    alt={avatar.name}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                 </div>
                 <div className="text-center space-y-2">
