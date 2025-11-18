@@ -120,7 +120,7 @@ const Dashboard = () => {
         </div>
 
         {/* Avatar Display */}
-        <div className="bg-gradient-primary rounded-3xl p-8 shadow-glow">
+        <div className="bg-black rounded-3xl p-8 shadow-glow">
           <AvatarCard avatar={avatar} size="lg" />
         </div>
 
