@@ -6,7 +6,7 @@ import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { Users } from "lucide-react";
+import { Users, RefreshCw } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -89,14 +89,22 @@ const Dashboard = () => {
           <p className="text-muted-foreground">Your screen time companion</p>
         </div>
 
-        <Button
-          onClick={() => navigate("/clans")}
-          className="w-full"
-          variant="outline"
-        >
-          <Users className="w-4 h-4 mr-2" />
-          View Clans
-        </Button>
+        <div className="grid grid-cols-2 gap-4">
+          <Button
+            onClick={() => navigate("/clans")}
+            variant="outline"
+          >
+            <Users className="w-4 h-4 mr-2" />
+            View Clans
+          </Button>
+          <Button
+            onClick={() => navigate("/avatar-selection")}
+            variant="outline"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Change Avatar
+          </Button>
+        </div>
 
         {/* Avatar Display */}
         <div className="bg-gradient-primary rounded-3xl p-8 shadow-glow">
