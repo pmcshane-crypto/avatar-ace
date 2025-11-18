@@ -132,20 +132,15 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex justify-center">
           <Button
             onClick={() => navigate("/clans")}
             variant="outline"
+            size="lg"
+            className="text-lg px-8"
           >
-            <Users className="w-4 h-4 mr-2" />
-            View Clans
-          </Button>
-          <Button
-            onClick={() => navigate("/avatar-selection")}
-            variant="outline"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Change Better Buddy
+            <Users className="w-5 h-5 mr-2" />
+            View My Clans
           </Button>
         </div>
 
@@ -177,6 +172,16 @@ const Dashboard = () => {
         {!screenTimeData.isAutomatic && (
           <ScreenTimeInput onSubmit={handleScreenTimeSubmit} />
         )}
+
+        {/* Change Better Buddy Button */}
+        <Button
+          onClick={() => navigate("/avatar-selection")}
+          variant="outline"
+          className="w-full"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Change Better Buddy
+        </Button>
       </div>
     </div>
   );
