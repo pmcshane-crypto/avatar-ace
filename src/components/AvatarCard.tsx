@@ -105,9 +105,11 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
             {/* XP Bar */}
             <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
               <div 
-                className="h-full bg-gradient-energy transition-all duration-500"
+                className="h-full bg-gradient-energy transition-all duration-500 relative"
                 style={{ width: `${(avatar.xp / avatar.xpToNextLevel) * 100}%` }}
-              />
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">
               {avatar.xp} / {avatar.xpToNextLevel} XP
