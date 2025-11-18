@@ -5,25 +5,26 @@ import { Card } from "@/components/ui/card";
 import { AvatarType } from "@/types/avatar";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import avatarsFull from "@/assets/avatars-full.png";
 
-const avatarOptions: Array<{ type: AvatarType; name: string; description: string; emoji: string }> = [
+const avatarOptions: Array<{ type: AvatarType; name: string; description: string; imagePosition: string }> = [
   {
     type: 'fire',
     name: 'Blaze',
     description: 'A fierce companion that thrives on your determination',
-    emoji: '🔥'
+    imagePosition: '0%'
   },
   {
     type: 'water',
     name: 'Aqua',
     description: 'A calm presence that grows with your focus',
-    emoji: '💧'
+    imagePosition: '50%'
   },
   {
     type: 'nature',
     name: 'Terra',
     description: 'A grounded friend that evolves with your progress',
-    emoji: '🌿'
+    imagePosition: '100%'
   }
 ];
 
@@ -66,8 +67,15 @@ const AvatarSelection = () => {
               onClick={() => setSelectedAvatar(avatar.type)}
             >
               <div className="space-y-4">
-                <div className="text-6xl text-center animate-bounce-slow">
-                  {avatar.emoji}
+                <div className="w-full h-48 overflow-hidden rounded-lg flex items-center justify-center">
+                  <div 
+                    className="w-full h-full bg-cover bg-center transition-transform duration-300 hover:scale-110"
+                    style={{
+                      backgroundImage: `url(${avatarsFull})`,
+                      backgroundPosition: `${avatar.imagePosition} center`,
+                      backgroundSize: '300%'
+                    }}
+                  />
                 </div>
                 <div className="text-center space-y-2">
                   <h3 className={cn(
