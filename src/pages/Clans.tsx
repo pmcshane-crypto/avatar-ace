@@ -37,18 +37,26 @@ interface Clan {
 
 export default function Clans() {
   const navigate = useNavigate();
-  const [clans, setClans] = useState<Clan[]>([]);
+  const [allClans, setAllClans] = useState<Clan[]>([]);
+  const [userClans, setUserClans] = useState<Clan[]>([]);
   const [selectedClan, setSelectedClan] = useState<string | null>(null);
   const [members, setMembers] = useState<ClanMember[]>([]);
   const [newClanName, setNewClanName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [showJoinCreate, setShowJoinCreate] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     checkUser();
-    loadClans();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      loadClans();
+      loadUserClans();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (selectedClan) {
@@ -118,7 +126,83 @@ export default function Clans() {
       };
     }) || [];
 
-    setClans(formattedClans);
+    setAllClans(formattedClans);
+  };
+
+  const loadUserClans = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("clan_members")
+      .select(`
+        clan_id,
+        clans(
+          id,
+          name,
+          description,
+          clan_members(
+            count,
+            user_id,
+            profiles(username, avatar_type, baseline_minutes),
+            screen_time_entries(date, actual_minutes)
+          )
+        )
+      `)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error("Error loading user clans:", error);
+      return;
+    }
+
+    const formattedUserClans = data?.map(membership => {
+      const clan = membership.clans;
+      if (!clan) return null;
+
+      const members = clan.clan_members || [];
+      const memberCount = members.length;
+
+      // Calculate clan average improvement
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      let totalImprovement = 0;
+      let memberWithData = 0;
+
+      members.forEach((m: any) => {
+        if (!m.profiles) return;
+        const baseline = m.profiles.baseline_minutes;
+        const weeklyEntries = m.screen_time_entries?.filter((e: any) => e.date >= weekAgo) || [];
+        
+        if (weeklyEntries.length > 0 && baseline > 0) {
+          const avgActual = weeklyEntries.reduce((sum: number, e: any) => sum + (e.actual_minutes || 0), 0) / weeklyEntries.length;
+          const improvement = ((baseline - avgActual) / baseline) * 100;
+          totalImprovement += improvement;
+          memberWithData++;
+        }
+      });
+
+      const avgImprovement = memberWithData > 0 ? totalImprovement / memberWithData : 0;
+
+      const previewMembers = members
+        .filter((m: any) => m.profiles)
+        .slice(0, 5)
+        .map((m: any) => ({
+          user_id: m.user_id,
+          username: m.profiles.username,
+          avatar_type: m.profiles.avatar_type,
+          level: 1
+        }));
+
+      return {
+        id: clan.id,
+        name: clan.name,
+        description: clan.description || "",
+        member_count: memberCount,
+        preview_members: previewMembers,
+        avg_improvement: avgImprovement
+      };
+    }).filter(Boolean) || [];
+
+    setUserClans(formattedUserClans as any);
   };
 
   const loadClanMembers = async (clanId: string) => {
@@ -223,28 +307,87 @@ export default function Clans() {
 
   const joinClan = async (clanId: string) => {
     if (!user) {
-      toast({ title: "Please sign in to join a clan" });
+      toast({
+        title: "Please log in",
+        description: "You must be logged in to join a clan",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if already a member
+    const { data: existing } = await supabase
+      .from("clan_members")
+      .select("id")
+      .eq("clan_id", clanId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (existing) {
+      toast({
+        title: "Already a member",
+        description: "You're already part of this clan",
+      });
       return;
     }
 
     const { error } = await supabase
       .from("clan_members")
-      .insert({ 
-        clan_id: clanId, 
-        user_id: user.id 
+      .insert({
+        clan_id: clanId,
+        user_id: user.id
       });
 
     if (error) {
-      toast({ title: "Error joining clan", description: error.message });
+      toast({
+        title: "Error",
+        description: "Failed to join clan",
+        variant: "destructive",
+      });
       return;
     }
 
-    toast({ title: "Successfully joined clan!" });
+    toast({
+      title: "Success!",
+      description: "You've joined the clan!",
+    });
+    
+    loadUserClans();
+    loadClans();
+    setShowJoinCreate(false);
+  };
+
+  const leaveClan = async (clanId: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("clan_members")
+      .delete()
+      .eq("clan_id", clanId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to leave clan",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Left clan",
+      description: "You've left the clan",
+    });
+
+    setSelectedClan(null);
+    loadUserClans();
     loadClans();
   };
 
-  const filteredClans = clans.filter(clan =>
-    clan.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredClans = allClans.filter(clan => 
+    clan.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    !userClans.some(uc => uc.id === clan.id)
   );
 
   const dailyWinner = members.length > 0 ? members[0] : null;
@@ -253,28 +396,33 @@ export default function Clans() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-radial from-background via-background to-primary/5 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={() => navigate("/dashboard")}
-            variant="ghost"
-            size="icon"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="text-center flex-1 space-y-2">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Clans
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 p-4">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                if (selectedClan) {
+                  setSelectedClan(null);
+                } else if (showJoinCreate) {
+                  setShowJoinCreate(false);
+                } else {
+                  navigate("/dashboard");
+                }
+              }}
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              {selectedClan ? "Clan Hub" : showJoinCreate ? "Join or Create Clan" : "My Clans"}
             </h1>
-            <p className="text-muted-foreground">
-              Join clans to compete with friends and track progress together
-            </p>
           </div>
         </div>
 
-        {selectedClan && (
-          <>
+        {selectedClan ? (
+          <div className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <Card className="bg-gradient-card border-primary/20">
                 <CardHeader>
@@ -375,48 +523,59 @@ export default function Clans() {
               </CardContent>
             </Card>
 
-            <Button 
-              onClick={() => setSelectedClan(null)}
-              variant="outline"
+            <Button
+              onClick={() => leaveClan(selectedClan)}
+              variant="destructive"
               className="w-full"
             >
-              Back to Clans
+              Leave Clan
             </Button>
-          </>
-        )}
-
-        {!selectedClan && (
-          <>
-            <Card className="bg-gradient-card border-border/50">
+          </div>
+        ) : showJoinCreate ? (
+          <div className="space-y-6">
+            {/* Create New Clan */}
+            <Card>
               <CardHeader>
-                <CardTitle>Create New Clan</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="h-5 w-5" />
+                  Create New Clan
+                </CardTitle>
               </CardHeader>
-              <CardContent className="flex gap-2">
-                <Input
-                  placeholder="Clan name..."
-                  value={newClanName}
-                  onChange={(e) => setNewClanName(e.target.value)}
-                />
-                <Button onClick={createClan}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create
-                </Button>
+              <CardContent>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter clan name..."
+                    value={newClanName}
+                    onChange={(e) => setNewClanName(e.target.value)}
+                  />
+                  <Button onClick={createClan}>
+                    Create
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
-            <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search clans..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+            {/* Search and Filter */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  Find Clans
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Input
+                  placeholder="Search clans..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </CardContent>
+            </Card>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              {filteredClans.map((clan) => (
-                <Card key={clan.id} className="bg-gradient-card border-border/50 hover:border-primary/50 transition-colors">
+            {/* Available Clans List */}
+            <div className="grid gap-4">
+              {filteredClans.map(clan => (
+                <Card key={clan.id} className="hover:border-primary/50 transition-colors">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <span>{clan.name}</span>
@@ -426,65 +585,111 @@ export default function Clans() {
                       </Badge>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                      {clan.description || "No description"}
-                    </p>
-                    
-                    {/* Member Avatars Preview */}
-                    {clan.preview_members.length > 0 && (
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground font-medium">Members:</div>
-                        <div className="flex flex-wrap gap-2">
-                          {clan.preview_members.map((member) => (
-                            <div 
-                              key={member.user_id}
-                              className="flex items-center gap-2 bg-background/50 rounded-lg px-3 py-2 border border-border/50"
+                  <CardContent className="pt-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {clan.member_count} members
+                        </span>
+                      </div>
+
+                      {clan.preview_members.length > 0 && (
+                        <div className="flex -space-x-2">
+                          {clan.preview_members.map((member, idx) => (
+                            <div
+                              key={idx}
+                              className="w-8 h-8 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-xs"
                             >
-                              <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
-                                member.avatar_type === 'fire' 
-                                  ? 'border-avatar-fire bg-avatar-fire/20 text-avatar-fire' 
-                                  : member.avatar_type === 'water'
-                                  ? 'border-avatar-water bg-avatar-water/20 text-avatar-water'
-                                  : 'border-avatar-nature bg-avatar-nature/20 text-avatar-nature'
-                              }`}>
-                                {member.avatar_type === 'fire' ? '🔥' : member.avatar_type === 'water' ? '💧' : '🌿'}
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-xs font-medium">{member.username}</span>
-                                <span className="text-[10px] text-muted-foreground">Lvl {member.level}</span>
-                              </div>
+                              {member.username[0]}
                             </div>
                           ))}
-                          {clan.member_count > 5 && (
-                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-xs font-bold">
-                              +{clan.member_count - 5}
-                            </div>
-                          )}
                         </div>
-                      </div>
-                    )}
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={() => setSelectedClan(clan.id)}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        View
-                      </Button>
-                      <Button 
+                      )}
+
+                      <Button
                         onClick={() => joinClan(clan.id)}
-                        className="flex-1"
+                        className="w-full"
                       >
-                        Join
+                        Join Clan
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {/* User's Clans */}
+            <div className="space-y-4">
+              {userClans.length === 0 ? (
+                <Card>
+                  <CardContent className="pt-6 text-center">
+                    <p className="text-muted-foreground mb-4">You haven't joined any clans yet</p>
+                    <Button onClick={() => setShowJoinCreate(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Join or Create Clan
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-semibold">Your Clans</h2>
+                    <Button onClick={() => setShowJoinCreate(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Join or Create
+                    </Button>
+                  </div>
+                  <div className="grid gap-4">
+                    {userClans.map(clan => (
+                      <Card key={clan.id} className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setSelectedClan(clan.id)}>
+                        <CardHeader>
+                          <CardTitle className="flex items-center justify-between">
+                            <span>{clan.name}</span>
+                            <Badge variant="secondary">
+                              <Users className="h-3 w-3 mr-1" />
+                              {clan.member_count}
+                            </Badge>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            {clan.description && (
+                              <p className="text-sm text-muted-foreground">{clan.description}</p>
+                            )}
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <TrendingDown className="h-4 w-4 text-green-500" />
+                                <span className="text-sm font-medium">
+                                  {(clan as any).avg_improvement?.toFixed(1) || 0}% avg improvement
+                                </span>
+                              </div>
+                            </div>
+
+                            {clan.preview_members.length > 0 && (
+                              <div className="flex -space-x-2">
+                                {clan.preview_members.map((member, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="w-8 h-8 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-xs font-semibold"
+                                  >
+                                    {member.username[0].toUpperCase()}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
