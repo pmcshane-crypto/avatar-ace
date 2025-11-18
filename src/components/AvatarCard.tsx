@@ -1,6 +1,7 @@
 import { Avatar, EnergyLevel } from "@/types/avatar";
 import { cn } from "@/lib/utils";
 import { Zap, TrendingUp } from "lucide-react";
+import avatarsFull from "@/assets/avatars-full.png";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -38,6 +39,17 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
     lg: 'w-64 h-64'
   };
 
+  const getAvatarPosition = () => {
+    switch (avatar.type) {
+      case 'fire':
+        return '0%';
+      case 'water':
+        return '50%';
+      case 'nature':
+        return '100%';
+    }
+  };
+
   return (
     <div className="relative">
       {/* Avatar Container */}
@@ -55,16 +67,21 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           animate && "animate-pulse-glow"
         )} />
         
-        {/* Avatar SVG Placeholder - Would be replaced with actual avatar images */}
+        {/* Avatar Image */}
         <div className={cn(
-          "relative w-full h-full rounded-full flex items-center justify-center text-6xl font-bold shadow-energy",
-          avatar.type === 'fire' && "bg-avatar-fire/20 border-4 border-avatar-fire",
-          avatar.type === 'water' && "bg-avatar-water/20 border-4 border-avatar-water",
-          avatar.type === 'nature' && "bg-avatar-nature/20 border-4 border-avatar-nature"
+          "relative w-full h-full rounded-full overflow-hidden shadow-energy",
+          avatar.type === 'fire' && "ring-4 ring-avatar-fire",
+          avatar.type === 'water' && "ring-4 ring-avatar-water",
+          avatar.type === 'nature' && "ring-4 ring-avatar-nature"
         )}>
-          {avatar.type === 'fire' && '🔥'}
-          {avatar.type === 'water' && '💧'}
-          {avatar.type === 'nature' && '🌿'}
+          <div 
+            className="w-full h-full bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${avatarsFull})`,
+              backgroundPosition: `${getAvatarPosition()} center`,
+              backgroundSize: '300%'
+            }}
+          />
         </div>
       </div>
 
