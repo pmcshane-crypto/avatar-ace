@@ -6,11 +6,14 @@ import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { Users, RefreshCw } from "lucide-react";
+import { Users, RefreshCw, Smartphone } from "lucide-react";
+import { useScreenTime } from "@/hooks/useScreenTime";
+import { Capacitor } from "@capacitor/core";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
@@ -27,10 +30,25 @@ const Dashboard = () => {
     currentStreak: 0,
     bestStreak: 0,
     totalReduction: 0,
-    weeklyAverage: parseInt(localStorage.getItem('baseline') || '300'),
+    weeklyAverage: screenTimeData.weeklyAverage || parseInt(localStorage.getItem('baseline') || '300'),
   });
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
+
+  // Auto-update when screen time data changes
+  useEffect(() => {
+    if (screenTimeData.isAutomatic) {
+      handleScreenTimeSubmit({
+        totalMinutes: screenTimeData.totalMinutes,
+        musicMinutes: screenTimeData.musicMinutes,
+        betterBuddyMinutes: screenTimeData.betterBuddyMinutes,
+      });
+      setStats(prev => ({
+        ...prev,
+        weeklyAverage: screenTimeData.weeklyAverage,
+      }));
+    }
+  }, [screenTimeData]);
 
   const handleScreenTimeSubmit = (data: {
     totalMinutes: number;
@@ -106,6 +124,12 @@ const Dashboard = () => {
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
+          {Capacitor.getPlatform() === 'ios' && screenTimeData.isAutomatic && (
+            <div className="flex items-center justify-center gap-2 text-sm text-primary">
+              <Smartphone className="w-4 h-4" />
+              <span>Auto-synced with iOS Screen Time</span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -125,6 +149,18 @@ const Dashboard = () => {
           </Button>
         </div>
 
+        {Capacitor.getPlatform() === 'ios' && hasPermission && (
+          <Button
+            onClick={refreshScreenTime}
+            variant="outline"
+            disabled={isLoading}
+            className="w-full"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            {isLoading ? 'Syncing...' : 'Sync Screen Time'}
+          </Button>
+        )}
+
         {/* Avatar Display */}
         <div className={`bg-black rounded-3xl p-8 transition-all duration-500 ${
           isLevelingUp 
@@ -137,8 +173,10 @@ const Dashboard = () => {
         {/* Stats Grid */}
         <StatsCard stats={stats} />
 
-        {/* Screen Time Input */}
-        <ScreenTimeInput onSubmit={handleScreenTimeSubmit} />
+        {/* Screen Time Input - Only show if not automatic */}
+        {!screenTimeData.isAutomatic && (
+          <ScreenTimeInput onSubmit={handleScreenTimeSubmit} />
+        )}
       </div>
     </div>
   );
