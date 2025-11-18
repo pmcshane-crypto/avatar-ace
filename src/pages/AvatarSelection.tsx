@@ -35,7 +35,8 @@ const AvatarSelection = () => {
   const handleContinue = () => {
     if (selectedAvatar) {
       localStorage.setItem('selectedAvatarType', selectedAvatar);
-      navigate('/baseline-setup');
+      const baseline = localStorage.getItem('baseline');
+      navigate(baseline ? '/dashboard' : '/baseline-setup');
     }
   };
 
