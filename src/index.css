@@ -52,6 +52,10 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(220 30% 12%), hsl(217 91% 30%));
     --gradient-energy: linear-gradient(135deg, hsl(190 95% 55%), hsl(217 91% 60%));
     --gradient-card: linear-gradient(180deg, hsl(220 25% 14%), hsl(220 25% 10%));
+    
+    --gradient-fire-bg: linear-gradient(180deg, hsl(0 50% 15%), hsl(15 60% 10%));
+    --gradient-water-bg: linear-gradient(180deg, hsl(220 60% 25%), hsl(217 70% 15%));
+    --gradient-nature-bg: linear-gradient(180deg, hsl(142 40% 15%), hsl(142 50% 8%));
 
     --shadow-glow: 0 0 30px hsl(217 91% 60% / 0.3);
     --shadow-energy: 0 0 40px hsl(190 95% 55% / 0.4);

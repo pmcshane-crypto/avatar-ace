@@ -80,8 +80,21 @@ const Dashboard = () => {
     });
   };
 
+  const getBackgroundClass = () => {
+    switch (avatar.type) {
+      case 'fire':
+        return 'bg-gradient-fire-bg';
+      case 'water':
+        return 'bg-gradient-water-bg';
+      case 'nature':
+        return 'bg-gradient-nature-bg';
+      default:
+        return 'bg-background';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">

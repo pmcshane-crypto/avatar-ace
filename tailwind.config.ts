@@ -64,6 +64,9 @@ export default {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-energy': 'var(--gradient-energy)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-fire-bg': 'var(--gradient-fire-bg)',
+        'gradient-water-bg': 'var(--gradient-water-bg)',
+        'gradient-nature-bg': 'var(--gradient-nature-bg)',
       },
       boxShadow: {
         'glow': 'var(--shadow-glow)',
