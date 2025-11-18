@@ -1,7 +1,9 @@
 import { Avatar, EnergyLevel } from "@/types/avatar";
 import { cn } from "@/lib/utils";
 import { Zap, TrendingUp } from "lucide-react";
-import avatarsFull from "@/assets/avatars-full.png";
+import avatarFire from "@/assets/avatar-fire.png";
+import avatarWater from "@/assets/avatar-water.png";
+import avatarNature from "@/assets/avatar-nature.png";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -39,14 +41,14 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
     lg: 'w-64 h-64'
   };
 
-  const getAvatarPosition = () => {
+  const getAvatarImage = () => {
     switch (avatar.type) {
       case 'fire':
-        return '0%';
+        return avatarFire;
       case 'water':
-        return '50%';
+        return avatarWater;
       case 'nature':
-        return '100%';
+        return avatarNature;
     }
   };
 
@@ -74,13 +76,10 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           avatar.type === 'water' && "ring-4 ring-avatar-water",
           avatar.type === 'nature' && "ring-4 ring-avatar-nature"
         )}>
-          <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${avatarsFull})`,
-              backgroundPosition: `${getAvatarPosition()} center`,
-              backgroundSize: '300%'
-            }}
+          <img 
+            src={getAvatarImage()} 
+            alt={avatar.name}
+            className="w-full h-full object-cover"
           />
         </div>
       </div>
