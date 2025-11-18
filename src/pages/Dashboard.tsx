@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { AvatarCard } from "@/components/AvatarCard";
 import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { Users } from "lucide-react";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
@@ -84,6 +88,15 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
         </div>
+
+        <Button
+          onClick={() => navigate("/clans")}
+          className="w-full"
+          variant="outline"
+        >
+          <Users className="w-4 h-4 mr-2" />
+          View Clans
+        </Button>
 
         {/* Avatar Display */}
         <div className="bg-gradient-primary rounded-3xl p-8 shadow-glow">
