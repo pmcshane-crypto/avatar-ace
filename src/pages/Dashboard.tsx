@@ -30,6 +30,8 @@ const Dashboard = () => {
     weeklyAverage: parseInt(localStorage.getItem('baseline') || '300'),
   });
 
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+
   const handleScreenTimeSubmit = (data: {
     totalMinutes: number;
     musicMinutes: number;
@@ -53,6 +55,10 @@ const Dashboard = () => {
     if (newXp >= avatar.xpToNextLevel) {
       newLevel += 1;
       remainingXp = newXp - avatar.xpToNextLevel;
+      
+      // Trigger level up glow effect
+      setIsLevelingUp(true);
+      setTimeout(() => setIsLevelingUp(false), 3000);
     }
 
     setAvatar({
@@ -115,12 +121,16 @@ const Dashboard = () => {
             variant="outline"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            Change Avatar
+            Change Better Buddy
           </Button>
         </div>
 
         {/* Avatar Display */}
-        <div className="bg-black rounded-3xl p-8 shadow-glow">
+        <div className={`bg-black rounded-3xl p-8 transition-all duration-500 ${
+          isLevelingUp 
+            ? 'shadow-[0_0_60px_hsl(var(--primary)/0.8),0_0_100px_hsl(var(--accent)/0.6)] scale-105' 
+            : 'shadow-glow'
+        }`}>
           <AvatarCard avatar={avatar} size="lg" />
         </div>
 
