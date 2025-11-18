@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trophy, TrendingDown, Flame, Users, Plus, Search } from "lucide-react";
+import { Trophy, TrendingDown, Flame, Users, Plus, Search, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface ClanMember {
@@ -25,6 +26,7 @@ interface Clan {
 }
 
 export default function Clans() {
+  const navigate = useNavigate();
   const [clans, setClans] = useState<Clan[]>([]);
   const [selectedClan, setSelectedClan] = useState<string | null>(null);
   const [members, setMembers] = useState<ClanMember[]>([]);
@@ -206,13 +208,22 @@ export default function Clans() {
   return (
     <div className="min-h-screen bg-gradient-radial from-background via-background to-primary/5 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Clans
-          </h1>
-          <p className="text-muted-foreground">
-            Join clans to compete with friends and track progress together
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => navigate("/dashboard")}
+            variant="ghost"
+            size="icon"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="text-center flex-1 space-y-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Clans
+            </h1>
+            <p className="text-muted-foreground">
+              Join clans to compete with friends and track progress together
+            </p>
+          </div>
         </div>
 
         {selectedClan && (
