@@ -14,13 +14,157 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clan_members: {
+        Row: {
+          clan_id: string | null
+          id: string
+          joined_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clan_id?: string | null
+          id?: string
+          joined_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clan_id?: string | null
+          id?: string
+          joined_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clan_members_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clan_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clans: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clans_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_type: string
+          baseline_minutes: number
+          created_at: string | null
+          id: string
+          username: string
+        }
+        Insert: {
+          avatar_type: string
+          baseline_minutes?: number
+          created_at?: string | null
+          id: string
+          username: string
+        }
+        Update: {
+          avatar_type?: string
+          baseline_minutes?: number
+          created_at?: string | null
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      screen_time_entries: {
+        Row: {
+          actual_minutes: number | null
+          better_buddy_minutes: number | null
+          created_at: string | null
+          date: string
+          id: string
+          music_minutes: number | null
+          total_minutes: number
+          user_id: string | null
+        }
+        Insert: {
+          actual_minutes?: number | null
+          better_buddy_minutes?: number | null
+          created_at?: string | null
+          date: string
+          id?: string
+          music_minutes?: number | null
+          total_minutes: number
+          user_id?: string | null
+        }
+        Update: {
+          actual_minutes?: number | null
+          better_buddy_minutes?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          music_minutes?: number | null
+          total_minutes?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "screen_time_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_reduction: {
+        Args: { actual: number; baseline: number }
+        Returns: number
+      }
+      get_user_stats: {
+        Args: { p_user_id: string }
+        Returns: {
+          best_streak: number
+          current_streak: number
+          total_reduction: number
+          weekly_average: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
