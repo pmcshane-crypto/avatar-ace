@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Zap, TrendingUp } from "lucide-react";
 import avatarFire from "@/assets/avatar-fire.png";
 import avatarFireLevel2 from "@/assets/avatar-fire-level2.png";
+import avatarFireLevel3 from "@/assets/avatar-fire-level3.png";
 import avatarWater from "@/assets/avatar-water.png";
 import avatarNature from "@/assets/avatar-nature.png";
 
@@ -45,6 +46,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
   const getAvatarImage = () => {
     switch (avatar.type) {
       case 'fire':
+        if (avatar.level >= 3) return avatarFireLevel3;
         if (avatar.level >= 2) return avatarFireLevel2;
         return avatarFire;
       case 'water':
