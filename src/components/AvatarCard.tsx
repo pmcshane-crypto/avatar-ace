@@ -8,6 +8,7 @@ import avatarWater from "@/assets/avatar-water.png";
 import avatarWaterLevel2 from "@/assets/avatar-water-level2.png";
 import avatarWaterLevel3 from "@/assets/avatar-water-level3.png";
 import avatarNature from "@/assets/avatar-nature.png";
+import avatarNatureLevel2 from "@/assets/avatar-nature-level2.png";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -56,6 +57,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
         if (avatar.level >= 2) return avatarWaterLevel2;
         return avatarWater;
       case 'nature':
+        if (avatar.level >= 2) return avatarNatureLevel2;
         return avatarNature;
     }
   };
