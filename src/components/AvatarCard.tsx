@@ -91,7 +91,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           <img 
             src={getAvatarImage()} 
             alt={avatar.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain scale-90"
           />
         </div>
       </div>
