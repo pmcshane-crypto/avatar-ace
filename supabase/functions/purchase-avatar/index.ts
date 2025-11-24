@@ -29,7 +29,7 @@ serve(async (req) => {
     // Map avatar types to price IDs
     const priceMap: Record<string, string> = {
       fire: "price_1SX5m4GrkP7VQmUjvlFDjCzV",
-      nature: "price_1SX5muGrkP7VQmUjIpAByGPd",
+      water: "price_1SX9MUGrkP7VQmUjw5pBxc17",
       chungloid: "price_1SX9FQGrkP7VQmUjLdXpKr8N",
       "chicken-nugget": "price_1SX9DiGrkP7VQmUjBIY2rQwu",
     };
