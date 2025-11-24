@@ -178,7 +178,7 @@ const AvatarSelection = () => {
                 {isPremium && (
                   <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    ${avatar.type === 'chicken-nugget' ? '38.99' : avatar.type === 'chungloid' ? '14.99' : avatar.type === 'fire' ? '8.99' : '5.99'}
+                    ${avatar.type === 'chicken-nugget' ? '38.99' : avatar.type === 'chungloid' ? '3.99' : avatar.type === 'fire' ? '8.99' : '5.99'}
                   </div>
                 )}
                 <div className="space-y-4">

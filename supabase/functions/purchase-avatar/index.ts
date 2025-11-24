@@ -30,7 +30,7 @@ serve(async (req) => {
     const priceMap: Record<string, string> = {
       fire: "price_1SX5m4GrkP7VQmUjvlFDjCzV",
       nature: "price_1SX5muGrkP7VQmUjIpAByGPd",
-      chungloid: "price_1SX6APGrkP7VQmUjYZc4IdMQ",
+      chungloid: "price_1SX9FQGrkP7VQmUjLdXpKr8N",
       "chicken-nugget": "price_1SX9DiGrkP7VQmUjBIY2rQwu",
     };
 
