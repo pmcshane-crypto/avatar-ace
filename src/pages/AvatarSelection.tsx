@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import avatarFire from "@/assets/avatar-fire.png";
 import avatarWater from "@/assets/avatar-water.png";
 import avatarNature from "@/assets/avatar-nature.png";
+import avatarChungloid from "@/assets/avatar-chungloid.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,6 +31,13 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     name: 'Twiggle',
     description: 'A grounded friend that evolves with your progress',
     image: avatarNature,
+    premium: true
+  },
+  {
+    type: 'chungloid',
+    name: 'Chungloid',
+    description: 'An adorable companion on your digital wellness journey',
+    image: avatarChungloid,
     premium: true
   }
 ];
@@ -137,7 +145,7 @@ const AvatarSelection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-4 gap-4">
           {avatarOptions.map((avatar) => {
             const isPremium = avatar.premium && !purchasedAvatars.has(avatar.type);
             const isUnlocked = !avatar.premium || purchasedAvatars.has(avatar.type);
@@ -162,7 +170,7 @@ const AvatarSelection = () => {
                 {isPremium && (
                   <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    $2.99
+                    ${avatar.type === 'chungloid' ? '14.99' : '2.99'}
                   </div>
                 )}
                 <div className="space-y-4">
@@ -178,7 +186,8 @@ const AvatarSelection = () => {
                       "text-xl font-bold",
                       avatar.type === 'fire' && "text-avatar-fire",
                       avatar.type === 'water' && "text-avatar-water",
-                      avatar.type === 'nature' && "text-avatar-nature"
+                      avatar.type === 'nature' && "text-avatar-nature",
+                      avatar.type === 'chungloid' && "text-primary"
                     )}>
                       {avatar.name}
                     </h3>
