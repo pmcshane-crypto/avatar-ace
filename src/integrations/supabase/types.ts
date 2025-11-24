@@ -106,6 +106,27 @@ export type Database = {
         }
         Relationships: []
       }
+      purchased_avatars: {
+        Row: {
+          avatar_type: string
+          id: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_type: string
+          id?: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_type?: string
+          id?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       screen_time_entries: {
         Row: {
           actual_minutes: number | null
