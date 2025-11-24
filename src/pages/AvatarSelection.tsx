@@ -15,17 +15,17 @@ import { useToast } from "@/hooks/use-toast";
 
 const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string; premium?: boolean }> = [
   {
-    type: 'fire',
-    name: 'Hot Pocket',
-    description: 'A fierce companion that thrives on your determination',
-    image: avatarFire,
-    premium: true
-  },
-  {
     type: 'water',
     name: 'Nugget',
     description: 'A calm presence that grows with your focus',
     image: avatarWater
+  },
+  {
+    type: 'chungloid',
+    name: 'Chungloid',
+    description: 'An adorable companion on your digital wellness journey',
+    image: avatarChungloid,
+    premium: true
   },
   {
     type: 'nature',
@@ -35,10 +35,10 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     premium: true
   },
   {
-    type: 'chungloid',
-    name: 'Chungloid',
-    description: 'An adorable companion on your digital wellness journey',
-    image: avatarChungloid,
+    type: 'fire',
+    name: 'Hot Pocket',
+    description: 'A fierce companion that thrives on your determination',
+    image: avatarFire,
     premium: true
   },
   {
@@ -153,7 +153,7 @@ const AvatarSelection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           {avatarOptions.map((avatar) => {
             const isPremium = avatar.premium && !purchasedAvatars.has(avatar.type);
             const isUnlocked = !avatar.premium || purchasedAvatars.has(avatar.type);
