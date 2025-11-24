@@ -30,6 +30,7 @@ serve(async (req) => {
     const priceMap: Record<string, string> = {
       fire: "price_1SX5m4GrkP7VQmUjvlFDjCzV",
       nature: "price_1SX5muGrkP7VQmUjIpAByGPd",
+      chungloid: "price_1SX6APGrkP7VQmUjYZc4IdMQ",
     };
 
     const priceId = priceMap[avatarType];
