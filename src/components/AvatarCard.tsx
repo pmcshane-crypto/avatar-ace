@@ -81,9 +81,9 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           animate && "animate-pulse-glow"
         )} />
         
-        {/* Avatar Image */}
+        {/* Avatar Image with Black Circle Background */}
         <div className={cn(
-          "relative w-full h-full rounded-full overflow-hidden shadow-energy",
+          "relative w-full h-full rounded-full overflow-hidden shadow-energy bg-black",
           avatar.type === 'fire' && "ring-4 ring-avatar-fire",
           avatar.type === 'water' && "ring-4 ring-avatar-water",
           avatar.type === 'nature' && "ring-4 ring-avatar-nature"
