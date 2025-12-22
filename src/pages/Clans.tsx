@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Trophy, TrendingDown, Flame, Users, Plus, Search, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+import clansBackground from "@/assets/clans-background.png";
 interface ClanMember {
   user_id: string;
   username: string;
@@ -396,7 +396,19 @@ export default function Clans() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 p-4">
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url(${clansBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* Gradient overlay for blending */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/70 to-background/95" />
+      
+      <div className="relative z-10 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -691,6 +703,7 @@ export default function Clans() {
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
