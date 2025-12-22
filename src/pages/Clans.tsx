@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ClanEmptyState, ClanCard, ClanHub, DiscoverClans } from "@/components/clans";
 
@@ -277,6 +277,16 @@ export default function Clans() {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Back to Dashboard */}
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/dashboard")}
+          className="text-muted-foreground hover:text-foreground -ml-2"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to My Better Buddy
+        </Button>
+
         {userClans.length === 0 ? (
           <ClanEmptyState
             onJoinClick={() => setShowDiscover(true)}
