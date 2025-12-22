@@ -102,48 +102,52 @@ export function ClanMemberRow({
 
   return (
     <div 
-      className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+      className={`flex items-center justify-between p-4 rounded-xl transition-all ${
         isCurrentUser 
-          ? 'bg-primary/10 border border-primary/30' 
-          : 'bg-card/50 hover:bg-card'
+          ? 'bg-gradient-to-r from-primary/20 to-primary/5 border-2 border-primary/40 shadow-lg shadow-primary/10' 
+          : 'bg-card/60 hover:bg-card border border-border/50'
       }`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         {/* Rank */}
-        <div className={`w-8 text-center font-bold ${rankColor}`}>
+        <div className={`w-8 text-center font-bold text-lg ${rankColor}`}>
           {RankIcon ? (
-            <RankIcon className="w-5 h-5 mx-auto" />
+            <RankIcon className="w-6 h-6 mx-auto" />
           ) : (
             <span>{rank}</span>
           )}
         </div>
 
         {/* Avatar & Name */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            {/* Glow effect behind avatar */}
+            <div className={`absolute inset-0 rounded-full blur-md opacity-60 ${
+              rank === 1 ? 'bg-warning/50' : rank === 2 ? 'bg-gray-400/30' : rank === 3 ? 'bg-amber-600/30' : 'bg-primary/30'
+            }`} />
             <img 
               src={avatarImage} 
               alt={`${avatar_type} avatar`}
-              className="w-12 h-12 rounded-full object-cover border-2 border-primary/30 bg-card"
+              className="relative w-16 h-16 rounded-full object-cover border-3 border-primary/50 bg-card shadow-lg group-hover:scale-105 transition-transform"
             />
             {/* Level badge */}
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground border border-background">
+            <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-primary-foreground border-2 border-background shadow-md">
               {avatar_level}
             </div>
           </div>
           <div>
-            <div className="font-medium flex items-center gap-2">
+            <div className="font-semibold text-lg flex items-center gap-2">
               {username}
               {isCurrentUser && (
-                <Badge variant="outline" className="text-xs py-0">You</Badge>
+                <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">You</Badge>
               )}
             </div>
-            <div className="text-xs text-muted-foreground capitalize flex items-center gap-2">
-              <span className="text-primary font-medium">Lv.{avatar_level}</span>
-              <span>{avatar_type.replace('-', ' ')}</span>
+            <div className="text-sm text-muted-foreground capitalize flex items-center gap-2">
+              <span className="text-primary font-semibold">Lv.{avatar_level}</span>
+              <span className="text-foreground/70">{avatar_type.replace('-', ' ')}</span>
               {isActiveToday && (
-                <span className="flex items-center gap-1 text-success">
-                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                <span className="flex items-center gap-1.5 text-success text-xs">
+                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                   Active
                 </span>
               )}
@@ -152,10 +156,10 @@ export function ClanMemberRow({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         {/* Today's Reduction */}
         <div className="text-right">
-          <div className={`font-bold ${daily_reduction > 0 ? 'text-success' : 'text-muted-foreground'}`}>
+          <div className={`text-xl font-bold ${daily_reduction > 0 ? 'text-success' : 'text-muted-foreground'}`}>
             {daily_reduction > 0 ? `${daily_reduction}%` : '--'}
           </div>
           <div className="text-xs text-muted-foreground">today</div>
@@ -165,7 +169,7 @@ export function ClanMemberRow({
           <>
             {/* Weekly Average */}
             <div className="text-right hidden sm:block">
-              <div className="font-medium">
+              <div className="font-semibold text-lg">
                 {Math.floor(weekly_avg / 60)}h {weekly_avg % 60}m
               </div>
               <div className="text-xs text-muted-foreground">weekly avg</div>
@@ -173,7 +177,7 @@ export function ClanMemberRow({
 
             {/* Contribution */}
             <div className="text-right hidden md:block">
-              <div className="font-medium text-primary">
+              <div className="font-semibold text-lg text-primary">
                 +{contribution}
               </div>
               <div className="text-xs text-muted-foreground">XP earned</div>
@@ -183,8 +187,8 @@ export function ClanMemberRow({
 
         {/* Streak */}
         {current_streak > 0 && (
-          <div className="flex items-center gap-1 text-warning font-semibold">
-            <Flame className="w-4 h-4" />
+          <div className="flex items-center gap-1.5 text-warning font-bold text-lg">
+            <Flame className="w-5 h-5" />
             <span>{current_streak}</span>
           </div>
         )}
