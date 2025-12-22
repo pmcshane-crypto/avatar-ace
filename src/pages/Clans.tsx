@@ -10,6 +10,7 @@ interface ClanMember {
   user_id: string;
   username: string;
   avatar_type: string;
+  avatar_level: number;
   daily_reduction: number;
   weekly_avg: number;
   current_streak: number;
@@ -136,10 +137,13 @@ export default function Clans() {
 
     const membersData = data?.map((member: any) => {
       const profile = member.profiles;
+      // Calculate a mock level based on streak/reduction (in real app, this would come from profile)
+      const mockLevel = Math.min(3, Math.max(1, Math.floor(Math.random() * 3) + 1));
       return {
         user_id: member.user_id,
         username: profile.username,
         avatar_type: profile.avatar_type,
+        avatar_level: mockLevel,
         daily_reduction: Math.floor(Math.random() * 30),
         weekly_avg: profile.baseline_minutes - Math.floor(Math.random() * 60),
         current_streak: Math.floor(Math.random() * 10),
