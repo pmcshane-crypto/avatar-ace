@@ -43,6 +43,7 @@ export default function Clans() {
   const [challenges, setChallenges] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [showDiscover, setShowDiscover] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -97,12 +98,16 @@ export default function Clans() {
   const loadUserClans = async () => {
     if (!user) return;
 
+    setIsLoading(true);
     const { data, error } = await supabase
       .from("clan_members")
       .select(`clan_id, clans(id, name, description, clan_level, clan_xp, focus_tag, is_public, clan_streak, daily_goal_minutes, icon_emoji, clan_members(count))`)
       .eq('user_id', user.id);
 
-    if (error) return;
+    if (error) {
+      setIsLoading(false);
+      return;
+    }
 
     const formattedUserClans = data?.map(m => {
       const clan = m.clans as any;
@@ -124,6 +129,7 @@ export default function Clans() {
     }).filter(Boolean) || [];
 
     setUserClans(formattedUserClans as Clan[]);
+    setIsLoading(false);
   };
 
   const loadClanMembers = async (clanId: string) => {
@@ -273,6 +279,15 @@ export default function Clans() {
             onCreateClan={createClan}
           />
         </div>
+      </div>
+    );
+  }
+
+  // Show loading state while fetching user clans
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
   }
