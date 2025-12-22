@@ -14,6 +14,94 @@ export type Database = {
   }
   public: {
     Tables: {
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          contribution: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          contribution?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          contribution?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "clan_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clan_challenges: {
+        Row: {
+          challenge_type: string
+          clan_id: string
+          created_at: string
+          current_value: number
+          description: string | null
+          ends_at: string
+          id: string
+          is_completed: boolean
+          reward_description: string | null
+          reward_xp: number
+          starts_at: string
+          target_value: number
+          title: string
+        }
+        Insert: {
+          challenge_type?: string
+          clan_id: string
+          created_at?: string
+          current_value?: number
+          description?: string | null
+          ends_at: string
+          id?: string
+          is_completed?: boolean
+          reward_description?: string | null
+          reward_xp?: number
+          starts_at?: string
+          target_value: number
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          clan_id?: string
+          created_at?: string
+          current_value?: number
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_completed?: boolean
+          reward_description?: string | null
+          reward_xp?: number
+          starts_at?: string
+          target_value?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clan_challenges_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clan_members: {
         Row: {
           clan_id: string | null
@@ -50,26 +138,85 @@ export type Database = {
           },
         ]
       }
+      clan_messages: {
+        Row: {
+          clan_id: string
+          content: string
+          created_at: string
+          id: string
+          message_type: string
+          user_id: string | null
+        }
+        Insert: {
+          clan_id: string
+          content: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          user_id?: string | null
+        }
+        Update: {
+          clan_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clan_messages_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clans: {
         Row: {
+          banner_url: string | null
+          clan_level: number
+          clan_streak: number
+          clan_xp: number
           created_at: string | null
           created_by: string | null
+          daily_goal_minutes: number
           description: string | null
+          focus_tag: string | null
+          icon_emoji: string | null
           id: string
+          is_public: boolean
           name: string
         }
         Insert: {
+          banner_url?: string | null
+          clan_level?: number
+          clan_streak?: number
+          clan_xp?: number
           created_at?: string | null
           created_by?: string | null
+          daily_goal_minutes?: number
           description?: string | null
+          focus_tag?: string | null
+          icon_emoji?: string | null
           id?: string
+          is_public?: boolean
           name: string
         }
         Update: {
+          banner_url?: string | null
+          clan_level?: number
+          clan_streak?: number
+          clan_xp?: number
           created_at?: string | null
           created_by?: string | null
+          daily_goal_minutes?: number
           description?: string | null
+          focus_tag?: string | null
+          icon_emoji?: string | null
           id?: string
+          is_public?: boolean
           name?: string
         }
         Relationships: [
