@@ -400,7 +400,7 @@ export default function Clans() {
       className="min-h-screen relative"
       style={{
         backgroundImage: `url(${clansBackground})`,
-        backgroundSize: 'cover',
+        backgroundSize: '300px',
         backgroundPosition: 'center bottom',
         backgroundRepeat: 'no-repeat',
       }}
