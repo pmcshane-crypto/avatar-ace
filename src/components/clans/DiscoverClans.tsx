@@ -17,7 +17,6 @@ interface Clan {
   clan_streak: number;
   clan_level: number;
   clan_xp: number;
-  focus_tag: string;
   is_public: boolean;
 }
 
@@ -26,10 +25,8 @@ interface DiscoverClansProps {
   userClanIds: string[];
   onBack: () => void;
   onJoinClan: (clanId: string) => void;
-  onCreateClan: (name: string, focusTag: string) => void;
+  onCreateClan: (name: string) => void;
 }
-
-const FOCUS_TAGS = ['All-Around', 'Focus', 'Social Media', 'Gaming'];
 
 export function DiscoverClans({
   clans,
@@ -40,7 +37,6 @@ export function DiscoverClans({
 }: DiscoverClansProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [newClanName, setNewClanName] = useState("");
-  const [newClanTag, setNewClanTag] = useState("All-Around");
   const [activeTab, setActiveTab] = useState("discover");
 
   const filteredClans = clans.filter(clan => {
@@ -56,7 +52,7 @@ export function DiscoverClans({
 
   const handleCreateClan = () => {
     if (!newClanName.trim()) return;
-    onCreateClan(newClanName.trim(), newClanTag);
+    onCreateClan(newClanName.trim());
     setNewClanName("");
   };
 
@@ -151,22 +147,6 @@ export function DiscoverClans({
                   value={newClanName}
                   onChange={(e) => setNewClanName(e.target.value)}
                 />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-2 block">Focus Area</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {FOCUS_TAGS.map(tag => (
-                    <Button
-                      key={tag}
-                      variant={newClanTag === tag ? "default" : "outline"}
-                      className="justify-start"
-                      onClick={() => setNewClanTag(tag)}
-                    >
-                      {tag}
-                    </Button>
-                  ))}
-                </div>
               </div>
 
               <Button 
