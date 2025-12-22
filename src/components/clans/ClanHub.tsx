@@ -17,6 +17,7 @@ interface ClanMember {
   user_id: string;
   username: string;
   avatar_type: string;
+  avatar_level?: number;
   daily_reduction: number;
   weekly_avg: number;
   current_streak: number;
