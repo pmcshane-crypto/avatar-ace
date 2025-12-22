@@ -396,19 +396,7 @@ export default function Clans() {
     : null;
 
   return (
-    <div 
-      className="min-h-screen relative"
-      style={{
-        backgroundImage: `url(${clansBackground})`,
-        backgroundSize: '300px',
-        backgroundPosition: 'center bottom',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      {/* Gradient overlay for blending */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/70 to-background/95" />
-      
-      <div className="relative z-10 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -636,13 +624,21 @@ export default function Clans() {
             {/* User's Clans */}
             <div className="space-y-4">
               {userClans.length === 0 ? (
-                <Card>
-                  <CardContent className="pt-6 text-center">
-                    <p className="text-muted-foreground mb-4">You haven't joined any clans yet</p>
+                <Card className="overflow-hidden">
+                  <CardContent className="pt-6 text-center space-y-6">
+                    <p className="text-muted-foreground">You haven't joined any clans yet</p>
                     <Button onClick={() => setShowJoinCreate(true)}>
                       <Plus className="h-4 w-4 mr-2" />
                       Join or Create Clan
                     </Button>
+                    <div className="relative mt-4">
+                      <img 
+                        src={clansBackground} 
+                        alt="Better Buddy Avatars" 
+                        className="w-80 mx-auto rounded-lg opacity-90"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent rounded-lg" />
+                    </div>
                   </CardContent>
                 </Card>
               ) : (
@@ -703,7 +699,6 @@ export default function Clans() {
             </div>
           </div>
         )}
-      </div>
       </div>
     </div>
   );
