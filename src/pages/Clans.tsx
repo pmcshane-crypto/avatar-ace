@@ -29,7 +29,6 @@ interface Clan {
   clan_streak: number;
   clan_level: number;
   clan_xp: number;
-  focus_tag: string;
   is_public: boolean;
   daily_goal_minutes: number;
 }
@@ -87,7 +86,6 @@ export default function Clans() {
       clan_streak: clan.clan_streak || 0,
       clan_level: clan.clan_level || 1,
       clan_xp: clan.clan_xp || 0,
-      focus_tag: clan.focus_tag || "All-Around",
       is_public: clan.is_public !== false,
       daily_goal_minutes: clan.daily_goal_minutes || 120,
     })) || [];
@@ -122,7 +120,6 @@ export default function Clans() {
         clan_streak: clan.clan_streak || 0,
         clan_level: clan.clan_level || 1,
         clan_xp: clan.clan_xp || 0,
-        focus_tag: clan.focus_tag || "All-Around",
         is_public: clan.is_public !== false,
         daily_goal_minutes: clan.daily_goal_minutes || 120,
       };
@@ -169,13 +166,12 @@ export default function Clans() {
     setChallenges(data || []);
   };
 
-  const createClan = async (name: string, focusTag: string) => {
+  const createClan = async (name: string) => {
     if (!user) return;
 
     const { error } = await supabase.from("clans").insert({ 
       name, 
-      created_by: user.id,
-      focus_tag: focusTag 
+      created_by: user.id
     });
 
     if (error) {

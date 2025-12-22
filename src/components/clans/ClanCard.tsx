@@ -15,20 +15,12 @@ interface ClanCardProps {
   clan_streak: number;
   clan_level: number;
   clan_xp: number;
-  focus_tag: string;
   is_public: boolean;
   daily_goal_progress?: number;
   onClick?: () => void;
   onJoin?: () => void;
   isUserMember?: boolean;
 }
-
-const FOCUS_TAG_COLORS: Record<string, string> = {
-  'Focus': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  'Social Media': 'bg-pink-500/20 text-pink-400 border-pink-500/30',
-  'Gaming': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  'All-Around': 'bg-accent/20 text-accent border-accent/30',
-};
 
 const XP_PER_LEVEL = 1000;
 
@@ -43,7 +35,6 @@ export function ClanCard({
   clan_streak,
   clan_level,
   clan_xp,
-  focus_tag,
   is_public,
   daily_goal_progress = 0,
   onClick,
@@ -86,12 +77,6 @@ export function ClanCard({
               </div>
               
               <div className="flex items-center gap-3 mt-1 flex-wrap">
-                <Badge 
-                  variant="outline" 
-                  className={`text-xs ${FOCUS_TAG_COLORS[focus_tag] || FOCUS_TAG_COLORS['All-Around']}`}
-                >
-                  {focus_tag}
-                </Badge>
                 <span className="text-sm text-muted-foreground flex items-center gap-1">
                   <Users className="w-3.5 h-3.5" />
                   {member_count}/{max_members}
