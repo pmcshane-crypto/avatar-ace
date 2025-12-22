@@ -39,16 +39,14 @@ export function DiscoverClans({
   onCreateClan,
 }: DiscoverClansProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [newClanName, setNewClanName] = useState("");
   const [newClanTag, setNewClanTag] = useState("All-Around");
   const [activeTab, setActiveTab] = useState("discover");
 
   const filteredClans = clans.filter(clan => {
     const matchesSearch = clan.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTag = !selectedTag || clan.focus_tag === selectedTag;
     const notJoined = !userClanIds.includes(clan.id);
-    return matchesSearch && matchesTag && notJoined;
+    return matchesSearch && notJoined;
   });
 
   const trendingClans = [...clans]
@@ -98,9 +96,9 @@ export function DiscoverClans({
             </div>
           )}
 
-          {/* Search and Filter */}
+          {/* Search */}
           <Card className="bg-card/50">
-            <CardContent className="p-4 space-y-4">
+            <CardContent className="p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -109,26 +107,6 @@ export function DiscoverClans({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
-              </div>
-              
-              <div className="flex gap-2 flex-wrap">
-                <Badge
-                  variant={selectedTag === null ? "default" : "outline"}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedTag(null)}
-                >
-                  All
-                </Badge>
-                {FOCUS_TAGS.map(tag => (
-                  <Badge
-                    key={tag}
-                    variant={selectedTag === tag ? "default" : "outline"}
-                    className="cursor-pointer"
-                    onClick={() => setSelectedTag(tag)}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
               </div>
             </CardContent>
           </Card>
