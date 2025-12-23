@@ -19,6 +19,9 @@ import avatarChickenNuggetLevel3 from "@/assets/avatar-chicken-nugget-level3.png
 import avatarFlarion from "@/assets/avatar-flarion.png";
 import avatarFlarionLevel2 from "@/assets/avatar-flarion-level2.png";
 import avatarFlarionLevel3 from "@/assets/avatar-flarion-level3.png";
+import avatarAuarlis from "@/assets/avatar-auarlis.png";
+import avatarAuarlisLevel2 from "@/assets/avatar-auarlis-level2.png";
+import avatarAuarlisLevel3 from "@/assets/avatar-auarlis-level3.png";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -82,6 +85,10 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
         if (avatar.level >= 3) return avatarFlarionLevel3;
         if (avatar.level >= 2) return avatarFlarionLevel2;
         return avatarFlarion;
+      case 'auarlis':
+        if (avatar.level >= 3) return avatarAuarlisLevel3;
+        if (avatar.level >= 2) return avatarAuarlisLevel2;
+        return avatarAuarlis;
       default:
         return avatarNature;
     }
@@ -104,6 +111,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           avatar.type === 'chungloid' && "bg-purple-500",
           avatar.type === 'chicken-nugget' && "bg-amber-500",
           avatar.type === 'flarion' && "bg-violet-500",
+          avatar.type === 'auarlis' && "bg-sky-400",
           animate && "animate-pulse-glow"
         )} />
         
@@ -115,7 +123,8 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           avatar.type === 'nature' && "ring-4 ring-avatar-nature",
           avatar.type === 'chungloid' && "ring-4 ring-purple-500",
           avatar.type === 'chicken-nugget' && "ring-4 ring-amber-500",
-          avatar.type === 'flarion' && "ring-4 ring-violet-500"
+          avatar.type === 'flarion' && "ring-4 ring-violet-500",
+          avatar.type === 'auarlis' && "ring-4 ring-sky-400"
         )}>
           <img 
             src={getAvatarImage()} 
