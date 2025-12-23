@@ -15,7 +15,7 @@ import avatarAuarlis from "@/assets/avatar-auarlis.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string; premium?: boolean }> = [
+const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string }> = [
   {
     type: 'nature',
     name: 'Twiggle',
@@ -26,22 +26,19 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     type: 'chungloid',
     name: 'Chungloid',
     description: 'An adorable companion on your digital wellness journey',
-    image: avatarChungloid,
-    premium: true
+    image: avatarChungloid
   },
   {
     type: 'water',
     name: 'Blast',
     description: 'A calm presence that grows with your focus',
-    image: avatarWater,
-    premium: true
+    image: avatarWater
   },
   {
     type: 'fire',
     name: 'Hot Pocket',
     description: 'A fierce companion that thrives on your determination',
-    image: avatarFire,
-    premium: true
+    image: avatarFire
   },
   {
     type: 'chicken-nugget',
@@ -53,15 +50,13 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     type: 'flarion',
     name: 'Flarion',
     description: 'A mystical purple flame spirit with fierce determination',
-    image: avatarFlarion,
-    premium: true
+    image: avatarFlarion
   },
   {
     type: 'auarlis',
     name: 'Auralis',
     description: 'An icy crystal fox with magical frozen powers',
-    image: avatarAuarlis,
-    premium: true
+    image: avatarAuarlis
   }
 ];
 
@@ -143,11 +138,7 @@ const AvatarSelection = () => {
   };
 
   const handleAvatarClick = (avatar: typeof avatarOptions[0]) => {
-    if (avatar.premium && !purchasedAvatars.has(avatar.type)) {
-      handlePurchase(avatar.type);
-    } else {
-      setSelectedAvatar(avatar.type);
-    }
+    setSelectedAvatar(avatar.type);
   };
 
   const handleContinue = () => {
@@ -170,32 +161,22 @@ const AvatarSelection = () => {
 
         <div className="grid grid-cols-4 gap-6">
           {avatarOptions.map((avatar) => {
-            const isPremium = avatar.premium && !purchasedAvatars.has(avatar.type);
-            const isUnlocked = !avatar.premium || purchasedAvatars.has(avatar.type);
-            
             return (
               <Card
                 key={avatar.type}
                 className={cn(
                   "p-6 cursor-pointer transition-all duration-300 hover:scale-105 relative",
                   "bg-gradient-card border-2",
-                  selectedAvatar === avatar.type && isUnlocked
+                  selectedAvatar === avatar.type
                     ? avatar.type === 'fire' 
                       ? "border-avatar-fire shadow-glow" 
                       : avatar.type === 'water'
                       ? "border-avatar-water shadow-glow"
                       : "border-avatar-nature shadow-glow"
-                    : "border-border/50",
-                  isPremium && "opacity-75"
+                    : "border-border/50"
                 )}
                 onClick={() => handleAvatarClick(avatar)}
               >
-                {isPremium && (
-                  <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    ${avatar.type === 'chicken-nugget' ? '45.99' : avatar.type === 'flarion' ? '10.99' : avatar.type === 'auarlis' ? '7.99' : avatar.type === 'fire' ? '8.99' : avatar.type === 'water' ? '5.99' : '3.99'}
-                  </div>
-                )}
                 <div className="space-y-4">
                   <div className="w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative">
                     <img 
@@ -220,11 +201,6 @@ const AvatarSelection = () => {
                     <p className="text-sm text-muted-foreground">
                       {avatar.description}
                     </p>
-                    {isPremium && (
-                      <p className="text-xs text-primary font-semibold">
-                        Click to unlock
-                      </p>
-                    )}
                   </div>
                 </div>
               </Card>
