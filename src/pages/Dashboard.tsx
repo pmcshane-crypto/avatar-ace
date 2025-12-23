@@ -63,26 +63,38 @@ const Dashboard = () => {
     if (reduction > 20) newEnergy = 'high';
     else if (reduction < 0) newEnergy = 'low';
 
-    // Calculate XP gain
-    const xpGain = Math.max(0, Math.floor(reduction * 2));
-    const newXp = avatar.xp + xpGain;
+    // Calculate XP change - linear and symmetric for gains and losses
+    // Positive reduction = XP gain, negative reduction = XP loss
+    const xpChange = Math.floor(reduction * 2);
+    let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
-    let remainingXp = newXp;
 
-    // Level up check
+    // Handle level up
     if (newXp >= avatar.xpToNextLevel) {
       newLevel += 1;
-      remainingXp = newXp - avatar.xpToNextLevel;
+      newXp = newXp - avatar.xpToNextLevel;
       
       // Trigger level up glow effect
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 3000);
     }
+    
+    // Handle level down - symmetric with level up
+    while (newXp < 0 && newLevel > 1) {
+      newLevel -= 1;
+      const prevLevelXpRequired = newLevel * 100;
+      newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
+    }
+    
+    // Ensure XP doesn't go below 0 at level 1
+    if (newLevel === 1 && newXp < 0) {
+      newXp = 0;
+    }
 
     setAvatar({
       ...avatar,
       energy: newEnergy,
-      xp: remainingXp,
+      xp: newXp,
       level: newLevel,
       xpToNextLevel: newLevel * 100,
     });
@@ -93,15 +105,30 @@ const Dashboard = () => {
       ...stats,
       currentStreak: newStreak,
       bestStreak: Math.max(stats.bestStreak, newStreak),
-      totalReduction: Math.max(0, Math.floor(reduction)),
+      totalReduction: Math.floor(reduction),
     });
 
-    toast({
-      title: reduction > 0 ? "Great job! 🎉" : "Keep trying! 💪",
-      description: reduction > 0 
-        ? `You reduced screen time by ${Math.floor(reduction)}%! Your avatar gained ${xpGain} XP!`
-        : "Your avatar needs your help. Try to reduce screen time tomorrow!",
-    });
+    // Show appropriate toast based on performance
+    if (xpChange > 0) {
+      toast({
+        title: "Great job! 🎉",
+        description: `You reduced screen time by ${Math.floor(reduction)}%! Your avatar gained ${xpChange} XP!`,
+      });
+    } else if (xpChange < 0) {
+      const levelDownMessage = newLevel < avatar.level 
+        ? ` Your avatar dropped to level ${newLevel}!` 
+        : '';
+      toast({
+        title: "Your buddy needs help! 😔",
+        description: `You went over your baseline. Your avatar lost ${Math.abs(xpChange)} XP.${levelDownMessage}`,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Right on target! 👍",
+        description: "You matched your baseline exactly!",
+      });
+    }
   };
 
   const getBackgroundClass = () => {
