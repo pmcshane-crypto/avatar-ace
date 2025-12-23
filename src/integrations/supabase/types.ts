@@ -231,6 +231,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_level: number
           avatar_type: string
           baseline_minutes: number
           created_at: string | null
@@ -238,6 +239,7 @@ export type Database = {
           username: string
         }
         Insert: {
+          avatar_level?: number
           avatar_type: string
           baseline_minutes?: number
           created_at?: string | null
@@ -245,6 +247,7 @@ export type Database = {
           username: string
         }
         Update: {
+          avatar_level?: number
           avatar_type?: string
           baseline_minutes?: number
           created_at?: string | null
