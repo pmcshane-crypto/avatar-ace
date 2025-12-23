@@ -141,19 +141,9 @@ const AvatarSelection = () => {
     setSelectedAvatar(avatar.type);
   };
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (selectedAvatar) {
       localStorage.setItem('selectedAvatarType', selectedAvatar);
-      
-      // Also update the profile in the database
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase
-          .from('profiles')
-          .update({ avatar_type: selectedAvatar })
-          .eq('id', user.id);
-      }
-      
       const baseline = localStorage.getItem('baseline');
       navigate(baseline ? '/dashboard' : '/baseline-setup');
     }

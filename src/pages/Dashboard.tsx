@@ -9,12 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, RefreshCw, Smartphone } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
-import { supabase } from "@/integrations/supabase/client";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
-  const [userId, setUserId] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
@@ -35,43 +34,6 @@ const Dashboard = () => {
   });
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
-
-  // Load user profile from database on mount
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('avatar_type, avatar_level, baseline_minutes')
-          .eq('id', user.id)
-          .single();
-        
-        if (profile) {
-          setAvatar(prev => ({
-            ...prev,
-            type: profile.avatar_type as AvatarType,
-            level: profile.avatar_level || 1,
-            xpToNextLevel: (profile.avatar_level || 1) * 100,
-          }));
-          if (profile.baseline_minutes) {
-            setStats(prev => ({ ...prev, baseline: profile.baseline_minutes }));
-          }
-        }
-      }
-    };
-    loadUserProfile();
-  }, []);
-
-  // Save avatar level to database when it changes
-  const updateAvatarLevel = async (newLevel: number) => {
-    if (!userId) return;
-    await supabase
-      .from('profiles')
-      .update({ avatar_level: newLevel })
-      .eq('id', userId);
-  };
 
   // Auto-update when screen time data changes
   useEffect(() => {
@@ -115,22 +77,13 @@ const Dashboard = () => {
       // Trigger level up glow effect
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 3000);
-      
-      // Save level to database
-      updateAvatarLevel(newLevel);
     }
     
     // Handle level down - symmetric with level up
-    const originalLevel = avatar.level;
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
       const prevLevelXpRequired = newLevel * 100;
       newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
-    }
-    
-    // Save level to database if it changed due to level down
-    if (newLevel < originalLevel) {
-      updateAvatarLevel(newLevel);
     }
     
     // Ensure XP doesn't go below 0 at level 1
