@@ -168,7 +168,7 @@ const AvatarSelection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           {avatarOptions.map((avatar) => {
             const isPremium = avatar.premium && !purchasedAvatars.has(avatar.type);
             const isUnlocked = !avatar.premium || purchasedAvatars.has(avatar.type);
