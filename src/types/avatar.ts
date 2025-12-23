@@ -1,4 +1,4 @@
-export type AvatarType = 'fire' | 'water' | 'nature' | 'chungloid' | 'chicken-nugget' | 'flarion' | 'auarlis';
+export type AvatarType = 'fire' | 'water' | 'nature' | 'chungloid' | 'chicken-nugget' | 'flarion' | 'auarlis' | 'teddy';
 
 export type EnergyLevel = 'high' | 'medium' | 'low';
 

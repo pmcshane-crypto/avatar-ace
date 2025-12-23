@@ -12,6 +12,7 @@ import avatarChungloid from "@/assets/avatar-chungloid.png";
 import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
 import avatarFlarion from "@/assets/avatar-flarion.png";
 import avatarAuarlis from "@/assets/avatar-auarlis.png";
+import avatarTeddy from "@/assets/avatar-teddy.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -57,6 +58,12 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     name: 'Auralis',
     description: 'An icy crystal fox with magical frozen powers',
     image: avatarAuarlis
+  },
+  {
+    type: 'teddy',
+    name: 'Teddy',
+    description: 'A loyal golden companion full of warmth and joy',
+    image: avatarTeddy
   }
 ];
 
@@ -194,7 +201,8 @@ const AvatarSelection = () => {
                       avatar.type === 'chungloid' && "text-primary",
                       avatar.type === 'chicken-nugget' && "text-primary",
                       avatar.type === 'flarion' && "text-purple-400",
-                      avatar.type === 'auarlis' && "text-sky-400"
+                      avatar.type === 'auarlis' && "text-sky-400",
+                      avatar.type === 'teddy' && "text-amber-400"
                     )}>
                       {avatar.name}
                     </h3>
