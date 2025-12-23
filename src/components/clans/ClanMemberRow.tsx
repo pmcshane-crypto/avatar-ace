@@ -17,6 +17,12 @@ import avatarChungloidLevel3 from "@/assets/avatar-chungloid-level3.png";
 import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
 import avatarChickenNuggetLevel2 from "@/assets/avatar-chicken-nugget-level2.png";
 import avatarChickenNuggetLevel3 from "@/assets/avatar-chicken-nugget-level3.png";
+import avatarFlarion from "@/assets/avatar-flarion.png";
+import avatarFlarionLevel2 from "@/assets/avatar-flarion-level2.png";
+import avatarFlarionLevel3 from "@/assets/avatar-flarion-level3.png";
+import avatarAuarlis from "@/assets/avatar-auarlis.png";
+import avatarAuarlisLevel2 from "@/assets/avatar-auarlis-level2.png";
+import avatarAuarlisLevel3 from "@/assets/avatar-auarlis-level3.png";
 
 interface ClanMemberRowProps {
   rank: number;
@@ -67,12 +73,36 @@ const AVATAR_IMAGES: Record<string, Record<number, string>> = {
     2: avatarChickenNuggetLevel2,
     3: avatarChickenNuggetLevel3,
   },
+  flarion: {
+    1: avatarFlarion,
+    2: avatarFlarionLevel2,
+    3: avatarFlarionLevel3,
+  },
+  auarlis: {
+    1: avatarAuarlis,
+    2: avatarAuarlisLevel2,
+    3: avatarAuarlisLevel3,
+  },
+};
+
+// Get glow color based on avatar type
+const getGlowColor = (type: string): string => {
+  switch (type.toLowerCase()) {
+    case 'fire': return 'bg-orange-500/50';
+    case 'water': return 'bg-blue-500/50';
+    case 'nature': return 'bg-green-500/50';
+    case 'chungloid': return 'bg-purple-500/50';
+    case 'chicken-nugget': return 'bg-amber-500/50';
+    case 'flarion': return 'bg-violet-500/50';
+    case 'auarlis': return 'bg-sky-400/50';
+    default: return 'bg-primary/30';
+  }
 };
 
 const getAvatarImage = (type: string, level: number = 1): string => {
   const normalizedType = type.toLowerCase();
   const avatarSet = AVATAR_IMAGES[normalizedType];
-  if (!avatarSet) return avatarFire; // Default fallback
+  if (!avatarSet) return avatarNature; // Default fallback
   
   // Clamp level between 1 and 3
   const clampedLevel = Math.max(1, Math.min(3, level));
@@ -121,17 +151,17 @@ export function ClanMemberRow({
         {/* Avatar & Name */}
         <div className="flex items-center gap-4">
           <div className="relative group">
-            {/* Glow effect behind avatar */}
-            <div className={`absolute inset-0 rounded-full blur-md opacity-60 ${
-              rank === 1 ? 'bg-warning/50' : rank === 2 ? 'bg-gray-400/30' : rank === 3 ? 'bg-amber-600/30' : 'bg-primary/30'
-            }`} />
-            <img 
-              src={avatarImage} 
-              alt={`${avatar_type} avatar`}
-              className="relative w-16 h-16 rounded-full object-cover border-3 border-primary/50 bg-card shadow-lg group-hover:scale-105 transition-transform"
-            />
+            {/* Glow effect behind avatar - matches avatar type color */}
+            <div className={`absolute inset-0 rounded-full blur-md opacity-70 ${getGlowColor(avatar_type)}`} />
+            <div className="relative w-14 h-14 rounded-full bg-black border-2 border-primary/50 overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
+              <img 
+                src={avatarImage} 
+                alt={`${avatar_type} avatar`}
+                className="w-full h-full object-contain scale-90"
+              />
+            </div>
             {/* Level badge */}
-            <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-primary-foreground border-2 border-background shadow-md">
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background shadow-md">
               {avatar_level}
             </div>
           </div>
