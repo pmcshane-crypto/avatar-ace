@@ -45,8 +45,7 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     type: 'chicken-nugget',
     name: 'Chicken Nugget',
     description: 'The ultimate companion that evolves into pure power',
-    image: avatarChickenNugget,
-    premium: true
+    image: avatarChickenNugget
   }
 ];
 
