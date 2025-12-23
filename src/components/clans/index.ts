@@ -1,7 +1,11 @@
-export { ClanEmptyState } from './ClanEmptyState';
 export { ClanCard } from './ClanCard';
+export { ClanEmptyState } from './ClanEmptyState';
 export { ClanHub } from './ClanHub';
 export { ClanMemberRow } from './ClanMemberRow';
 export { ClanChallenges } from './ClanChallenges';
 export { ClanChat } from './ClanChat';
 export { DiscoverClans } from './DiscoverClans';
+export { FeaturedClans } from './FeaturedClans';
+export { FeaturedClanCard } from './FeaturedClanCard';
+export { ClanFilters } from './ClanFilters';
+export { SocialProofBanner } from './SocialProofBanner';
