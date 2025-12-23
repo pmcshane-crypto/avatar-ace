@@ -160,7 +160,7 @@ const AvatarSelection = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-2xl space-y-8">
+      <div className="w-full max-w-6xl space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">Choose Your Buddy</h1>
           <p className="text-muted-foreground">
@@ -168,7 +168,7 @@ const AvatarSelection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-6">
           {avatarOptions.map((avatar) => {
             const isPremium = avatar.premium && !purchasedAvatars.has(avatar.type);
             const isUnlocked = !avatar.premium || purchasedAvatars.has(avatar.type);
@@ -193,11 +193,11 @@ const AvatarSelection = () => {
                 {isPremium && (
                   <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    ${avatar.type === 'chicken-nugget' ? '38.99' : avatar.type === 'flarion' ? '10.99' : avatar.type === 'auarlis' ? '7.99' : avatar.type === 'fire' ? '8.99' : avatar.type === 'water' ? '5.99' : '3.99'}
+                    ${avatar.type === 'chicken-nugget' ? '45.99' : avatar.type === 'flarion' ? '10.99' : avatar.type === 'auarlis' ? '7.99' : avatar.type === 'fire' ? '8.99' : avatar.type === 'water' ? '5.99' : '3.99'}
                   </div>
                 )}
                 <div className="space-y-4">
-                  <div className="w-full h-48 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative">
+                  <div className="w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative">
                     <img 
                       src={avatar.image} 
                       alt={avatar.name}
