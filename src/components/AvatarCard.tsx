@@ -10,6 +10,12 @@ import avatarWaterLevel3 from "@/assets/avatar-water-level3.png";
 import avatarNature from "@/assets/avatar-nature.png";
 import avatarNatureLevel2 from "@/assets/avatar-nature-level2.png";
 import avatarNatureLevel3 from "@/assets/avatar-nature-level3.png";
+import avatarChungloid from "@/assets/avatar-chungloid.png";
+import avatarChungloidLevel2 from "@/assets/avatar-chungloid-level2.png";
+import avatarChungloidLevel3 from "@/assets/avatar-chungloid-level3.png";
+import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
+import avatarChickenNuggetLevel2 from "@/assets/avatar-chicken-nugget-level2.png";
+import avatarChickenNuggetLevel3 from "@/assets/avatar-chicken-nugget-level3.png";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -61,6 +67,16 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
         if (avatar.level >= 3) return avatarNatureLevel3;
         if (avatar.level >= 2) return avatarNatureLevel2;
         return avatarNature;
+      case 'chungloid':
+        if (avatar.level >= 3) return avatarChungloidLevel3;
+        if (avatar.level >= 2) return avatarChungloidLevel2;
+        return avatarChungloid;
+      case 'chicken-nugget':
+        if (avatar.level >= 3) return avatarChickenNuggetLevel3;
+        if (avatar.level >= 2) return avatarChickenNuggetLevel2;
+        return avatarChickenNugget;
+      default:
+        return avatarNature;
     }
   };
 
@@ -78,6 +94,8 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           avatar.type === 'fire' && "bg-avatar-fire",
           avatar.type === 'water' && "bg-avatar-water",
           avatar.type === 'nature' && "bg-avatar-nature",
+          avatar.type === 'chungloid' && "bg-purple-500",
+          avatar.type === 'chicken-nugget' && "bg-amber-500",
           animate && "animate-pulse-glow"
         )} />
         
@@ -86,7 +104,9 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           "relative w-full h-full rounded-full overflow-hidden shadow-energy bg-black",
           avatar.type === 'fire' && "ring-4 ring-avatar-fire",
           avatar.type === 'water' && "ring-4 ring-avatar-water",
-          avatar.type === 'nature' && "ring-4 ring-avatar-nature"
+          avatar.type === 'nature' && "ring-4 ring-avatar-nature",
+          avatar.type === 'chungloid' && "ring-4 ring-purple-500",
+          avatar.type === 'chicken-nugget' && "ring-4 ring-amber-500"
         )}>
           <img 
             src={getAvatarImage()} 
