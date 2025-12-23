@@ -58,7 +58,7 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
   },
   {
     type: 'auarlis',
-    name: 'Auarlis',
+    name: 'Auralis',
     description: 'An icy crystal fox with magical frozen powers',
     image: avatarAuarlis,
     premium: true
