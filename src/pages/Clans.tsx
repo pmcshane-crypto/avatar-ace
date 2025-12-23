@@ -66,6 +66,9 @@ export default function Clans() {
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
+    if (!user) {
+      setIsLoading(false);
+    }
   };
 
   const loadClans = async () => {
