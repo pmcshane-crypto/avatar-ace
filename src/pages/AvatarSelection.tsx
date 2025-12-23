@@ -10,6 +10,7 @@ import avatarWater from "@/assets/avatar-water.png";
 import avatarNature from "@/assets/avatar-nature.png";
 import avatarChungloid from "@/assets/avatar-chungloid.png";
 import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
+import avatarFlarion from "@/assets/avatar-flarion.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -46,6 +47,13 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     name: 'Chicken Nugget',
     description: 'The ultimate companion that evolves into pure power',
     image: avatarChickenNugget
+  },
+  {
+    type: 'flarion',
+    name: 'Flarion',
+    description: 'A mystical purple flame spirit with fierce determination',
+    image: avatarFlarion,
+    premium: true
   }
 ];
 
@@ -177,7 +185,7 @@ const AvatarSelection = () => {
                 {isPremium && (
                   <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    ${avatar.type === 'chicken-nugget' ? '38.99' : avatar.type === 'fire' ? '8.99' : avatar.type === 'water' ? '5.99' : '3.99'}
+                    ${avatar.type === 'chicken-nugget' ? '38.99' : avatar.type === 'flarion' ? '10.99' : avatar.type === 'fire' ? '8.99' : avatar.type === 'water' ? '5.99' : '3.99'}
                   </div>
                 )}
                 <div className="space-y-4">
@@ -195,7 +203,8 @@ const AvatarSelection = () => {
                       avatar.type === 'water' && "text-avatar-water",
                       avatar.type === 'nature' && "text-avatar-nature",
                       avatar.type === 'chungloid' && "text-primary",
-                      avatar.type === 'chicken-nugget' && "text-primary"
+                      avatar.type === 'chicken-nugget' && "text-primary",
+                      avatar.type === 'flarion' && "text-purple-400"
                     )}>
                       {avatar.name}
                     </h3>
