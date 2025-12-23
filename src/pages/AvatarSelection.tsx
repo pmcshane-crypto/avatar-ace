@@ -29,7 +29,7 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
   },
   {
     type: 'water',
-    name: 'Nugget',
+    name: 'Blast',
     description: 'A calm presence that grows with your focus',
     image: avatarWater,
     premium: true
