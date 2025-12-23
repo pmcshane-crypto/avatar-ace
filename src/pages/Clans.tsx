@@ -135,18 +135,16 @@ export default function Clans() {
 
     const { data } = await supabase
       .from("clan_members")
-      .select(`user_id, profiles!inner(username, avatar_type, baseline_minutes)`)
+      .select(`user_id, profiles!inner(username, avatar_type, avatar_level, baseline_minutes)`)
       .eq("clan_id", clanId);
 
     const membersData = data?.map((member: any) => {
       const profile = member.profiles;
-      // Calculate a mock level based on streak/reduction (in real app, this would come from profile)
-      const mockLevel = Math.min(3, Math.max(1, Math.floor(Math.random() * 3) + 1));
       return {
         user_id: member.user_id,
         username: profile.username,
         avatar_type: profile.avatar_type,
-        avatar_level: mockLevel,
+        avatar_level: profile.avatar_level || 1,
         daily_reduction: Math.floor(Math.random() * 30),
         weekly_avg: profile.baseline_minutes - Math.floor(Math.random() * 60),
         current_streak: Math.floor(Math.random() * 10),
