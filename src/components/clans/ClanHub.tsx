@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy, TrendingDown, Flame, Users, Target, 
   MessageCircle, Award, Clock, ArrowLeft, LogOut,
-  Crown, Medal, Star
+  Crown, Medal, Star, Zap
 } from "lucide-react";
-import { ClanMemberRow } from "./ClanMemberRow";
+import { ClanMemberRow, ClanMemberRowSkeleton } from "./ClanMemberRow";
 import { ClanChallenges } from "./ClanChallenges";
 import { ClanChat } from "./ClanChat";
 
@@ -18,6 +19,8 @@ interface ClanMember {
   username: string;
   avatar_type: string;
   avatar_level?: number;
+  avatar_xp?: number;
+  avatar_energy?: 'high' | 'medium' | 'low';
   daily_reduction: number;
   weekly_avg: number;
   current_streak: number;
@@ -50,9 +53,12 @@ interface ClanHubProps {
   members: ClanMember[];
   challenges: ClanChallenge[];
   currentUserId: string;
+  isLoading?: boolean;
+  highlightUserId?: string;
   onBack: () => void;
   onLeave: () => void;
   onSendMessage: (message: string) => void;
+  onMemberClick?: (member: ClanMember) => void;
 }
 
 const XP_PER_LEVEL = 1000;
@@ -69,11 +75,15 @@ export function ClanHub({
   members,
   challenges,
   currentUserId,
+  isLoading = false,
+  highlightUserId,
   onBack,
   onLeave,
   onSendMessage,
+  onMemberClick,
 }: ClanHubProps) {
   const [activeTab, setActiveTab] = useState("overview");
+  const [prevGoalProgress, setPrevGoalProgress] = useState(0);
   
   // Calculate clan daily goal progress
   const totalDailyReduction = members.reduce((sum, m) => {
@@ -83,6 +93,13 @@ export function ClanHub({
   }, 0);
   const clanGoalTarget = daily_goal_minutes * members.length;
   const goalProgress = clanGoalTarget > 0 ? (totalDailyReduction / clanGoalTarget) * 100 : 0;
+  
+  // Animate progress bar when it changes
+  useEffect(() => {
+    if (goalProgress !== prevGoalProgress) {
+      setPrevGoalProgress(goalProgress);
+    }
+  }, [goalProgress, prevGoalProgress]);
   
   // Get daily and weekly winners
   const sortedByDaily = [...members].sort((a, b) => b.daily_reduction - a.daily_reduction);
@@ -145,7 +162,7 @@ export function ClanHub({
       </div>
 
       {/* Today's Clan Goal */}
-      <Card className="bg-gradient-to-r from-success/10 to-success/5 border-success/20">
+      <Card className="bg-gradient-to-r from-success/10 to-success/5 border-success/20 overflow-hidden">
         <CardContent className="p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -156,12 +173,23 @@ export function ClanHub({
               Collectively reduce {(daily_goal_minutes * members.length / 60).toFixed(1)} hours
             </span>
           </div>
-          <Progress 
-            value={Math.min(100, goalProgress)} 
-            className="h-4 bg-success/20 [&>div]:bg-gradient-to-r [&>div]:from-success [&>div]:to-accent"
-          />
+          <div className="relative h-4 bg-success/20 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: `${prevGoalProgress}%` }}
+              animate={{ width: `${Math.min(100, goalProgress)}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-success to-accent rounded-full"
+            />
+          </div>
           <div className="flex justify-between mt-2 text-sm">
-            <span className="text-success font-medium">{Math.round(goalProgress)}% complete</span>
+            <motion.span 
+              key={goalProgress}
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              className="text-success font-medium"
+            >
+              {Math.round(goalProgress)}% complete
+            </motion.span>
             <span className="text-muted-foreground">
               {Math.round(totalDailyReduction)} / {clanGoalTarget} min reduced
             </span>
@@ -275,14 +303,24 @@ export function ClanHub({
               <CardTitle className="text-lg">Top Contributors Today</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {sortedByDaily.slice(0, 5).map((member, idx) => (
-                <ClanMemberRow 
-                  key={member.user_id}
-                  rank={idx + 1}
-                  {...member}
-                  isCurrentUser={member.user_id === currentUserId}
-                />
-              ))}
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <ClanMemberRowSkeleton key={idx} />
+                ))
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {sortedByDaily.slice(0, 5).map((member, idx) => (
+                    <ClanMemberRow 
+                      key={member.user_id}
+                      rank={idx + 1}
+                      {...member}
+                      isCurrentUser={member.user_id === currentUserId}
+                      highlightPulse={member.user_id === highlightUserId}
+                      onClick={onMemberClick ? () => onMemberClick(member) : undefined}
+                    />
+                  ))}
+                </AnimatePresence>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -296,15 +334,25 @@ export function ClanHub({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {sortedByDaily.map((member, idx) => (
-                <ClanMemberRow 
-                  key={member.user_id}
-                  rank={idx + 1}
-                  {...member}
-                  isCurrentUser={member.user_id === currentUserId}
-                  showDetails
-                />
-              ))}
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <ClanMemberRowSkeleton key={idx} />
+                ))
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {sortedByDaily.map((member, idx) => (
+                    <ClanMemberRow 
+                      key={member.user_id}
+                      rank={idx + 1}
+                      {...member}
+                      isCurrentUser={member.user_id === currentUserId}
+                      highlightPulse={member.user_id === highlightUserId}
+                      showDetails
+                      onClick={onMemberClick ? () => onMemberClick(member) : undefined}
+                    />
+                  ))}
+                </AnimatePresence>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

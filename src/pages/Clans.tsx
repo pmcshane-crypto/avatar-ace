@@ -235,9 +235,16 @@ export default function Clans() {
             members={transformedMembers}
             challenges={challenges}
             currentUserId={user?.id || ""}
+            isLoading={membersLoading}
             onBack={() => setSelectedClan(null)}
             onLeave={() => leaveClan(selectedClan)}
             onSendMessage={sendMessage}
+            onMemberClick={(member) => {
+              const enrichedMember = members.find(m => m.user_id === member.user_id);
+              if (enrichedMember) {
+                setPreviewMember(enrichedMember);
+              }
+            }}
           />
           <MemberProfilePreview
             member={previewMember ? {
