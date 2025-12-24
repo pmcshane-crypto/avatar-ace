@@ -6,67 +6,55 @@ import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { Users, RefreshCw, Smartphone, Loader2 } from "lucide-react";
+import { Users, RefreshCw, Smartphone } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
-import { useUserProfile, getXpToNextLevel } from "@/hooks/useUserProfile";
 import { Capacitor } from "@capacitor/core";
-import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { screenTimeData, hasPermission, isLoading: screenTimeLoading, refreshScreenTime } = useScreenTime();
-  const { profile, isLoading: profileLoading, updateProfile } = useUserProfile();
+  const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
+  const [avatar, setAvatar] = useState<Avatar>({
+    id: '1',
+    type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
+    name: 'Your Buddy',
+    level: 1,
+    xp: 0,
+    xpToNextLevel: 100,
+    energy: 'medium',
+    description: 'Your loyal companion on the journey to reduce screen time',
+  });
 
-  const [avatar, setAvatar] = useState<Avatar | null>(null);
-  const [stats, setStats] = useState<UserStats | null>(null);
+  const [stats, setStats] = useState<UserStats>({
+    baseline: parseInt(localStorage.getItem('baseline') || '300'),
+    currentStreak: 0,
+    bestStreak: 0,
+    totalReduction: 0,
+    weeklyAverage: screenTimeData.weeklyAverage || parseInt(localStorage.getItem('baseline') || '300'),
+  });
+
   const [isLevelingUp, setIsLevelingUp] = useState(false);
-
-  // Sync from profile when loaded - SINGLE SOURCE OF TRUTH
-  useEffect(() => {
-    if (profile) {
-      setAvatar({
-        id: profile.id,
-        type: profile.avatar_type as AvatarType,
-        name: 'Your Buddy',
-        level: profile.avatar_level,
-        xp: profile.avatar_xp,
-        xpToNextLevel: getXpToNextLevel(profile.avatar_level),
-        energy: profile.avatar_energy,
-        description: 'Your loyal companion on the journey to reduce screen time',
-      });
-      setStats({
-        baseline: profile.baseline_minutes,
-        currentStreak: profile.current_streak,
-        bestStreak: profile.best_streak,
-        totalReduction: profile.total_reduction,
-        weeklyAverage: profile.weekly_average,
-      });
-    }
-  }, [profile]);
 
   // Auto-update when screen time data changes
   useEffect(() => {
-    if (screenTimeData.isAutomatic && profile && avatar && stats) {
+    if (screenTimeData.isAutomatic) {
       handleScreenTimeSubmit({
         totalMinutes: screenTimeData.totalMinutes,
         musicMinutes: screenTimeData.musicMinutes,
         betterBuddyMinutes: screenTimeData.betterBuddyMinutes,
       });
-      setStats(prev => prev ? {
+      setStats(prev => ({
         ...prev,
         weeklyAverage: screenTimeData.weeklyAverage,
-      } : null);
+      }));
     }
-  }, [screenTimeData, profile]);
+  }, [screenTimeData]);
 
-  const handleScreenTimeSubmit = async (data: {
+  const handleScreenTimeSubmit = (data: {
     totalMinutes: number;
     musicMinutes: number;
     betterBuddyMinutes: number;
   }) => {
-    if (!avatar || !stats) return;
-    
     const actualMinutes = data.totalMinutes - data.musicMinutes - data.betterBuddyMinutes;
     const reduction = ((stats.baseline - actualMinutes) / stats.baseline) * 100;
 
@@ -76,6 +64,7 @@ const Dashboard = () => {
     else if (reduction < 0) newEnergy = 'low';
 
     // Calculate XP change - linear and symmetric for gains and losses
+    // Positive reduction = XP gain, negative reduction = XP loss
     const xpChange = Math.floor(reduction * 2);
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
@@ -85,67 +74,41 @@ const Dashboard = () => {
       newLevel += 1;
       newXp = newXp - avatar.xpToNextLevel;
       
+      // Trigger level up glow effect
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 3000);
     }
     
-    // Handle level down
+    // Handle level down - symmetric with level up
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
-      const prevLevelXpRequired = getXpToNextLevel(newLevel);
-      newXp = prevLevelXpRequired + newXp;
+      const prevLevelXpRequired = newLevel * 100;
+      newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
     }
     
+    // Ensure XP doesn't go below 0 at level 1
     if (newLevel === 1 && newXp < 0) {
       newXp = 0;
     }
 
-    // Update local state immediately for responsive UI
     setAvatar({
       ...avatar,
       energy: newEnergy,
       xp: newXp,
       level: newLevel,
-      xpToNextLevel: getXpToNextLevel(newLevel),
+      xpToNextLevel: newLevel * 100,
     });
 
+    // Update stats
     const newStreak = reduction > 0 ? stats.currentStreak + 1 : 0;
-    const newBestStreak = Math.max(stats.bestStreak, newStreak);
-    
     setStats({
       ...stats,
       currentStreak: newStreak,
-      bestStreak: newBestStreak,
+      bestStreak: Math.max(stats.bestStreak, newStreak),
       totalReduction: Math.floor(reduction),
     });
 
-    // Sync to database - SINGLE SOURCE OF TRUTH
-    if (profile) {
-      await updateProfile({
-        avatar_level: newLevel,
-        avatar_xp: newXp,
-        avatar_energy: newEnergy,
-        current_streak: newStreak,
-        best_streak: newBestStreak,
-        total_reduction: Math.floor(reduction),
-        weekly_average: stats.weeklyAverage,
-      });
-
-      // Also save to screen_time_entries for historical tracking
-      const today = new Date().toISOString().split('T')[0];
-      await supabase
-        .from('screen_time_entries')
-        .upsert({
-          user_id: profile.id,
-          date: today,
-          total_minutes: data.totalMinutes,
-          music_minutes: data.musicMinutes,
-          better_buddy_minutes: data.betterBuddyMinutes,
-          actual_minutes: actualMinutes,
-        }, { onConflict: 'user_id,date' });
-    }
-
-    // Show toast
+    // Show appropriate toast based on performance
     if (xpChange > 0) {
       toast({
         title: "Great job! 🎉",
@@ -169,7 +132,6 @@ const Dashboard = () => {
   };
 
   const getBackgroundClass = () => {
-    if (!avatar) return 'bg-background';
     switch (avatar.type) {
       case 'fire':
         return 'bg-gradient-fire-bg';
@@ -181,18 +143,6 @@ const Dashboard = () => {
         return 'bg-background';
     }
   };
-
-  // Show loading skeleton until profile is ready
-  if (profileLoading || !avatar || !stats) {
-    return (
-      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground">Loading your buddy...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
@@ -225,11 +175,11 @@ const Dashboard = () => {
           <Button
             onClick={refreshScreenTime}
             variant="outline"
-            disabled={screenTimeLoading}
+            disabled={isLoading}
             className="w-full"
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${screenTimeLoading ? 'animate-spin' : ''}`} />
-            {screenTimeLoading ? 'Syncing...' : 'Sync Screen Time'}
+            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            {isLoading ? 'Syncing...' : 'Sync Screen Time'}
           </Button>
         )}
 
@@ -243,15 +193,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <StatsCard 
-          stats={stats} 
-          onEditWeeklyAverage={async (newValue) => {
-            setStats(prev => ({ ...prev, weeklyAverage: newValue }));
-            if (profile) {
-              await updateProfile({ weekly_average: newValue });
-            }
-          }}
-        />
+        <StatsCard stats={stats} />
 
         {/* Screen Time Input - Only show if not automatic */}
         {!screenTimeData.isAutomatic && (

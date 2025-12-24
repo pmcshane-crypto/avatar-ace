@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AvatarType } from "@/types/avatar";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import avatarFire from "@/assets/avatar-fire.png";
 import avatarWater from "@/assets/avatar-water.png";
@@ -15,7 +15,6 @@ import avatarAuarlis from "@/assets/avatar-auarlis.png";
 import avatarTeddy from "@/assets/avatar-teddy.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useUserProfile } from "@/hooks/useUserProfile";
 
 const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string }> = [
   {
@@ -75,14 +74,6 @@ const AvatarSelection = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { profile, updateProfile, refreshProfile } = useUserProfile();
-
-  // Pre-select current avatar from profile
-  useEffect(() => {
-    if (profile?.avatar_type) {
-      setSelectedAvatar(profile.avatar_type as AvatarType);
-    }
-  }, [profile]);
 
   useEffect(() => {
     fetchPurchasedAvatars();
@@ -157,33 +148,11 @@ const AvatarSelection = () => {
     setSelectedAvatar(avatar.type);
   };
 
-  const handleContinue = async () => {
-    if (!selectedAvatar) return;
-    
-    setIsLoading(true);
-    try {
-      // Update ONLY the database - single source of truth
-      await updateProfile({ avatar_type: selectedAvatar });
-      
-      // Refresh to ensure all components get the update
-      await refreshProfile();
-      
-      toast({
-        title: "Buddy Updated!",
-        description: "Your new buddy is ready for action.",
-      });
-      
-      const hasBaseline = profile?.baseline_minutes && profile.baseline_minutes > 0;
-      navigate(hasBaseline ? '/dashboard' : '/baseline-setup');
-    } catch (error) {
-      console.error('Error updating avatar:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update your buddy. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+  const handleContinue = () => {
+    if (selectedAvatar) {
+      localStorage.setItem('selectedAvatarType', selectedAvatar);
+      const baseline = localStorage.getItem('baseline');
+      navigate(baseline ? '/dashboard' : '/baseline-setup');
     }
   };
 

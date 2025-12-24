@@ -1,7 +1,7 @@
 export { ClanCard } from './ClanCard';
 export { ClanEmptyState } from './ClanEmptyState';
 export { ClanHub } from './ClanHub';
-export { ClanMemberRow, ClanMemberRowSkeleton } from './ClanMemberRow';
+export { ClanMemberRow } from './ClanMemberRow';
 export { ClanChallenges } from './ClanChallenges';
 export { ClanChat } from './ClanChat';
 export { DiscoverClans } from './DiscoverClans';
@@ -9,6 +9,3 @@ export { FeaturedClans } from './FeaturedClans';
 export { FeaturedClanCard } from './FeaturedClanCard';
 export { ClanFilters } from './ClanFilters';
 export { SocialProofBanner } from './SocialProofBanner';
-export { MemberProfilePreview } from './MemberProfilePreview';
-export { useClanMembers } from './useClanMembers';
-export type { EnrichedClanMember } from './useClanMembers';

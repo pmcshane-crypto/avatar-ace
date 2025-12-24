@@ -231,49 +231,28 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_energy: string
           avatar_level: number
           avatar_type: string
-          avatar_xp: number
           baseline_minutes: number
-          best_streak: number
           created_at: string | null
-          current_streak: number
           id: string
-          last_sync_at: string | null
-          total_reduction: number
           username: string
-          weekly_average: number
         }
         Insert: {
-          avatar_energy?: string
           avatar_level?: number
           avatar_type: string
-          avatar_xp?: number
           baseline_minutes?: number
-          best_streak?: number
           created_at?: string | null
-          current_streak?: number
           id: string
-          last_sync_at?: string | null
-          total_reduction?: number
           username: string
-          weekly_average?: number
         }
         Update: {
-          avatar_energy?: string
           avatar_level?: number
           avatar_type?: string
-          avatar_xp?: number
           baseline_minutes?: number
-          best_streak?: number
           created_at?: string | null
-          current_streak?: number
           id?: string
-          last_sync_at?: string | null
-          total_reduction?: number
           username?: string
-          weekly_average?: number
         }
         Relationships: []
       }
