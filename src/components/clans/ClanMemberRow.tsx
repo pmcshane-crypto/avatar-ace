@@ -23,6 +23,9 @@ import avatarFlarionLevel3 from "@/assets/avatar-flarion-level3.png";
 import avatarAuarlis from "@/assets/avatar-auarlis.png";
 import avatarAuarlisLevel2 from "@/assets/avatar-auarlis-level2.png";
 import avatarAuarlisLevel3 from "@/assets/avatar-auarlis-level3.png";
+import avatarTeddy from "@/assets/avatar-teddy.png";
+import avatarTeddyLevel2 from "@/assets/avatar-teddy-level2.png";
+import avatarTeddyLevel3 from "@/assets/avatar-teddy-level3.png";
 
 interface ClanMemberRowProps {
   rank: number;
@@ -83,6 +86,11 @@ const AVATAR_IMAGES: Record<string, Record<number, string>> = {
     2: avatarAuarlisLevel2,
     3: avatarAuarlisLevel3,
   },
+  teddy: {
+    1: avatarTeddy,
+    2: avatarTeddyLevel2,
+    3: avatarTeddyLevel3,
+  },
 };
 
 // Get glow color based on avatar type
@@ -95,6 +103,7 @@ const getGlowColor = (type: string): string => {
     case 'chicken-nugget': return 'bg-amber-500/50';
     case 'flarion': return 'bg-violet-500/50';
     case 'auarlis': return 'bg-sky-400/50';
+    case 'teddy': return 'bg-yellow-500/50';
     default: return 'bg-primary/30';
   }
 };
