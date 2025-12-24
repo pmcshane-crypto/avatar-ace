@@ -244,7 +244,15 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <StatsCard stats={stats} />
+        <StatsCard 
+          stats={stats} 
+          onEditWeeklyAverage={async (newValue) => {
+            setStats(prev => ({ ...prev, weeklyAverage: newValue }));
+            if (profile) {
+              await updateProfile({ weekly_average: newValue });
+            }
+          }}
+        />
 
         {/* Screen Time Input - Only show if not automatic */}
         {!screenTimeData.isAutomatic && (
