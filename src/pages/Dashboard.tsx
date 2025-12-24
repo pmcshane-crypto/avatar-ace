@@ -14,13 +14,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
+  // XP thresholds per level
+  const getXpToNextLevel = (level: number) => {
+    if (level >= 3) return 600; // Max level
+    return level === 1 ? 200 : level === 2 ? 400 : 600;
+  };
+
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
     name: 'Your Buddy',
     level: 1,
     xp: 0,
-    xpToNextLevel: 100,
+    xpToNextLevel: 200,
     energy: 'medium',
     description: 'Your loyal companion on the journey to reduce screen time',
   });
@@ -82,7 +88,7 @@ const Dashboard = () => {
     // Handle level down - symmetric with level up
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
-      const prevLevelXpRequired = newLevel * 100;
+      const prevLevelXpRequired = getXpToNextLevel(newLevel);
       newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
     }
     
@@ -96,7 +102,7 @@ const Dashboard = () => {
       energy: newEnergy,
       xp: newXp,
       level: newLevel,
-      xpToNextLevel: newLevel * 100,
+      xpToNextLevel: getXpToNextLevel(newLevel),
     });
 
     // Update stats
