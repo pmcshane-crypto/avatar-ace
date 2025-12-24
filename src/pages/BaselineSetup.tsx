@@ -4,17 +4,31 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronRight, Clock, Smartphone } from "lucide-react";
+import { ChevronRight, Clock, Smartphone, Loader2 } from "lucide-react";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const BaselineSetup = () => {
   const [baselineHours, setBaselineHours] = useState("");
   const [baselineMinutes, setBaselineMinutes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { updateProfile } = useUserProfile();
 
-  const handleContinue = () => {
-    const totalMinutes = (parseInt(baselineHours || "0") * 60) + parseInt(baselineMinutes || "0");
-    localStorage.setItem('baseline', totalMinutes.toString());
-    navigate('/dashboard');
+  const handleContinue = async () => {
+    setIsSubmitting(true);
+    try {
+      const totalMinutes = (parseInt(baselineHours || "0") * 60) + parseInt(baselineMinutes || "0");
+      // Save ONLY to database - single source of truth
+      await updateProfile({ 
+        baseline_minutes: totalMinutes,
+        weekly_average: totalMinutes 
+      });
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error saving baseline:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,12 +105,21 @@ const BaselineSetup = () => {
         <div className="flex justify-center">
           <Button
             onClick={handleContinue}
-            disabled={!baselineHours && !baselineMinutes}
+            disabled={(!baselineHours && !baselineMinutes) || isSubmitting}
             className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg w-full"
             size="lg"
           >
-            Start Journey
-            <ChevronRight className="ml-2 w-5 h-5" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                Start Journey
+                <ChevronRight className="ml-2 w-5 h-5" />
+              </>
+            )}
           </Button>
         </div>
       </div>
