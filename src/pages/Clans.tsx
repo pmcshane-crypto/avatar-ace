@@ -5,19 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ClanEmptyState, ClanCard, ClanHub, DiscoverClans } from "@/components/clans";
-
-interface ClanMember {
-  user_id: string;
-  username: string;
-  avatar_type: string;
-  avatar_level: number;
-  daily_reduction: number;
-  weekly_avg: number;
-  current_streak: number;
-  today_minutes?: number;
-  contribution: number;
-  last_active?: string;
-}
+import { useClanMembers, EnrichedClanMember } from "@/components/clans/useClanMembers";
+import { MemberProfilePreview } from "@/components/clans/MemberProfilePreview";
 
 interface Clan {
   id: string;
@@ -38,12 +27,15 @@ export default function Clans() {
   const [allClans, setAllClans] = useState<Clan[]>([]);
   const [userClans, setUserClans] = useState<Clan[]>([]);
   const [selectedClan, setSelectedClan] = useState<string | null>(null);
-  const [members, setMembers] = useState<ClanMember[]>([]);
   const [challenges, setChallenges] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const [showDiscover, setShowDiscover] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [previewMember, setPreviewMember] = useState<EnrichedClanMember | null>(null);
   const { toast } = useToast();
+
+  // Use the enriched clan members hook
+  const { members, isLoading: membersLoading } = useClanMembers(selectedClan);
 
   useEffect(() => {
     checkUser();
@@ -58,7 +50,6 @@ export default function Clans() {
 
   useEffect(() => {
     if (selectedClan) {
-      loadClanMembers(selectedClan);
       loadChallenges(selectedClan);
     }
   }, [selectedClan]);
@@ -132,33 +123,6 @@ export default function Clans() {
     setIsLoading(false);
   };
 
-  const loadClanMembers = async (clanId: string) => {
-    const today = new Date().toISOString().split('T')[0];
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-
-    const { data } = await supabase
-      .from("clan_members")
-      .select(`user_id, profiles!inner(username, avatar_type, avatar_level, baseline_minutes)`)
-      .eq("clan_id", clanId);
-
-    const membersData = data?.map((member: any) => {
-      const profile = member.profiles;
-      return {
-        user_id: member.user_id,
-        username: profile.username,
-        avatar_type: profile.avatar_type,
-        avatar_level: profile.avatar_level || 1,
-        daily_reduction: Math.floor(Math.random() * 30),
-        weekly_avg: profile.baseline_minutes - Math.floor(Math.random() * 60),
-        current_streak: Math.floor(Math.random() * 10),
-        today_minutes: profile.baseline_minutes - Math.floor(Math.random() * 60),
-        contribution: Math.floor(Math.random() * 200),
-      };
-    }) || [];
-
-    setMembers(membersData.sort((a, b) => b.daily_reduction - a.daily_reduction));
-  };
-
   const loadChallenges = async (clanId: string) => {
     const { data } = await supabase
       .from("clan_challenges")
@@ -166,6 +130,23 @@ export default function Clans() {
       .eq("clan_id", clanId);
     setChallenges(data || []);
   };
+
+  // Transform enriched members to match ClanHub expected format
+  const transformedMembers = members.map(m => ({
+    user_id: m.user_id,
+    username: m.username,
+    avatar_type: m.avatar_type,
+    avatar_level: m.avatar_level,
+    avatar_xp: m.avatar_xp,
+    avatar_energy: m.avatar_energy,
+    daily_reduction: m.daily_reduction,
+    weekly_avg: m.weekly_average,
+    current_streak: m.current_streak,
+    today_minutes: m.today_minutes,
+    contribution: m.contribution,
+    last_active: m.last_active,
+  }));
+
 
   const createClan = async (name: string) => {
     if (!user) return;
@@ -251,12 +232,21 @@ export default function Clans() {
             clan_xp={selectedClanData.clan_xp}
             clan_streak={selectedClanData.clan_streak}
             daily_goal_minutes={selectedClanData.daily_goal_minutes}
-            members={members}
+            members={transformedMembers}
             challenges={challenges}
             currentUserId={user?.id || ""}
             onBack={() => setSelectedClan(null)}
             onLeave={() => leaveClan(selectedClan)}
             onSendMessage={sendMessage}
+          />
+          <MemberProfilePreview
+            member={previewMember ? {
+              ...previewMember,
+              daily_reduction: previewMember.daily_reduction,
+              weekly_avg: previewMember.weekly_average,
+            } : null}
+            isOpen={!!previewMember}
+            onClose={() => setPreviewMember(null)}
           />
         </div>
       </div>

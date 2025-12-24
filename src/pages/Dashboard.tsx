@@ -6,19 +6,17 @@ import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { Users, RefreshCw, Smartphone } from "lucide-react";
+import { Users, RefreshCw, Smartphone, Loader2 } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
+import { useUserProfile, getXpToNextLevel } from "@/hooks/useUserProfile";
 import { Capacitor } from "@capacitor/core";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
-  // XP thresholds per level
-  const getXpToNextLevel = (level: number) => {
-    if (level >= 3) return 600; // Max level
-    return level === 1 ? 200 : level === 2 ? 400 : 600;
-  };
+  const { screenTimeData, hasPermission, isLoading: screenTimeLoading, refreshScreenTime } = useScreenTime();
+  const { profile, isLoading: profileLoading, updateProfile } = useUserProfile();
 
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
@@ -41,9 +39,31 @@ const Dashboard = () => {
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
 
+  // Sync from profile when loaded
+  useEffect(() => {
+    if (profile) {
+      setAvatar(prev => ({
+        ...prev,
+        type: profile.avatar_type as AvatarType,
+        level: profile.avatar_level,
+        xp: profile.avatar_xp,
+        xpToNextLevel: getXpToNextLevel(profile.avatar_level),
+        energy: profile.avatar_energy,
+      }));
+      setStats(prev => ({
+        ...prev,
+        baseline: profile.baseline_minutes,
+        currentStreak: profile.current_streak,
+        bestStreak: profile.best_streak,
+        totalReduction: profile.total_reduction,
+        weeklyAverage: profile.weekly_average,
+      }));
+    }
+  }, [profile]);
+
   // Auto-update when screen time data changes
   useEffect(() => {
-    if (screenTimeData.isAutomatic) {
+    if (screenTimeData.isAutomatic && profile) {
       handleScreenTimeSubmit({
         totalMinutes: screenTimeData.totalMinutes,
         musicMinutes: screenTimeData.musicMinutes,
@@ -54,9 +74,9 @@ const Dashboard = () => {
         weeklyAverage: screenTimeData.weeklyAverage,
       }));
     }
-  }, [screenTimeData]);
+  }, [screenTimeData, profile]);
 
-  const handleScreenTimeSubmit = (data: {
+  const handleScreenTimeSubmit = async (data: {
     totalMinutes: number;
     musicMinutes: number;
     betterBuddyMinutes: number;
@@ -70,7 +90,6 @@ const Dashboard = () => {
     else if (reduction < 0) newEnergy = 'low';
 
     // Calculate XP change - linear and symmetric for gains and losses
-    // Positive reduction = XP gain, negative reduction = XP loss
     const xpChange = Math.floor(reduction * 2);
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
@@ -80,23 +99,22 @@ const Dashboard = () => {
       newLevel += 1;
       newXp = newXp - avatar.xpToNextLevel;
       
-      // Trigger level up glow effect
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 3000);
     }
     
-    // Handle level down - symmetric with level up
+    // Handle level down
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
       const prevLevelXpRequired = getXpToNextLevel(newLevel);
-      newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
+      newXp = prevLevelXpRequired + newXp;
     }
     
-    // Ensure XP doesn't go below 0 at level 1
     if (newLevel === 1 && newXp < 0) {
       newXp = 0;
     }
 
+    // Update local state immediately for responsive UI
     setAvatar({
       ...avatar,
       energy: newEnergy,
@@ -105,16 +123,43 @@ const Dashboard = () => {
       xpToNextLevel: getXpToNextLevel(newLevel),
     });
 
-    // Update stats
     const newStreak = reduction > 0 ? stats.currentStreak + 1 : 0;
+    const newBestStreak = Math.max(stats.bestStreak, newStreak);
+    
     setStats({
       ...stats,
       currentStreak: newStreak,
-      bestStreak: Math.max(stats.bestStreak, newStreak),
+      bestStreak: newBestStreak,
       totalReduction: Math.floor(reduction),
     });
 
-    // Show appropriate toast based on performance
+    // Sync to database for clan visibility
+    if (profile) {
+      await updateProfile({
+        avatar_level: newLevel,
+        avatar_xp: newXp,
+        avatar_energy: newEnergy,
+        current_streak: newStreak,
+        best_streak: newBestStreak,
+        total_reduction: Math.floor(reduction),
+        weekly_average: stats.weeklyAverage,
+      });
+
+      // Also save to screen_time_entries for historical tracking
+      const today = new Date().toISOString().split('T')[0];
+      await supabase
+        .from('screen_time_entries')
+        .upsert({
+          user_id: profile.id,
+          date: today,
+          total_minutes: data.totalMinutes,
+          music_minutes: data.musicMinutes,
+          better_buddy_minutes: data.betterBuddyMinutes,
+          actual_minutes: actualMinutes,
+        }, { onConflict: 'user_id,date' });
+    }
+
+    // Show toast
     if (xpChange > 0) {
       toast({
         title: "Great job! 🎉",
@@ -181,11 +226,11 @@ const Dashboard = () => {
           <Button
             onClick={refreshScreenTime}
             variant="outline"
-            disabled={isLoading}
+            disabled={screenTimeLoading}
             className="w-full"
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            {isLoading ? 'Syncing...' : 'Sync Screen Time'}
+            <RefreshCw className={`w-4 h-4 mr-2 ${screenTimeLoading ? 'animate-spin' : ''}`} />
+            {screenTimeLoading ? 'Syncing...' : 'Sync Screen Time'}
           </Button>
         )}
 
