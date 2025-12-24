@@ -151,15 +151,21 @@ export default function Clans() {
   const createClan = async (name: string) => {
     if (!user) return;
 
-    const { error } = await supabase.from("clans").insert({ 
+    const { data: newClan, error } = await supabase.from("clans").insert({ 
       name, 
       created_by: user.id
-    });
+    }).select('id').single();
 
-    if (error) {
+    if (error || !newClan) {
       toast({ title: "Error creating clan", variant: "destructive" });
       return;
     }
+
+    // Automatically add creator as a member
+    await supabase.from("clan_members").insert({ 
+      clan_id: newClan.id, 
+      user_id: user.id 
+    });
 
     toast({ title: "Clan created!" });
     loadClans();
