@@ -18,47 +18,61 @@ const Dashboard = () => {
   const { screenTimeData, hasPermission, isLoading: screenTimeLoading, refreshScreenTime } = useScreenTime();
   const { profile, isLoading: profileLoading, updateProfile } = useUserProfile();
 
-  // Initialize avatar and stats from profile (database is source of truth)
-  const [avatar, setAvatar] = useState<Avatar | null>(null);
-  const [stats, setStats] = useState<UserStats | null>(null);
+  const [avatar, setAvatar] = useState<Avatar>({
+    id: '1',
+    type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
+    name: 'Your Buddy',
+    level: 1,
+    xp: 0,
+    xpToNextLevel: 200,
+    energy: 'medium',
+    description: 'Your loyal companion on the journey to reduce screen time',
+  });
+
+  const [stats, setStats] = useState<UserStats>({
+    baseline: parseInt(localStorage.getItem('baseline') || '300'),
+    currentStreak: 0,
+    bestStreak: 0,
+    totalReduction: 0,
+    weeklyAverage: screenTimeData.weeklyAverage || parseInt(localStorage.getItem('baseline') || '300'),
+  });
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
 
-  // Sync from profile when loaded - profile is source of truth
+  // Sync from profile when loaded
   useEffect(() => {
     if (profile) {
-      setAvatar({
-        id: '1',
+      setAvatar(prev => ({
+        ...prev,
         type: profile.avatar_type as AvatarType,
-        name: 'Your Buddy',
         level: profile.avatar_level,
         xp: profile.avatar_xp,
         xpToNextLevel: getXpToNextLevel(profile.avatar_level),
-        energy: profile.avatar_energy as 'high' | 'medium' | 'low',
-        description: 'Your loyal companion on the journey to reduce screen time',
-      });
-      setStats({
+        energy: profile.avatar_energy,
+      }));
+      setStats(prev => ({
+        ...prev,
         baseline: profile.baseline_minutes,
         currentStreak: profile.current_streak,
         bestStreak: profile.best_streak,
         totalReduction: profile.total_reduction,
         weeklyAverage: profile.weekly_average,
-      });
+      }));
     }
   }, [profile]);
 
   // Auto-update when screen time data changes
   useEffect(() => {
-    if (screenTimeData.isAutomatic && profile && avatar && stats) {
+    if (screenTimeData.isAutomatic && profile) {
       handleScreenTimeSubmit({
         totalMinutes: screenTimeData.totalMinutes,
         musicMinutes: screenTimeData.musicMinutes,
         betterBuddyMinutes: screenTimeData.betterBuddyMinutes,
       });
-      setStats(prev => prev ? ({
+      setStats(prev => ({
         ...prev,
         weeklyAverage: screenTimeData.weeklyAverage,
-      }) : null);
+      }));
     }
   }, [screenTimeData, profile]);
 
@@ -67,8 +81,6 @@ const Dashboard = () => {
     musicMinutes: number;
     betterBuddyMinutes: number;
   }) => {
-    if (!avatar || !stats) return;
-    
     const actualMinutes = data.totalMinutes - data.musicMinutes - data.betterBuddyMinutes;
     const reduction = ((stats.baseline - actualMinutes) / stats.baseline) * 100;
 
@@ -171,7 +183,6 @@ const Dashboard = () => {
   };
 
   const getBackgroundClass = () => {
-    if (!avatar) return 'bg-background';
     switch (avatar.type) {
       case 'fire':
         return 'bg-gradient-fire-bg';
@@ -183,18 +194,6 @@ const Dashboard = () => {
         return 'bg-background';
     }
   };
-
-  // Show loading state while profile is loading
-  if (profileLoading || !avatar || !stats) {
-    return (
-      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Loading your Better Buddy...</span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
