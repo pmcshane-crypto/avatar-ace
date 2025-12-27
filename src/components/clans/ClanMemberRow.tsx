@@ -38,6 +38,9 @@ interface ClanMemberRowProps {
   last_active?: string;
   isCurrentUser?: boolean;
   showDetails?: boolean;
+  isPremiumSkin?: boolean;
+  minutesBehindNextRank?: number;
+  isLowestContributor?: boolean;
 }
 
 const RANK_ICONS = [
@@ -122,6 +125,9 @@ export function ClanMemberRow({
   last_active,
   isCurrentUser = false,
   showDetails = false,
+  isPremiumSkin = false,
+  minutesBehindNextRank,
+  isLowestContributor = false,
 }: ClanMemberRowProps) {
   const RankIcon = rank <= 3 ? RANK_ICONS[rank - 1]?.icon : null;
   const rankColor = rank <= 3 ? RANK_ICONS[rank - 1]?.color : "text-muted-foreground";
@@ -130,21 +136,44 @@ export function ClanMemberRow({
   
   const avatarImage = getAvatarImage(avatar_type, avatar_level);
 
+  // Premium skins get extra visual effects
+  const premiumSkins = ['flarion', 'auarlis', 'chungloid', 'chicken-nugget'];
+  const hasPremiumSkin = premiumSkins.includes(avatar_type.toLowerCase()) || isPremiumSkin;
+
   return (
     <div 
-      className={`flex items-center justify-between p-4 rounded-xl transition-all ${
+      className={`relative flex items-center justify-between p-4 rounded-xl transition-all ${
         isCurrentUser 
           ? 'bg-gradient-to-r from-primary/20 to-primary/5 border-2 border-primary/40 shadow-lg shadow-primary/10' 
+          : isLowestContributor
+          ? 'bg-gradient-to-r from-muted/50 to-card border border-border/30 opacity-80'
           : 'bg-card/60 hover:bg-card border border-border/50'
-      }`}
+      } ${hasPremiumSkin ? 'ring-2 ring-offset-2 ring-offset-background ring-accent/50' : ''}`}
     >
-      <div className="flex items-center gap-4">
-        {/* Rank */}
-        <div className={`w-8 text-center font-bold text-lg ${rankColor}`}>
+      {/* Lowest contributor indicator */}
+      {isLowestContributor && (
+        <div className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-[10px] px-2 py-0.5 rounded-full border border-border">
+          😬 Behind
+        </div>
+      )}
+      
+      {/* Premium skin animated border */}
+      {hasPremiumSkin && (
+        <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-primary/20 to-accent/20 animate-shimmer" />
+        </div>
+      )}
+      
+      <div className="relative flex items-center gap-4">
+        {/* Rank - now more prominent */}
+        <div className={`w-10 text-center font-bold text-xl ${rankColor} flex flex-col items-center`}>
           {RankIcon ? (
-            <RankIcon className="w-6 h-6 mx-auto" />
+            <RankIcon className="w-7 h-7" />
           ) : (
-            <span>{rank}</span>
+            <span className="text-2xl font-black">#{rank}</span>
+          )}
+          {rank <= 3 && (
+            <span className="text-[10px] text-muted-foreground">#{rank}</span>
           )}
         </div>
 
@@ -152,8 +181,12 @@ export function ClanMemberRow({
         <div className="flex items-center gap-4">
           <div className="relative group">
             {/* Glow effect behind avatar - matches avatar type color */}
-            <div className={`absolute inset-0 rounded-full blur-md opacity-70 ${getGlowColor(avatar_type)}`} />
-            <div className="relative w-14 h-14 rounded-full bg-black border-2 border-primary/50 overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
+            <div className={`absolute inset-0 rounded-full blur-md ${
+              hasPremiumSkin ? 'opacity-90' : 'opacity-70'
+            } ${getGlowColor(avatar_type)} ${hasPremiumSkin ? 'animate-pulse' : ''}`} />
+            <div className={`relative w-14 h-14 rounded-full bg-black border-2 ${
+              hasPremiumSkin ? 'border-accent' : 'border-primary/50'
+            } overflow-hidden shadow-lg group-hover:scale-105 transition-transform`}>
               <img 
                 src={avatarImage} 
                 alt={`${avatar_type} avatar`}
@@ -161,7 +194,11 @@ export function ClanMemberRow({
               />
             </div>
             {/* Level badge */}
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background shadow-md">
+            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full ${
+              hasPremiumSkin 
+                ? 'bg-gradient-to-br from-accent to-primary' 
+                : 'bg-gradient-to-br from-primary to-accent'
+            } flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background shadow-md`}>
               {avatar_level}
             </div>
           </div>
@@ -170,6 +207,9 @@ export function ClanMemberRow({
               {username}
               {isCurrentUser && (
                 <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">You</Badge>
+              )}
+              {hasPremiumSkin && (
+                <span className="text-accent text-xs">✨</span>
               )}
             </div>
             <div className="text-sm text-muted-foreground capitalize flex items-center gap-2">
@@ -182,6 +222,12 @@ export function ClanMemberRow({
                 </span>
               )}
             </div>
+            {/* Distance to next rank */}
+            {minutesBehindNextRank !== undefined && minutesBehindNextRank > 0 && rank > 1 && (
+              <div className="text-[11px] text-warning mt-0.5">
+                {minutesBehindNextRank} min behind #{rank - 1}
+              </div>
+            )}
           </div>
         </div>
       </div>
