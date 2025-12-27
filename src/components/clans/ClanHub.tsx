@@ -7,11 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Trophy, TrendingDown, Flame, Users, Target, 
   MessageCircle, Award, Clock, ArrowLeft, LogOut,
-  Crown, Medal, Star
+  Crown, Medal, Star, PartyPopper
 } from "lucide-react";
 import { ClanMemberRow } from "./ClanMemberRow";
 import { ClanChallenges } from "./ClanChallenges";
 import { ClanChat } from "./ClanChat";
+import { InviteClanCTA } from "@/components/InviteClanCTA";
 
 interface ClanMember {
   user_id: string;
@@ -321,6 +322,13 @@ export function ClanHub({
           />
         </TabsContent>
       </Tabs>
+
+      {/* Invite CTA */}
+      <InviteClanCTA 
+        clanId={clanId} 
+        clanName={clanName} 
+        variant="banner" 
+      />
 
       {/* Leave Clan Button */}
       <Button

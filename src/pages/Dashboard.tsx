@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AvatarCard } from "@/components/AvatarCard";
 import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
+import { DailyMomentCard } from "@/components/DailyMomentCard";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { Users, RefreshCw, Smartphone } from "lucide-react";
@@ -170,6 +171,12 @@ const Dashboard = () => {
             View My Clans
           </Button>
         </div>
+
+        {/* Daily Moment of Truth Card */}
+        <DailyMomentCard 
+          reduction={stats.totalReduction}
+          hasClans={false}
+        />
 
         {Capacitor.getPlatform() === 'ios' && hasPermission && (
           <Button
