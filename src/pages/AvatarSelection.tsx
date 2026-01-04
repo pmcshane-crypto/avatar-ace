@@ -223,23 +223,31 @@ const AvatarSelection = () => {
                 onClick={() => handleAvatarClick(avatar)}
               >
                 <div className="space-y-4">
-                  {isLocked && (
-                    <div className="flex justify-center">
-                      <div className="bg-emerald-500 text-white px-4 py-2 rounded-full text-base font-bold flex items-center gap-2 shadow-lg">
-                        <Lock className="w-4 h-4" />
-                        {avatar.price}
-                      </div>
-                    </div>
-                  )}
-                  <div className={cn(
-                    "w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative",
-                    isLocked && "grayscale-[30%]"
-                  )}>
+                  <div className="w-full h-56 overflow-hidden rounded-xl flex items-center justify-center relative">
+                    <div className={cn(
+                      "absolute inset-0 rounded-xl",
+                      avatar.type === 'fire' && "bg-gradient-to-br from-orange-500/20 via-red-500/10 to-yellow-500/20",
+                      avatar.type === 'water' && "bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-teal-500/20",
+                      avatar.type === 'nature' && "bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-lime-500/20",
+                      avatar.type === 'chungloid' && "bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-fuchsia-500/20",
+                      avatar.type === 'chicken-nugget' && "bg-gradient-to-br from-yellow-500/20 via-amber-500/10 to-orange-500/20",
+                      avatar.type === 'flarion' && "bg-gradient-to-br from-purple-500/20 via-violet-500/10 to-indigo-500/20",
+                      avatar.type === 'auarlis' && "bg-gradient-to-br from-sky-500/20 via-blue-500/10 to-cyan-500/20",
+                      avatar.type === 'teddy' && "bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-orange-500/20"
+                    )} />
                     <img 
                       src={avatar.image} 
                       alt={avatar.name}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
                     />
+                    {isLocked && (
+                      <div className="absolute inset-0 flex items-center justify-center z-20">
+                        <div className="bg-emerald-500 text-white px-5 py-2.5 rounded-full text-lg font-bold flex items-center gap-2 shadow-xl border-2 border-emerald-400">
+                          <Lock className="w-5 h-5" />
+                          {avatar.price}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="text-center space-y-2">
                     <h3 className={cn(
