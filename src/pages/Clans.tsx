@@ -6,6 +6,66 @@ import { Plus, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ClanEmptyState, ClanCard, ClanHub, DiscoverClans } from "@/components/clans";
 
+// Import all avatar images
+import avatarFire from "@/assets/avatar-fire.png";
+import avatarFireLevel2 from "@/assets/avatar-fire-level2.png";
+import avatarFireLevel3 from "@/assets/avatar-fire-level3.png";
+import avatarWater from "@/assets/avatar-water.png";
+import avatarWaterLevel2 from "@/assets/avatar-water-level2.png";
+import avatarWaterLevel3 from "@/assets/avatar-water-level3.png";
+import avatarNature from "@/assets/avatar-nature.png";
+import avatarNatureLevel2 from "@/assets/avatar-nature-level2.png";
+import avatarNatureLevel3 from "@/assets/avatar-nature-level3.png";
+import avatarChungloid from "@/assets/avatar-chungloid.png";
+import avatarChungloidLevel2 from "@/assets/avatar-chungloid-level2.png";
+import avatarChungloidLevel3 from "@/assets/avatar-chungloid-level3.png";
+import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
+import avatarChickenNuggetLevel2 from "@/assets/avatar-chicken-nugget-level2.png";
+import avatarChickenNuggetLevel3 from "@/assets/avatar-chicken-nugget-level3.png";
+import avatarFlarion from "@/assets/avatar-flarion.png";
+import avatarFlarionLevel2 from "@/assets/avatar-flarion-level2.png";
+import avatarFlarionLevel3 from "@/assets/avatar-flarion-level3.png";
+import avatarAuarlis from "@/assets/avatar-auarlis.png";
+import avatarAuarlisLevel2 from "@/assets/avatar-auarlis-level2.png";
+import avatarAuarlisLevel3 from "@/assets/avatar-auarlis-level3.png";
+import avatarTeddy from "@/assets/avatar-teddy.png";
+import avatarTeddyLevel2 from "@/assets/avatar-teddy-level2.png";
+import avatarTeddyLevel3 from "@/assets/avatar-teddy-level3.png";
+
+// Avatar image mapping by type and level
+const AVATAR_IMAGES: Record<string, Record<number, string>> = {
+  fire: { 1: avatarFire, 2: avatarFireLevel2, 3: avatarFireLevel3 },
+  water: { 1: avatarWater, 2: avatarWaterLevel2, 3: avatarWaterLevel3 },
+  nature: { 1: avatarNature, 2: avatarNatureLevel2, 3: avatarNatureLevel3 },
+  chungloid: { 1: avatarChungloid, 2: avatarChungloidLevel2, 3: avatarChungloidLevel3 },
+  'chicken-nugget': { 1: avatarChickenNugget, 2: avatarChickenNuggetLevel2, 3: avatarChickenNuggetLevel3 },
+  flarion: { 1: avatarFlarion, 2: avatarFlarionLevel2, 3: avatarFlarionLevel3 },
+  auarlis: { 1: avatarAuarlis, 2: avatarAuarlisLevel2, 3: avatarAuarlisLevel3 },
+  teddy: { 1: avatarTeddy, 2: avatarTeddyLevel2, 3: avatarTeddyLevel3 },
+};
+
+const getAvatarImage = (type: string, level: number = 1): string => {
+  const normalizedType = type?.toLowerCase() || 'nature';
+  const avatarSet = AVATAR_IMAGES[normalizedType];
+  if (!avatarSet) return avatarNature;
+  const clampedLevel = Math.max(1, Math.min(3, level));
+  return avatarSet[clampedLevel] || avatarSet[1];
+};
+
+const getGlowColor = (type: string): string => {
+  switch (type?.toLowerCase()) {
+    case 'fire': return 'bg-orange-500/50';
+    case 'water': return 'bg-blue-500/50';
+    case 'nature': return 'bg-green-500/50';
+    case 'chungloid': return 'bg-purple-500/50';
+    case 'chicken-nugget': return 'bg-amber-500/50';
+    case 'flarion': return 'bg-violet-500/50';
+    case 'auarlis': return 'bg-sky-400/50';
+    case 'teddy': return 'bg-amber-600/50';
+    default: return 'bg-primary/30';
+  }
+};
+
 interface ClanMember {
   user_id: string;
   username: string;
@@ -33,6 +93,12 @@ interface Clan {
   daily_goal_minutes: number;
 }
 
+interface UserProfile {
+  avatar_type: string;
+  avatar_level: number;
+  username: string;
+}
+
 export default function Clans() {
   const navigate = useNavigate();
   const [allClans, setAllClans] = useState<Clan[]>([]);
@@ -41,6 +107,7 @@ export default function Clans() {
   const [members, setMembers] = useState<ClanMember[]>([]);
   const [challenges, setChallenges] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showDiscover, setShowDiscover] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -53,6 +120,7 @@ export default function Clans() {
     if (user) {
       loadClans();
       loadUserClans();
+      loadUserProfile();
     }
   }, [user]);
 
@@ -68,6 +136,18 @@ export default function Clans() {
     setUser(user);
     if (!user) {
       setIsLoading(false);
+    }
+  };
+
+  const loadUserProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("avatar_type, avatar_level, username")
+      .eq("id", user.id)
+      .single();
+    if (data) {
+      setUserProfile(data);
     }
   };
 
@@ -293,6 +373,32 @@ export default function Clans() {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* User's Better Buddy Display */}
+        {userProfile && (
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-card to-card/80 border border-border/50">
+            <div className="relative">
+              {/* Glow effect */}
+              <div className={`absolute inset-0 rounded-full blur-lg opacity-70 ${getGlowColor(userProfile.avatar_type)}`} />
+              <div className="relative w-16 h-16 rounded-full bg-black border-2 border-primary/50 overflow-hidden shadow-lg">
+                <img 
+                  src={getAvatarImage(userProfile.avatar_type, userProfile.avatar_level)} 
+                  alt="Your Better Buddy"
+                  className="w-full h-full object-contain scale-90"
+                />
+              </div>
+              {/* Level badge */}
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background shadow-md">
+                {userProfile.avatar_level}
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-muted-foreground">Your Better Buddy</p>
+              <p className="text-lg font-bold capitalize">{userProfile.avatar_type.replace('-', ' ')}</p>
+              <p className="text-sm text-primary">Level {userProfile.avatar_level} • {userProfile.username}</p>
+            </div>
+          </div>
+        )}
+
         {/* Back to Dashboard */}
         <Button 
           variant="ghost" 

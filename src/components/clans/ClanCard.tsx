@@ -12,7 +12,6 @@ interface ClanCardProps {
   description?: string;
   icon_emoji: string;
   member_count: number;
-  max_members?: number;
   avg_reduction: number;
   clan_streak: number;
   clan_level: number;
@@ -34,7 +33,6 @@ export function ClanCard({
   description,
   icon_emoji,
   member_count,
-  max_members = 20,
   avg_reduction,
   clan_streak,
   clan_level,
@@ -127,7 +125,7 @@ export function ClanCard({
                 <div className="flex items-center gap-3 mt-1 flex-wrap">
                   <span className="text-sm text-muted-foreground flex items-center gap-1">
                     <Users className="w-3.5 h-3.5" />
-                    {member_count}/{max_members}
+                    {member_count} members
                   </span>
                 </div>
                 
