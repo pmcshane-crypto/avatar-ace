@@ -16,18 +16,21 @@ import avatarTeddy from "@/assets/avatar-teddy.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const avatarOptions: Array<{ type: AvatarType; name: string; description: string; image: string }> = [
+interface AvatarOption {
+  type: AvatarType;
+  name: string;
+  description: string;
+  image: string;
+  premium?: boolean;
+  price?: string;
+}
+
+const avatarOptions: AvatarOption[] = [
   {
     type: 'nature',
     name: 'Twiggle',
     description: 'A grounded friend that evolves with your progress',
     image: avatarNature
-  },
-  {
-    type: 'chungloid',
-    name: 'Chungloid',
-    description: 'An adorable companion on your digital wellness journey',
-    image: avatarChungloid
   },
   {
     type: 'water',
@@ -36,34 +39,52 @@ const avatarOptions: Array<{ type: AvatarType; name: string; description: string
     image: avatarWater
   },
   {
+    type: 'chungloid',
+    name: 'Chungloid',
+    description: 'An adorable companion on your digital wellness journey',
+    image: avatarChungloid,
+    premium: true,
+    price: '$3.99'
+  },
+  {
     type: 'fire',
     name: 'Hot Pocket',
     description: 'A fierce companion that thrives on your determination',
-    image: avatarFire
-  },
-  {
-    type: 'chicken-nugget',
-    name: 'Chicken Nugget',
-    description: 'The ultimate companion that evolves into pure power',
-    image: avatarChickenNugget
-  },
-  {
-    type: 'flarion',
-    name: 'Flarion',
-    description: 'A mystical purple flame spirit with fierce determination',
-    image: avatarFlarion
-  },
-  {
-    type: 'auarlis',
-    name: 'Auralis',
-    description: 'An icy crystal fox with magical frozen powers',
-    image: avatarAuarlis
+    image: avatarFire,
+    premium: true,
+    price: '$5.99'
   },
   {
     type: 'teddy',
     name: 'Teddy',
     description: 'A loyal golden companion full of warmth and joy',
-    image: avatarTeddy
+    image: avatarTeddy,
+    premium: true,
+    price: '$5.99'
+  },
+  {
+    type: 'flarion',
+    name: 'Flarion',
+    description: 'A mystical purple flame spirit with fierce determination',
+    image: avatarFlarion,
+    premium: true,
+    price: '$6.99'
+  },
+  {
+    type: 'auarlis',
+    name: 'Auralis',
+    description: 'An icy crystal fox with magical frozen powers',
+    image: avatarAuarlis,
+    premium: true,
+    price: '$11.99'
+  },
+  {
+    type: 'chicken-nugget',
+    name: 'Chicken Nugget',
+    description: 'The ultimate legendary companion of pure power',
+    image: avatarChickenNugget,
+    premium: true,
+    price: '$49.99'
   }
 ];
 
@@ -144,8 +165,15 @@ const AvatarSelection = () => {
     }
   };
 
-  const handleAvatarClick = (avatar: typeof avatarOptions[0]) => {
-    setSelectedAvatar(avatar.type);
+  const handleAvatarClick = (avatar: AvatarOption) => {
+    const isPremium = avatar.premium;
+    const isUnlocked = purchasedAvatars.has(avatar.type);
+    
+    if (isPremium && !isUnlocked) {
+      handlePurchase(avatar.type);
+    } else {
+      setSelectedAvatar(avatar.type);
+    }
   };
 
   const handleContinue = () => {
@@ -154,6 +182,11 @@ const AvatarSelection = () => {
       const baseline = localStorage.getItem('baseline');
       navigate(baseline ? '/dashboard' : '/baseline-setup');
     }
+  };
+
+  const isAvatarSelectable = (avatar: AvatarOption) => {
+    if (!avatar.premium) return true;
+    return purchasedAvatars.has(avatar.type);
   };
 
   return (
@@ -168,6 +201,10 @@ const AvatarSelection = () => {
 
         <div className="grid grid-cols-4 gap-6">
           {avatarOptions.map((avatar) => {
+            const isPremium = avatar.premium;
+            const isUnlocked = purchasedAvatars.has(avatar.type);
+            const isLocked = isPremium && !isUnlocked;
+            
             return (
               <Card
                 key={avatar.type}
@@ -180,12 +217,22 @@ const AvatarSelection = () => {
                       : avatar.type === 'water'
                       ? "border-avatar-water shadow-glow"
                       : "border-avatar-nature shadow-glow"
-                    : "border-border/50"
+                    : "border-border/50",
+                  isLocked && "opacity-90"
                 )}
                 onClick={() => handleAvatarClick(avatar)}
               >
+                {isLocked && (
+                  <div className="absolute top-3 right-3 bg-primary/90 text-primary-foreground px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <Lock className="w-3 h-3" />
+                    {avatar.price}
+                  </div>
+                )}
                 <div className="space-y-4">
-                  <div className="w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative">
+                  <div className={cn(
+                    "w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative",
+                    isLocked && "grayscale-[30%]"
+                  )}>
                     <img 
                       src={avatar.image} 
                       alt={avatar.name}
@@ -219,7 +266,7 @@ const AvatarSelection = () => {
         <div className="flex justify-center">
           <Button
             onClick={handleContinue}
-            disabled={!selectedAvatar}
+            disabled={!selectedAvatar || !isAvatarSelectable(avatarOptions.find(a => a.type === selectedAvatar)!)}
             className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg"
             size="lg"
           >
