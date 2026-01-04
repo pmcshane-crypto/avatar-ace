@@ -222,13 +222,15 @@ const AvatarSelection = () => {
                 )}
                 onClick={() => handleAvatarClick(avatar)}
               >
-                {isLocked && (
-                  <div className="absolute top-3 right-3 bg-primary/90 text-primary-foreground px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    {avatar.price}
-                  </div>
-                )}
                 <div className="space-y-4">
+                  {isLocked && (
+                    <div className="flex justify-center">
+                      <div className="bg-emerald-500 text-white px-4 py-2 rounded-full text-base font-bold flex items-center gap-2 shadow-lg">
+                        <Lock className="w-4 h-4" />
+                        {avatar.price}
+                      </div>
+                    </div>
+                  )}
                   <div className={cn(
                     "w-full h-56 overflow-hidden rounded-lg flex items-center justify-center bg-gradient-subtle relative",
                     isLocked && "grayscale-[30%]"
