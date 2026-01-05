@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AvatarCard } from "@/components/AvatarCard";
@@ -10,11 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, RefreshCw, Smartphone } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
+  const [userId, setUserId] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
@@ -35,10 +37,64 @@ const Dashboard = () => {
   });
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [todayEntrySaved, setTodayEntrySaved] = useState(false);
 
-  // Auto-update when screen time data changes
+  // Load user data from Supabase on mount
   useEffect(() => {
-    if (screenTimeData.isAutomatic) {
+    const loadUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      setUserId(user.id);
+
+      // Load profile data
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile) {
+        setAvatar(prev => ({
+          ...prev,
+          type: profile.avatar_type as AvatarType,
+          level: profile.avatar_level,
+          xp: profile.avatar_xp,
+          xpToNextLevel: profile.avatar_level * 100,
+          energy: profile.avatar_energy as 'high' | 'medium' | 'low',
+        }));
+        setStats(prev => ({
+          ...prev,
+          baseline: profile.baseline_minutes,
+          currentStreak: profile.current_streak,
+          bestStreak: profile.best_streak,
+          totalReduction: Number(profile.total_reduction) || 0,
+          weeklyAverage: profile.weekly_average,
+        }));
+      }
+
+      // Check if today's entry exists
+      const today = new Date().toISOString().split('T')[0];
+      const { data: todayEntry } = await supabase
+        .from('screen_time_entries')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .maybeSingle();
+
+      if (todayEntry) {
+        setTodayEntrySaved(true);
+      }
+    };
+
+    loadUserData();
+  }, [navigate]);
+
+  // Auto-update when screen time data changes (iOS auto-sync)
+  useEffect(() => {
+    if (screenTimeData.isAutomatic && userId) {
       handleScreenTimeSubmit({
         totalMinutes: screenTimeData.totalMinutes,
         musicMinutes: screenTimeData.musicMinutes,
@@ -49,15 +105,61 @@ const Dashboard = () => {
         weeklyAverage: screenTimeData.weeklyAverage,
       }));
     }
-  }, [screenTimeData]);
+  }, [screenTimeData, userId]);
 
-  const handleScreenTimeSubmit = (data: {
+  const handleScreenTimeSubmit = async (data: {
     totalMinutes: number;
     musicMinutes: number;
     betterBuddyMinutes: number;
   }) => {
+    if (!userId) return;
+
     const actualMinutes = data.totalMinutes - data.musicMinutes - data.betterBuddyMinutes;
     const reduction = ((stats.baseline - actualMinutes) / stats.baseline) * 100;
+
+    // Save to database
+    const today = new Date().toISOString().split('T')[0];
+    
+    const { error: entryError } = await supabase
+      .from('screen_time_entries')
+      .upsert({
+        user_id: userId,
+        date: today,
+        total_minutes: data.totalMinutes,
+        music_minutes: data.musicMinutes,
+        better_buddy_minutes: data.betterBuddyMinutes,
+        actual_minutes: actualMinutes,
+      }, { onConflict: 'user_id,date' });
+
+    if (entryError) {
+      // If upsert fails due to no unique constraint, try insert then update
+      const { error: insertError } = await supabase
+        .from('screen_time_entries')
+        .insert({
+          user_id: userId,
+          date: today,
+          total_minutes: data.totalMinutes,
+          music_minutes: data.musicMinutes,
+          better_buddy_minutes: data.betterBuddyMinutes,
+          actual_minutes: actualMinutes,
+        });
+
+      if (insertError) {
+        // Entry might already exist, try update
+        await supabase
+          .from('screen_time_entries')
+          .update({
+            total_minutes: data.totalMinutes,
+            music_minutes: data.musicMinutes,
+            better_buddy_minutes: data.betterBuddyMinutes,
+            actual_minutes: actualMinutes,
+          })
+          .eq('user_id', userId)
+          .eq('date', today);
+      }
+    }
+
+    setTodayEntrySaved(true);
 
     // Update avatar energy based on reduction
     let newEnergy: 'high' | 'medium' | 'low' = 'medium';
@@ -65,7 +167,6 @@ const Dashboard = () => {
     else if (reduction < 0) newEnergy = 'low';
 
     // Calculate XP change - linear and symmetric for gains and losses
-    // Positive reduction = XP gain, negative reduction = XP loss
     const xpChange = Math.floor(reduction * 2);
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
@@ -74,23 +175,33 @@ const Dashboard = () => {
     if (newXp >= avatar.xpToNextLevel) {
       newLevel += 1;
       newXp = newXp - avatar.xpToNextLevel;
-      
-      // Trigger level up glow effect
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 3000);
     }
     
-    // Handle level down - symmetric with level up
+    // Handle level down
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
       const prevLevelXpRequired = newLevel * 100;
-      newXp = prevLevelXpRequired + newXp; // Add negative xp to previous level's max
+      newXp = prevLevelXpRequired + newXp;
     }
     
-    // Ensure XP doesn't go below 0 at level 1
     if (newLevel === 1 && newXp < 0) {
       newXp = 0;
     }
+
+    // Update profile in database
+    await supabase
+      .from('profiles')
+      .update({
+        avatar_level: newLevel,
+        avatar_xp: newXp,
+        avatar_energy: newEnergy,
+        current_streak: reduction > 0 ? stats.currentStreak + 1 : 0,
+        best_streak: Math.max(stats.bestStreak, reduction > 0 ? stats.currentStreak + 1 : 0),
+        total_reduction: Math.floor(reduction),
+      })
+      .eq('id', userId);
 
     setAvatar({
       ...avatar,
@@ -100,7 +211,6 @@ const Dashboard = () => {
       xpToNextLevel: newLevel * 100,
     });
 
-    // Update stats
     const newStreak = reduction > 0 ? stats.currentStreak + 1 : 0;
     setStats({
       ...stats,
@@ -109,7 +219,7 @@ const Dashboard = () => {
       totalReduction: Math.floor(reduction),
     });
 
-    // Show appropriate toast based on performance
+    // Show toast
     if (xpChange > 0) {
       toast({
         title: "Great job! 🎉",
