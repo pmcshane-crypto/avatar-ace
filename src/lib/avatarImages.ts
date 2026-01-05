@@ -46,8 +46,14 @@ export const AVATAR_IMAGES: AvatarImages = {
 
 export function getAvatarImage(type: AvatarType, level: number): string {
   const avatarSet = AVATAR_IMAGES[type] || AVATAR_IMAGES.fire;
-  const levelKey = Math.min(Math.max(Math.ceil(level / 3), 1), 3) as 1 | 2 | 3;
-  return avatarSet[levelKey];
+  // Evolution stages: Level 1 = stage 1, Level 2-3 = stage 2, Level 4+ = stage 3
+  let evolutionStage: 1 | 2 | 3 = 1;
+  if (level >= 4) {
+    evolutionStage = 3;
+  } else if (level >= 2) {
+    evolutionStage = 2;
+  }
+  return avatarSet[evolutionStage];
 }
 
 export function getAvatarGlow(type: AvatarType): string {
