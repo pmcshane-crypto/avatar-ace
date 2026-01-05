@@ -128,7 +128,6 @@ const Dashboard = () => {
         total_minutes: data.totalMinutes,
         music_minutes: data.musicMinutes,
         better_buddy_minutes: data.betterBuddyMinutes,
-        actual_minutes: actualMinutes,
       }, { onConflict: 'user_id,date' });
 
     if (entryError) {
