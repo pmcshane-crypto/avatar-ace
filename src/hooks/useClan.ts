@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Clan, ClanMember, DailyChampion, WeeklyMVP } from '@/types/clan';
-import { AvatarType } from '@/types/avatar';
+import { AvatarType, EnergyLevel } from '@/types/avatar';
 
 export function useClan() {
   const [clan, setClan] = useState<Clan | null>(null);
@@ -66,11 +66,11 @@ export function useClan() {
         return;
       }
 
-      // Get profiles for all members
+      // Get profiles for all members - SINGLE SOURCE OF TRUTH for avatar data
       const userIds = membersData.map(m => m.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username, avatar_type, avatar_level, current_streak, best_streak')
+        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak')
         .in('id', userIds);
 
       // Get today's screen time for all members
@@ -91,7 +91,7 @@ export function useClan() {
         .in('user_id', userIds)
         .eq('date', yesterdayStr);
 
-      // Build member list with contributions
+      // Build member list with contributions - profile data is the SINGLE SOURCE OF TRUTH
       const membersWithData: ClanMember[] = membersData.map(member => {
         const profile = profiles?.find(p => p.id === member.user_id);
         const todayEntry = todayEntries?.find(e => e.user_id === member.user_id);
@@ -111,6 +111,7 @@ export function useClan() {
             username: profile?.username || 'Unknown',
             avatar_type: (profile?.avatar_type as AvatarType) || 'fire',
             avatar_level: profile?.avatar_level || 1,
+            avatar_energy: (profile?.avatar_energy as EnergyLevel) || 'medium',
             current_streak: profile?.current_streak || 0,
             best_streak: profile?.best_streak || 0,
           },
@@ -176,6 +177,7 @@ export function useClan() {
           username: champion.profile.username,
           avatar_type: champion.profile.avatar_type,
           avatar_level: champion.profile.avatar_level,
+          avatar_energy: champion.profile.avatar_energy,
           contribution: champion.todayMinutes,
         });
       }
@@ -214,6 +216,7 @@ export function useClan() {
               username: mvpMember.profile.username,
               avatar_type: mvpMember.profile.avatar_type,
               avatar_level: mvpMember.profile.avatar_level,
+              avatar_energy: mvpMember.profile.avatar_energy,
               totalContribution: weeklyTotals[bestMVP.userId].total,
               daysActive: weeklyTotals[bestMVP.userId].days,
             });
@@ -232,7 +235,7 @@ export function useClan() {
     loadClanData();
   }, [loadClanData]);
 
-  // Real-time subscription for screen time updates
+  // Real-time subscription for screen time updates AND profile changes
   useEffect(() => {
     if (!clan) return;
 
@@ -246,6 +249,18 @@ export function useClan() {
           table: 'screen_time_entries',
         },
         () => {
+          loadClanData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+        },
+        () => {
+          // Refresh when any profile is updated (avatar changes, etc.)
           loadClanData();
         }
       )
