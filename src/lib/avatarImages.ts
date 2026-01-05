@@ -46,13 +46,8 @@ export const AVATAR_IMAGES: AvatarImages = {
 
 export function getAvatarImage(type: AvatarType, level: number): string {
   const avatarSet = AVATAR_IMAGES[type] || AVATAR_IMAGES.fire;
-  // Evolution stages: Level 1 = stage 1, Level 2-3 = stage 2, Level 4+ = stage 3
-  let evolutionStage: 1 | 2 | 3 = 1;
-  if (level >= 4) {
-    evolutionStage = 3;
-  } else if (level >= 2) {
-    evolutionStage = 2;
-  }
+  // Direct mapping: Level 1 = stage 1, Level 2 = stage 2, Level 3+ = stage 3
+  const evolutionStage: 1 | 2 | 3 = level <= 1 ? 1 : level === 2 ? 2 : 3;
   return avatarSet[evolutionStage];
 }
 
