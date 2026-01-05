@@ -176,9 +176,23 @@ const AvatarSelection = () => {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (selectedAvatar) {
+      setIsLoading(true);
+      
+      // Save to database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('profiles')
+          .update({ avatar_type: selectedAvatar })
+          .eq('id', user.id);
+      }
+      
+      // Also save to localStorage as fallback
       localStorage.setItem('selectedAvatarType', selectedAvatar);
+      
+      setIsLoading(false);
       const baseline = localStorage.getItem('baseline');
       navigate(baseline ? '/dashboard' : '/baseline-setup');
     }
