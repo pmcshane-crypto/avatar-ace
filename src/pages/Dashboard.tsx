@@ -117,7 +117,7 @@ const Dashboard = () => {
     const actualMinutes = data.totalMinutes - data.musicMinutes - data.betterBuddyMinutes;
     const reduction = ((stats.baseline - actualMinutes) / stats.baseline) * 100;
 
-    // Save to database
+    // Save to database with upsert (unique constraint on user_id, date)
     const today = new Date().toISOString().split('T')[0];
     
     const { error: entryError } = await supabase
@@ -132,31 +132,13 @@ const Dashboard = () => {
       }, { onConflict: 'user_id,date' });
 
     if (entryError) {
-      // If upsert fails due to no unique constraint, try insert then update
-      const { error: insertError } = await supabase
-        .from('screen_time_entries')
-        .insert({
-          user_id: userId,
-          date: today,
-          total_minutes: data.totalMinutes,
-          music_minutes: data.musicMinutes,
-          better_buddy_minutes: data.betterBuddyMinutes,
-          actual_minutes: actualMinutes,
-        });
-
-      if (insertError) {
-        // Entry might already exist, try update
-        await supabase
-          .from('screen_time_entries')
-          .update({
-            total_minutes: data.totalMinutes,
-            music_minutes: data.musicMinutes,
-            better_buddy_minutes: data.betterBuddyMinutes,
-            actual_minutes: actualMinutes,
-          })
-          .eq('user_id', userId)
-          .eq('date', today);
-      }
+      console.error('Error saving screen time:', entryError);
+      toast({
+        title: "Error saving",
+        description: "Could not save your screen time. Please try again.",
+        variant: "destructive",
+      });
+      return;
     }
 
     setTodayEntrySaved(true);
