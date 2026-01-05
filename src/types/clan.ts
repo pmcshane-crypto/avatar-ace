@@ -1,18 +1,21 @@
-import { AvatarType } from './avatar';
+import { AvatarType, EnergyLevel } from './avatar';
+
+export interface ClanMemberProfile {
+  id: string;
+  username: string;
+  avatar_type: AvatarType;
+  avatar_level: number;
+  avatar_energy: EnergyLevel;
+  current_streak: number;
+  best_streak: number;
+}
 
 export interface ClanMember {
   id: string;
   user_id: string;
   clan_id: string;
   joined_at: string;
-  profile: {
-    id: string;
-    username: string;
-    avatar_type: AvatarType;
-    avatar_level: number;
-    current_streak: number;
-    best_streak: number;
-  };
+  profile: ClanMemberProfile;
   todayMinutes: number;
   yesterdayMinutes: number;
   rank: number;
@@ -49,6 +52,7 @@ export interface DailyChampion {
   username: string;
   avatar_type: AvatarType;
   avatar_level: number;
+  avatar_energy: EnergyLevel;
   contribution: number;
 }
 
@@ -57,6 +61,7 @@ export interface WeeklyMVP {
   username: string;
   avatar_type: AvatarType;
   avatar_level: number;
+  avatar_energy: EnergyLevel;
   totalContribution: number;
   daysActive: number;
 }
