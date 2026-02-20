@@ -74,9 +74,7 @@ const avatarOptions: AvatarOption[] = [
     type: 'auarlis',
     name: 'Auralis',
     description: 'An icy crystal fox with magical frozen powers',
-    image: avatarAuarlis,
-    premium: true,
-    price: '$11.99'
+    image: avatarAuarlis
   },
   {
     type: 'chicken-nugget',
