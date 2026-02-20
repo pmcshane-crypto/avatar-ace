@@ -5,6 +5,10 @@ import { AvatarCard } from "@/components/AvatarCard";
 import { ScreenTimeInput } from "@/components/ScreenTimeInput";
 import { StatsCard } from "@/components/StatsCard";
 import { DailyMomentCard } from "@/components/DailyMomentCard";
+import { LevelUpOverlay } from "@/components/LevelUpOverlay";
+import { XpGainPopup } from "@/components/XpGainPopup";
+import { StreakFireAnimation } from "@/components/StreakFireAnimation";
+import { DailyWinCelebration } from "@/components/DailyWinCelebration";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { Users, RefreshCw, Smartphone } from "lucide-react";
@@ -38,6 +42,11 @@ const Dashboard = () => {
 
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [todayEntrySaved, setTodayEntrySaved] = useState(false);
+  const [showXpPopup, setShowXpPopup] = useState(false);
+  const [xpGainAmount, setXpGainAmount] = useState(0);
+  const [showStreakFire, setShowStreakFire] = useState(false);
+  const [showDailyWin, setShowDailyWin] = useState(false);
+  const [levelUpLevel, setLevelUpLevel] = useState(1);
 
   // Load user data from Supabase on mount
   useEffect(() => {
@@ -152,12 +161,13 @@ const Dashboard = () => {
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
 
-    // Handle level up
+    // Handle level up with full overlay
     if (newXp >= avatar.xpToNextLevel) {
       newLevel += 1;
       newXp = newXp - avatar.xpToNextLevel;
+      setLevelUpLevel(newLevel);
       setIsLevelingUp(true);
-      setTimeout(() => setIsLevelingUp(false), 3000);
+      setTimeout(() => setIsLevelingUp(false), 4000);
     }
     
     // Handle level down
@@ -200,13 +210,38 @@ const Dashboard = () => {
       totalReduction: Math.floor(reduction),
     });
 
-    // Show toast
+    // Trigger celebration animations
     if (xpChange > 0) {
+      // XP gain popup
+      setXpGainAmount(xpChange);
+      setShowXpPopup(true);
+      setTimeout(() => setShowXpPopup(false), 2500);
+
+      // Daily win celebration
+      if (reduction > 10) {
+        setTimeout(() => {
+          setShowDailyWin(true);
+          setTimeout(() => setShowDailyWin(false), 4000);
+        }, 500);
+      }
+
+      // Streak fire
+      if (newStreak > 1) {
+        setTimeout(() => {
+          setShowStreakFire(true);
+          setTimeout(() => setShowStreakFire(false), 3500);
+        }, reduction > 10 ? 4500 : 1000);
+      }
+
       toast({
         title: "Great job! 🎉",
         description: `You reduced screen time by ${Math.floor(reduction)}%! Your avatar gained ${xpChange} XP!`,
       });
     } else if (xpChange < 0) {
+      setXpGainAmount(xpChange);
+      setShowXpPopup(true);
+      setTimeout(() => setShowXpPopup(false), 2500);
+
       const levelDownMessage = newLevel < avatar.level 
         ? ` Your avatar dropped to level ${newLevel}!` 
         : '';
@@ -237,6 +272,13 @@ const Dashboard = () => {
   };
 
   return (
+    <>
+      {/* Celebration Overlays */}
+      <LevelUpOverlay show={isLevelingUp} newLevel={levelUpLevel} avatarType={avatar.type} />
+      <XpGainPopup show={showXpPopup} amount={xpGainAmount} />
+      <StreakFireAnimation show={showStreakFire} streak={stats.currentStreak} />
+      <DailyWinCelebration show={showDailyWin} reductionPercent={Math.floor(stats.totalReduction)} />
+
     <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
@@ -309,6 +351,7 @@ const Dashboard = () => {
         </Button>
       </div>
     </div>
+    </>
   );
 };
 

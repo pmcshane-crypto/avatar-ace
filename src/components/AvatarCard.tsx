@@ -226,15 +226,24 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
             </div>
             
             {/* XP Bar */}
-            <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-secondary rounded-full h-3 overflow-hidden relative">
               <motion.div 
                 className="h-full bg-gradient-energy relative"
                 initial={{ width: 0 }}
                 animate={{ width: `${(avatar.xp / avatar.xpToNextLevel) * 100}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
               </motion.div>
+              {/* Glow flash when XP is high */}
+              {avatar.xp / avatar.xpToNextLevel > 0.8 && (
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  style={{ boxShadow: "0 0 12px hsl(var(--accent) / 0.6), 0 0 24px hsl(var(--accent) / 0.3)" }}
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                />
+              )}
             </div>
             <p className="text-xs text-muted-foreground">
               {avatar.xp} / {avatar.xpToNextLevel} XP

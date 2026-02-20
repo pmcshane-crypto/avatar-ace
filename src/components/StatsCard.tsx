@@ -103,6 +103,15 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
           <Card className={`p-4 bg-gradient-card border-border/50 relative overflow-hidden ${
             item.showLocked ? 'opacity-80' : ''
           }`}>
+            {/* Active streak glow */}
+            {item.label === "Current Streak" && stats.currentStreak > 0 && (
+              <motion.div
+                className="absolute inset-0 rounded-lg"
+                style={{ boxShadow: "inset 0 0 20px hsl(var(--warning) / 0.15), 0 0 15px hsl(var(--warning) / 0.1)" }}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            )}
             {/* Subtle shimmer for "locked" states */}
             {item.showLocked && (
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/10 to-transparent animate-shimmer" />
