@@ -21,8 +21,8 @@ export function XpGainPopup({ show, amount }: XpGainPopupProps) {
           }}
           initial={{ x: "-50%", y: -40, opacity: 0, scale: 0.5 }}
           animate={{ x: "-50%", y: 0, opacity: 1, scale: [0.5, 1.15, 1] }}
-          exit={{ x: "-50%", y: -20, opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.5, ease: "backOut" }}
+          exit={{ x: "-50%", y: -30, opacity: 0, scale: 0.6 }}
+          transition={{ duration: 0.35, ease: "backOut" }}
         >
           {isPositive ? (
             <Zap className="w-5 h-5 text-white fill-white" />

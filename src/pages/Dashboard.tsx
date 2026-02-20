@@ -215,7 +215,7 @@ const Dashboard = () => {
       // XP gain popup
       setXpGainAmount(xpChange);
       setShowXpPopup(true);
-      setTimeout(() => setShowXpPopup(false), 2500);
+      setTimeout(() => setShowXpPopup(false), 1800);
 
       // Daily win celebration
       if (reduction > 10) {
@@ -240,7 +240,7 @@ const Dashboard = () => {
     } else if (xpChange < 0) {
       setXpGainAmount(xpChange);
       setShowXpPopup(true);
-      setTimeout(() => setShowXpPopup(false), 2500);
+      setTimeout(() => setShowXpPopup(false), 1800);
 
       const levelDownMessage = newLevel < avatar.level 
         ? ` Your avatar dropped to level ${newLevel}!` 
