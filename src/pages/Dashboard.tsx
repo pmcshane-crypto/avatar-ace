@@ -167,7 +167,7 @@ const Dashboard = () => {
       ((absoluteReduction / cap) * 0.3) +
       (disciplineFactor * 0.2);
 
-    const xpChange = Math.round(score * 100);
+    const xpChange = Math.max(0, Math.round(score * 100));
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
 
@@ -178,16 +178,6 @@ const Dashboard = () => {
       setLevelUpLevel(newLevel);
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 4000);
-    }
-
-    // Handle XP going below 0 — level down but not below level 1
-    while (newXp < 0 && newLevel > 1) {
-      newLevel -= 1;
-      newXp = (newLevel * 100) + newXp; // wrap into previous level's XP
-    }
-    // Floor at level 1, 0 XP
-    if (newXp < 0) {
-      newXp = 0;
     }
 
     // Update profile in database

@@ -80,7 +80,9 @@ const avatarOptions: AvatarOption[] = [
     type: 'chicken-nugget',
     name: 'Chicken Nugget',
     description: 'The ultimate legendary companion of pure power',
-    image: avatarChickenNugget
+    image: avatarChickenNugget,
+    premium: true,
+    price: '$49.99'
   }
 ];
 
