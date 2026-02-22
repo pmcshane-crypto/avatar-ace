@@ -229,8 +229,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
             <div className="w-full bg-secondary rounded-full h-3 overflow-hidden relative">
               <motion.div 
                 className="h-full bg-gradient-energy relative"
-                initial={{ width: 0 }}
-                animate={{ width: `${(avatar.xp / avatar.xpToNextLevel) * 100}%` }}
+                animate={{ width: `${Math.max(0, (avatar.xp / avatar.xpToNextLevel) * 100)}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
