@@ -156,18 +156,8 @@ const Dashboard = () => {
     if (reduction > 20) newEnergy = 'high';
     else if (reduction < 0) newEnergy = 'low';
 
-    // New XP calculation
-    const cap = 600; // 10 hours normalization cap
-    const percentReduction = (stats.baseline - actualMinutes) / stats.baseline;
-    const absoluteReduction = stats.baseline - actualMinutes;
-    const disciplineFactor = 1 - (actualMinutes / cap);
-
-    const score =
-      (percentReduction * 0.5) +
-      ((absoluteReduction / cap) * 0.3) +
-      (disciplineFactor * 0.2);
-
-    const xpChange = Math.max(0, Math.round(score * 100));
+    // Calculate XP change - linear and symmetric for gains and losses
+    const xpChange = Math.floor(reduction * 2);
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
 
@@ -178,6 +168,17 @@ const Dashboard = () => {
       setLevelUpLevel(newLevel);
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 4000);
+    }
+    
+    // Handle level down
+    while (newXp < 0 && newLevel > 1) {
+      newLevel -= 1;
+      const prevLevelXpRequired = newLevel * 100;
+      newXp = prevLevelXpRequired + newXp;
+    }
+    
+    if (newLevel === 1 && newXp < 0) {
+      newXp = 0;
     }
 
     // Update profile in database
@@ -236,10 +237,23 @@ const Dashboard = () => {
         title: "Great job! 🎉",
         description: `You reduced screen time by ${Math.floor(reduction)}%! Your avatar gained ${xpChange} XP!`,
       });
+    } else if (xpChange < 0) {
+      setXpGainAmount(xpChange);
+      setShowXpPopup(true);
+      setTimeout(() => setShowXpPopup(false), 1800);
+
+      const levelDownMessage = newLevel < avatar.level 
+        ? ` Your avatar dropped to level ${newLevel}!` 
+        : '';
+      toast({
+        title: "Your buddy needs help! 😔",
+        description: `You went over your baseline. Your avatar lost ${Math.abs(xpChange)} XP.${levelDownMessage}`,
+        variant: "destructive",
+      });
     } else {
       toast({
-        title: "Keep going! 👍",
-        description: "Log less screen time to earn XP for your buddy!",
+        title: "Right on target! 👍",
+        description: "You matched your baseline exactly!",
       });
     }
   };
