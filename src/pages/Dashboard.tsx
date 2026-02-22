@@ -167,7 +167,7 @@ const Dashboard = () => {
       newXp = newXp - avatar.xpToNextLevel;
       setLevelUpLevel(newLevel);
       setIsLevelingUp(true);
-      setTimeout(() => setIsLevelingUp(false), 4000);
+      setTimeout(() => setIsLevelingUp(false), 2000);
     }
     
     // Handle level down
