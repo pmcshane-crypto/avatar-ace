@@ -16,8 +16,8 @@ export function LevelUpOverlay({ show, newLevel, avatarType }: LevelUpOverlayPro
           className="fixed inset-0 z-[100] flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
         >
           {/* Backdrop */}
           <motion.div
