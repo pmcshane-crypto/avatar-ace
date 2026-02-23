@@ -156,19 +156,25 @@ const Dashboard = () => {
     if (reduction > 20) newEnergy = 'high';
     else if (reduction < 0) newEnergy = 'low';
 
-    // Calculate XP using nonlinear discipline-based curve
-    const cap = 600; // 10 hours normalization cap
-    const percentReduction = (stats.baseline - actualMinutes) / stats.baseline;
-    const absoluteReduction = stats.baseline - actualMinutes;
-    const disciplineFactor = 1 - (actualMinutes / cap);
+    // Calculate XP using nonlinear discipline-based curve (v2 — allows negative delta)
+    const cap = 600; // 10h normalization cap
+    const clampedBaseline = Math.max(30, stats.baseline);
+    const clampedToday = Math.max(0, actualMinutes);
+
+    const percentChange = (clampedBaseline - clampedToday) / clampedBaseline;
+    const absoluteChange = clampedBaseline - clampedToday;
+    const disciplineFactor = Math.max(0, Math.min(1, 1 - (clampedToday / cap)));
 
     const score =
-      (percentReduction * 0.5) +
-      ((absoluteReduction / cap) * 0.3) +
-      (disciplineFactor * 0.2);
+      (percentChange * 0.55) +
+      ((absoluteChange / cap) * 0.35) +
+      (disciplineFactor * 0.10);
 
-    const xpChange = Math.max(0, Math.round(score * 100));
-    let newXp = avatar.xp + xpChange;
+    let xpChange = Math.round(score * 120);
+    xpChange = Math.max(-60, Math.min(100, xpChange));
+
+    // Apply delta — total XP never below 0
+    let newXp = Math.max(0, avatar.xp + xpChange);
     let newLevel = avatar.level;
 
     // Handle level up with full overlay
@@ -179,8 +185,12 @@ const Dashboard = () => {
       setIsLevelingUp(true);
       setTimeout(() => setIsLevelingUp(false), 2000);
     }
-    
-    // XP is always >= 0 with the new formula, no level-down needed
+
+    // Handle level down
+    while (newXp < 0 && newLevel > 1) {
+      newLevel -= 1;
+      newXp = newLevel * 100 + newXp;
+    }
     if (newXp < 0) newXp = 0;
 
     // Update profile in database
