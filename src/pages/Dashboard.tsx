@@ -156,8 +156,18 @@ const Dashboard = () => {
     if (reduction > 20) newEnergy = 'high';
     else if (reduction < 0) newEnergy = 'low';
 
-    // Calculate XP change - linear and symmetric for gains and losses
-    const xpChange = Math.floor(reduction * 2);
+    // Calculate XP using nonlinear discipline-based curve
+    const cap = 600; // 10 hours normalization cap
+    const percentReduction = (stats.baseline - actualMinutes) / stats.baseline;
+    const absoluteReduction = stats.baseline - actualMinutes;
+    const disciplineFactor = 1 - (actualMinutes / cap);
+
+    const score =
+      (percentReduction * 0.5) +
+      ((absoluteReduction / cap) * 0.3) +
+      (disciplineFactor * 0.2);
+
+    const xpChange = Math.max(0, Math.round(score * 100));
     let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
 
@@ -170,16 +180,8 @@ const Dashboard = () => {
       setTimeout(() => setIsLevelingUp(false), 2000);
     }
     
-    // Handle level down
-    while (newXp < 0 && newLevel > 1) {
-      newLevel -= 1;
-      const prevLevelXpRequired = newLevel * 100;
-      newXp = prevLevelXpRequired + newXp;
-    }
-    
-    if (newLevel === 1 && newXp < 0) {
-      newXp = 0;
-    }
+    // XP is always >= 0 with the new formula, no level-down needed
+    if (newXp < 0) newXp = 0;
 
     // Update profile in database
     await supabase
