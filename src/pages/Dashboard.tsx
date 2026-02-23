@@ -16,6 +16,13 @@ import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
 
+const getXpToNextLevel = (level: number): number => {
+  if (level === 1) return 100;
+  if (level === 2) return 300;
+  if (level === 3) return 500;
+  return 500; // cap at 500 for level 4+
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -71,7 +78,7 @@ const Dashboard = () => {
           type: profile.avatar_type as AvatarType,
           level: profile.avatar_level,
           xp: profile.avatar_xp,
-          xpToNextLevel: profile.avatar_level * 100,
+          xpToNextLevel: getXpToNextLevel(profile.avatar_level),
           energy: profile.avatar_energy as 'high' | 'medium' | 'low',
         }));
         setStats(prev => ({
@@ -189,7 +196,7 @@ const Dashboard = () => {
     // Handle level down
     while (newXp < 0 && newLevel > 1) {
       newLevel -= 1;
-      newXp = newLevel * 100 + newXp;
+      newXp = getXpToNextLevel(newLevel) + newXp;
     }
     if (newXp < 0) newXp = 0;
 
@@ -211,7 +218,7 @@ const Dashboard = () => {
       energy: newEnergy,
       xp: newXp,
       level: newLevel,
-      xpToNextLevel: newLevel * 100,
+      xpToNextLevel: getXpToNextLevel(newLevel),
     });
 
     const newStreak = reduction > 0 ? stats.currentStreak + 1 : 0;
