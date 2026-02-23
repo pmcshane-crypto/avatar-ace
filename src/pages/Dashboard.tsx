@@ -173,8 +173,8 @@ const Dashboard = () => {
     let xpChange = Math.round(score * 120);
     xpChange = Math.max(-60, Math.min(100, xpChange));
 
-    // Apply delta — total XP never below 0
-    let newXp = Math.max(0, avatar.xp + xpChange);
+    // Apply delta — allow negative so level-down logic can fire
+    let newXp = avatar.xp + xpChange;
     let newLevel = avatar.level;
 
     // Handle level up with full overlay
