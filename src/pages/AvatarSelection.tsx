@@ -42,9 +42,7 @@ const avatarOptions: AvatarOption[] = [
     type: 'chungloid',
     name: 'Chungloid',
     description: 'An adorable companion on your digital wellness journey',
-    image: avatarChungloid,
-    premium: true,
-    price: '$3.99'
+    image: avatarChungloid
   },
   {
     type: 'fire',
@@ -58,33 +56,25 @@ const avatarOptions: AvatarOption[] = [
     type: 'teddy',
     name: 'Teddy',
     description: 'A loyal golden companion full of warmth and joy',
-    image: avatarTeddy,
-    premium: true,
-    price: '$5.99'
+    image: avatarTeddy
   },
   {
     type: 'flarion',
     name: 'Flarion',
     description: 'A mystical purple flame spirit with fierce determination',
-    image: avatarFlarion,
-    premium: true,
-    price: '$6.99'
+    image: avatarFlarion
   },
   {
     type: 'auarlis',
     name: 'Auralis',
     description: 'An icy crystal fox with magical frozen powers',
-    image: avatarAuarlis,
-    premium: true,
-    price: '$11.99'
+    image: avatarAuarlis
   },
   {
     type: 'chicken-nugget',
     name: 'Chicken Nugget',
     description: 'The ultimate legendary companion of pure power',
-    image: avatarChickenNugget,
-    premium: true,
-    price: '$49.99'
+    image: avatarChickenNugget
   }
 ];
 
