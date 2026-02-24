@@ -13,6 +13,7 @@ export function useClan() {
   const [goalMet, setGoalMet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [dynamicGoalMinutes, setDynamicGoalMinutes] = useState<number>(0);
 
   const today = new Date().toISOString().split('T')[0];
   const weekStart = new Date();
@@ -70,7 +71,7 @@ export function useClan() {
       const userIds = membersData.map(m => m.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak')
+        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak, weekly_average')
         .in('id', userIds);
 
       // Get today's screen time for all members
@@ -163,9 +164,20 @@ export function useClan() {
       const totalToday = membersWithData.reduce((sum, m) => sum + m.todayMinutes, 0);
       setTodayTotal(totalToday);
 
-      // Check if goal is met (total under daily_goal_minutes * member count)
+      // Dynamic goal: average all members' weekly_average, then reduce by 60min per day of week
+      // Day of week: 0=Sun, so Mon=1 means 1 day into the week
+      const dayOfWeek = new Date().getDay(); // 0-6
+      const daysIntoWeek = dayOfWeek === 0 ? 7 : dayOfWeek; // treat Sunday as day 7
+      const avgWeeklyAverage = profiles && profiles.length > 0
+        ? profiles.reduce((sum, p) => sum + (p.weekly_average || 0), 0) / profiles.length
+        : (clanData?.daily_goal_minutes || 120);
+      // Reduce target by 60 min for each day of the week (progressive goal)
+      const calculatedGoal = Math.max(30, Math.round(avgWeeklyAverage - (60 * daysIntoWeek / 7)));
+      setDynamicGoalMinutes(calculatedGoal);
+
+      // Check if goal is met (avg per member under dynamic goal)
       if (clanData) {
-        const goalTarget = clanData.daily_goal_minutes * membersWithData.length;
+        const goalTarget = calculatedGoal * membersWithData.length;
         setGoalMet(totalToday <= goalTarget);
       }
 
@@ -278,6 +290,7 @@ export function useClan() {
     dailyChampion,
     weeklyMVP,
     todayTotal,
+    dynamicGoalMinutes,
     goalMet,
     isLoading,
     userId,

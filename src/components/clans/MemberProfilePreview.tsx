@@ -42,7 +42,7 @@ export function MemberProfilePreview({
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className={`relative w-28 h-28 rounded-full overflow-hidden border-4 ${isRare ? 'border-amber-400' : 'border-primary/50'} ${avatarGlow}`}
+              className={`relative w-40 h-40 rounded-full overflow-hidden border-4 ${isRare ? 'border-amber-400' : 'border-primary/50'} ${avatarGlow}`}
             >
               <img 
                 src={avatarImage}

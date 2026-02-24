@@ -27,6 +27,7 @@ export default function Clans() {
     dailyChampion,
     weeklyMVP,
     todayTotal,
+    dynamicGoalMinutes,
     goalMet,
     isLoading,
     userId,
@@ -143,6 +144,7 @@ export default function Clans() {
           memberCount={members.length}
           todayTotal={todayTotal}
           goalMet={goalMet}
+          dynamicGoalMinutes={dynamicGoalMinutes}
         />
 
         {/* Champions */}
