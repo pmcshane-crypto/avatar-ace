@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, Users, TrendingUp, Zap } from "lucide-react";
+import betterBuddyIntro from "@/assets/better-buddy-intro.png";
 
 const screens = [
   {
@@ -76,42 +77,14 @@ const Onboarding = () => {
             />
 
             {screen.animation === "evolve" && (
-              <div className="flex items-center gap-3">
-                {[1, 2, 3].map((level) => (
-                  <motion.div
-                    key={level}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: level * 0.3, type: "spring", stiffness: 200 }}
-                    className="flex flex-col items-center"
-                  >
-                    <div className={`rounded-xl bg-secondary flex items-center justify-center ${
-                      level === 1 ? "w-10 h-10" : level === 2 ? "w-14 h-14" : "w-18 h-18"
-                    }`}>
-                      <Zap className={`text-primary ${
-                        level === 1 ? "w-5 h-5" : level === 2 ? "w-7 h-7" : "w-9 h-9"
-                      }`} />
-                    </div>
-                    <motion.div
-                      className="text-[10px] text-muted-foreground mt-1"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: level * 0.3 + 0.2 }}
-                    >
-                      Lv.{level}
-                    </motion.div>
-                  </motion.div>
-                ))}
-                {/* Arrow indicators */}
-                <motion.div
-                  className="absolute"
-                  style={{ left: "32%", top: "50%" }}
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <ChevronRight className="w-4 h-4 text-primary/50" />
-                </motion.div>
-              </div>
+              <motion.img
+                src={betterBuddyIntro}
+                alt="Better Buddy characters"
+                className="w-full h-full object-cover rounded-full"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              />
             )}
 
             {screen.animation === "friends" && (
