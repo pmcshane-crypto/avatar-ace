@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, Users, TrendingUp, Zap } from "lucide-react";
 import betterBuddyIntro from "@/assets/better-buddy-intro.png";
+import clanBuddies from "@/assets/clan-buddies.png";
 
 const screens = [
   {
@@ -14,7 +15,7 @@ const screens = [
     animation: "evolve",
   },
   {
-    title: "Join a Clan",
+    title: "Join a Clan With Friends!",
     tagline: "Challenge your friends to use their phones less",
     icon: Users,
     gradient: "from-success/30 via-accent/20 to-success/10",
@@ -88,31 +89,14 @@ const Onboarding = () => {
             )}
 
             {screen.animation === "friends" && (
-              <div className="flex flex-col items-center gap-2">
-                {[
-                  { rank: "🥇", name: "You", bar: "w-32" },
-                  { rank: "🥈", name: "Alex", bar: "w-24" },
-                  { rank: "🥉", name: "Sam", bar: "w-16" },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.25, type: "spring" }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="text-lg">{item.rank}</span>
-                    <span className="text-xs text-foreground w-10 text-left">{item.name}</span>
-                    <motion.div
-                      className={`h-3 rounded-full bg-primary/60 ${item.bar}`}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ delay: i * 0.25 + 0.3, duration: 0.5 }}
-                      style={{ originX: 0 }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
+              <motion.img
+                src={clanBuddies}
+                alt="Clan buddies"
+                className="w-full h-full object-cover rounded-full"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              />
             )}
 
             {screen.animation === "xp" && (
