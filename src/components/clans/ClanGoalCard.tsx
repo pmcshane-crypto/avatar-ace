@@ -11,13 +11,14 @@ interface ClanGoalCardProps {
   memberCount: number;
   todayTotal: number;
   goalMet: boolean;
+  dynamicGoalMinutes: number;
 }
 
-export function ClanGoalCard({ clan, memberCount, todayTotal, goalMet }: ClanGoalCardProps) {
+export function ClanGoalCard({ clan, memberCount, todayTotal, goalMet, dynamicGoalMinutes }: ClanGoalCardProps) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [prevGoalMet, setPrevGoalMet] = useState(goalMet);
   
-  const goalTarget = clan.daily_goal_minutes * memberCount;
+  const goalTarget = dynamicGoalMinutes * memberCount;
   const progress = goalTarget > 0 ? Math.min(100, (1 - (todayTotal / goalTarget)) * 100 + 50) : 0;
   const avgPerMember = memberCount > 0 ? Math.round(todayTotal / memberCount) : 0;
 
@@ -43,7 +44,7 @@ export function ClanGoalCard({ clan, memberCount, todayTotal, goalMet }: ClanGoa
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <Card className={`relative overflow-hidden p-6 transition-all duration-500 ${
+      <Card className={`relative overflow-hidden p-4 transition-all duration-500 ${
         goalMet 
           ? 'bg-gradient-to-br from-green-500/20 via-card to-emerald-500/10 border-green-500/50 shadow-[0_0_30px_hsl(142_76%_45%/0.3)]' 
           : 'bg-gradient-to-br from-card to-muted/20 border-border/50'
@@ -62,7 +63,7 @@ export function ClanGoalCard({ clan, memberCount, todayTotal, goalMet }: ClanGoa
           />
         )}
 
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-2">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -82,7 +83,7 @@ export function ClanGoalCard({ clan, memberCount, todayTotal, goalMet }: ClanGoa
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                Avg {avgPerMember}m / {clan.daily_goal_minutes}m per member
+                Avg {avgPerMember}m / {dynamicGoalMinutes}m per member
               </span>
               <span className={goalMet ? 'text-green-400 font-medium' : 'text-muted-foreground'}>
                 {goalMet ? 'Goal Met! 🎉' : `${Math.round(progress)}%`}
