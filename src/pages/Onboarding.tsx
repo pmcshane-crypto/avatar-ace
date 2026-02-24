@@ -15,7 +15,7 @@ const screens = [
     animation: "evolve",
   },
   {
-    title: "Join a Clan",
+    title: "Join a Clan With Friends!",
     tagline: "Challenge your friends to use their phones less",
     icon: Users,
     gradient: "from-success/30 via-accent/20 to-success/10",
