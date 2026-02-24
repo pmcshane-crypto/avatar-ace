@@ -1,6 +1,5 @@
 import { DailyChampion, WeeklyMVP } from '@/types/clan';
-import { isRareAvatar } from '@/lib/avatarImages';
-import { BuddyAvatar } from '@/components/BuddyAvatar';
+import { getAvatarImage, getAvatarGlow, isRareAvatar } from '@/lib/avatarImages';
 import { Card } from '@/components/ui/card';
 import { Crown, Trophy, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -26,18 +25,20 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <motion.div 
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <BuddyAvatar
-                avatarType={dailyChampion.avatar_type}
-                avatarLevel={dailyChampion.avatar_level}
+            <div className={`relative w-14 h-14 rounded-full overflow-hidden border-2 border-amber-400 ${getAvatarGlow(dailyChampion.avatar_type)}`}>
+              <img 
+                src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
-                wrapperClassName="w-16 h-16"
-                className={isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}
+                className={`w-full h-full object-cover ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
               />
-            </motion.div>
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center"
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Crown className="w-6 h-6 text-amber-400 drop-shadow-lg" style={{ transform: 'translateY(-24px)' }} />
+              </motion.div>
+            </div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -69,18 +70,13 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <motion.div
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-            >
-              <BuddyAvatar
-                avatarType={weeklyMVP.avatar_type}
-                avatarLevel={weeklyMVP.avatar_level}
+            <div className={`relative w-14 h-14 rounded-full overflow-hidden border-2 border-purple-400 ${getAvatarGlow(weeklyMVP.avatar_type)}`}>
+              <img 
+                src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
-                wrapperClassName="w-16 h-16"
-                className={isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}
+                className={`w-full h-full object-cover ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
               />
-            </motion.div>
+            </div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 import { ClanMember } from '@/types/clan';
-import { isRareAvatar } from '@/lib/avatarImages';
-import { BuddyAvatar } from '@/components/BuddyAvatar';
+import { getAvatarImage, getAvatarGlow, isRareAvatar, getAvatarBorderColor } from '@/lib/avatarImages';
+import { Card } from '@/components/ui/card';
 import { ArrowUp, ArrowDown, Minus, Sparkles, Crown, Trophy, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -23,6 +23,9 @@ function LeaderboardRow({
   onReact, 
   onTap 
 }: LeaderboardRowProps) {
+  const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
+  const avatarGlow = getAvatarGlow(member.profile.avatar_type);
+  const borderColor = getAvatarBorderColor(member.profile.avatar_type);
   const isRare = isRareAvatar(member.profile.avatar_type);
 
   const getRankColor = (rank: number) => {
@@ -67,22 +70,17 @@ function LeaderboardRow({
         </div>
 
         {/* Avatar */}
-        <motion.div 
-          animate={{ y: [0, -4, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative"
-        >
-          <BuddyAvatar
-            avatarType={member.profile.avatar_type}
-            avatarLevel={member.profile.avatar_level}
+        <div className={`relative w-12 h-12 rounded-full overflow-hidden border-2 ${isRare ? 'border-amber-400' : borderColor} ${isRare ? avatarGlow : ''}`}>
+          <img 
+            src={avatarImage} 
             alt={member.profile.username}
-            wrapperClassName="w-14 h-14"
-            className={isRare ? 'saturate-150' : ''}
+            className={`w-full h-full object-cover ${isRare ? 'saturate-150' : ''}`}
           />
+          {/* Level badge */}
           <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
             {member.profile.avatar_level}
           </div>
-        </motion.div>
+        </div>
 
         {/* Name and badges */}
         <div className="flex-1 min-w-0">

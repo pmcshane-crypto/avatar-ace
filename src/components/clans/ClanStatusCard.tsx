@@ -1,5 +1,5 @@
 import { ClanMember } from '@/types/clan';
-import { BuddyAvatar } from '@/components/BuddyAvatar';
+import { getAvatarImage, getAvatarGlow, isRareAvatar } from '@/lib/avatarImages';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowUp, ArrowDown, Crown, Trophy, Minus } from 'lucide-react';
@@ -24,6 +24,10 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
   const progressToNext = nextRankMember && member.todayMinutes > 0
     ? Math.max(0, Math.min(100, ((nextRankMember.todayMinutes / member.todayMinutes) * 100)))
     : member.rank === 1 ? 100 : 0;
+
+  const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
+  const avatarGlow = getAvatarGlow(member.profile.avatar_type);
+  const isRare = isRareAvatar(member.profile.avatar_type);
 
   return (
     <motion.div
@@ -60,21 +64,16 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
 
         <div className="relative flex items-center gap-6">
           {/* Avatar */}
-          <motion.div 
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative"
-          >
-            <BuddyAvatar
-              avatarType={member.profile.avatar_type}
-              avatarLevel={member.profile.avatar_level}
+          <div className={`relative w-20 h-20 rounded-full overflow-hidden border-2 ${isRare ? 'border-amber-400 animate-pulse' : 'border-primary/50'} ${avatarGlow}`}>
+            <img 
+              src={avatarImage} 
               alt={member.profile.username}
-              wrapperClassName="w-24 h-24"
+              className="w-full h-full object-cover"
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}
             </div>
-          </motion.div>
+          </div>
 
           {/* Stats */}
           <div className="flex-1 space-y-3">
