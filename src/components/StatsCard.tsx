@@ -57,6 +57,12 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
       value: reductionProgress?.display ?? `${stats.totalReduction}%`,
       subtitle: reductionProgress?.subtitle,
       showLocked: reductionProgress?.showProgress,
+      showSubtitle: (
+        <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground/60 mt-1">
+          <Clock className="w-3 h-3" />
+          <span>{hoursUntilReset}h until reset</span>
+        </div>
+      ),
     },
     {
       icon: Calendar,
