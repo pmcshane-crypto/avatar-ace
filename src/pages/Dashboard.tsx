@@ -9,8 +9,11 @@ import { LevelUpOverlay } from "@/components/LevelUpOverlay";
 import { XpGainPopup } from "@/components/XpGainPopup";
 import { StreakFireAnimation } from "@/components/StreakFireAnimation";
 import { DailyWinCelebration } from "@/components/DailyWinCelebration";
+import { NotificationBell } from "@/components/NotificationBell";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/useNotifications";
+import { checkMilestones } from "@/lib/milestones";
 import { Users, RefreshCw, Smartphone, User } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
@@ -31,6 +34,7 @@ const Dashboard = () => {
   const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
   const [userId, setUserId] = useState<string | null>(null);
   const { userRank, totalUsers, reductionPercent, isLoading: rankLoading } = useGlobalRanking(userId);
+  const { notifications, unreadCount, markAsRead, markAllAsRead, sendNotification } = useNotifications(userId);
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
@@ -232,6 +236,27 @@ const Dashboard = () => {
       totalReduction: Math.floor(reduction),
     });
 
+    // Check milestones and send notifications
+    const milestones = checkMilestones({
+      newStreak,
+      previousStreak: stats.currentStreak,
+      newLevel,
+      previousLevel: avatar.level,
+      userRank,
+      totalUsers,
+      reductionPercent: Math.floor(reduction),
+      avatarName: avatar.name || "Your Buddy",
+    });
+
+    for (const m of milestones) {
+      sendNotification({
+        type: m.type,
+        title: m.title,
+        message: m.message,
+        icon: m.icon,
+      });
+    }
+
     // Trigger celebration animations
     if (xpChange > 0) {
       // XP gain popup
@@ -305,13 +330,21 @@ const Dashboard = () => {
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 relative">
-          <Button
-            variant="ghost"
-            className="absolute right-0 top-0 h-14 w-14 p-0"
-            onClick={() => navigate("/profile")}
-          >
-            <User className="w-10 h-10" />
-          </Button>
+          <div className="absolute right-0 top-0 flex items-center gap-1">
+            <NotificationBell
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAsRead={markAsRead}
+              onMarkAllAsRead={markAllAsRead}
+            />
+            <Button
+              variant="ghost"
+              className="h-14 w-14 p-0"
+              onClick={() => navigate("/profile")}
+            >
+              <User className="w-10 h-10" />
+            </Button>
+          </div>
           <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
           {Capacitor.getPlatform() === 'ios' && screenTimeData.isAutomatic && (
