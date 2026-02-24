@@ -68,7 +68,7 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
             <img 
               src={avatarImage} 
               alt={member.profile.username}
-              className="w-full h-full object-contain drop-shadow-lg"
+              className="w-full h-full object-contain mix-blend-screen"
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}

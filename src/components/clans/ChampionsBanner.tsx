@@ -29,7 +29,7 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
               <img 
                 src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
-                className={`w-full h-full object-contain drop-shadow-lg ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
               />
             </div>
             
@@ -67,7 +67,7 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
               <img 
                 src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
-                className={`w-full h-full object-contain drop-shadow-lg ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
               />
             </div>
             
