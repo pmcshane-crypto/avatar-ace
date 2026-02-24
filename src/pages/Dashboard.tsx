@@ -401,12 +401,12 @@ const Dashboard = () => {
         {/* Global Ranking */}
         {!rankLoading && userRank > 0 && (
           <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 border border-border/30 text-center space-y-2">
-            <p className="text-sm text-muted-foreground font-medium">🌍 Global Ranking</p>
+            <p className="text-sm text-muted-foreground font-medium">🌍 Global Ranking (Weekly Avg)</p>
             <p className="text-4xl font-bold text-primary">
               #{userRank.toLocaleString()}
             </p>
             <p className="text-sm text-muted-foreground">
-              out of {totalUsers.toLocaleString()} users today
+              out of {totalUsers.toLocaleString()} active users
             </p>
             <p className="text-xs text-accent font-medium">
               Top {Math.ceil((userRank / totalUsers) * 100)}% worldwide

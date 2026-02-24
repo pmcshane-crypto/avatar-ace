@@ -33,7 +33,7 @@ export function useGlobalRanking(userId: string | null) {
       // Get my baseline
       const { data: myProfile } = await supabase
         .from('profiles')
-        .select('baseline_minutes, total_reduction')
+        .select('baseline_minutes, total_reduction, weekly_average')
         .eq('id', userId)
         .maybeSingle();
 
@@ -42,23 +42,25 @@ export function useGlobalRanking(userId: string | null) {
         return;
       }
 
-      const myReduction = myProfile.total_reduction || 0;
+      const myWeeklyAvg = myProfile.weekly_average || 0;
 
-      // Count how many users have a BETTER reduction than me today
+      // Lower weekly average is better — count users with a lower average
       const { count: usersAhead } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .gt('total_reduction', myReduction);
+        .lt('weekly_average', myWeeklyAvg)
+        .gt('weekly_average', 0);
 
-      // Count total active users (have logged at least once)
+      // Count total active users (have a weekly_average > 0)
       const { count: totalUsers } = await supabase
-        .from('screen_time_entries')
-        .select('user_id', { count: 'exact', head: true });
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .gt('weekly_average', 0);
 
       setRankData({
         userRank: (usersAhead || 0) + 1,
         totalUsers: totalUsers || 1,
-        reductionPercent: myReduction,
+        reductionPercent: myProfile.total_reduction || 0,
         isLoading: false,
       });
     };
