@@ -4,9 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import Onboarding from "./pages/Onboarding";
 import AvatarSelection from "./pages/AvatarSelection";
 import BaselineSetup from "./pages/BaselineSetup";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import Clans from "./pages/Clans";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -22,9 +24,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/avatar-selection" element={<AvatarSelection />} />
           <Route path="/baseline-setup" element={<BaselineSetup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/clans" element={<Clans />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
