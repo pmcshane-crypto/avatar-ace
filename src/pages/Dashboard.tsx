@@ -15,6 +15,7 @@ import { Users, RefreshCw, Smartphone } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
+import { useGlobalRanking } from "@/hooks/useGlobalRanking";
 
 const getXpToNextLevel = (level: number): number => {
   if (level === 1) return 100;
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { screenTimeData, hasPermission, isLoading, refreshScreenTime } = useScreenTime();
   const [userId, setUserId] = useState<string | null>(null);
+  const { userRank, totalUsers, reductionPercent, isLoading: rankLoading } = useGlobalRanking(userId);
   const [avatar, setAvatar] = useState<Avatar>({
     id: '1',
     type: (localStorage.getItem('selectedAvatarType') as AvatarType) || 'water',
@@ -353,6 +355,22 @@ const Dashboard = () => {
 
         {/* Stats Grid */}
         <StatsCard stats={stats} />
+
+        {/* Global Ranking */}
+        {!rankLoading && userRank > 0 && (
+          <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 border border-border/30 text-center space-y-2">
+            <p className="text-sm text-muted-foreground font-medium">🌍 Global Ranking</p>
+            <p className="text-4xl font-bold text-primary">
+              #{userRank.toLocaleString()}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              out of {totalUsers.toLocaleString()} users today
+            </p>
+            <p className="text-xs text-accent font-medium">
+              Top {Math.ceil((userRank / totalUsers) * 100)}% worldwide
+            </p>
+          </div>
+        )}
 
         {/* Screen Time Input - Only show if not automatic */}
         {!screenTimeData.isAutomatic && (
