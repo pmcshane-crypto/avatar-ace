@@ -1,5 +1,5 @@
 import { ClanMember } from '@/types/clan';
-import { getAvatarImage, getAvatarGlow, isRareAvatar } from '@/lib/avatarImages';
+import { getAvatarImage } from '@/lib/avatarImages';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowUp, ArrowDown, Crown, Trophy, Minus } from 'lucide-react';
@@ -26,8 +26,6 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
     : member.rank === 1 ? 100 : 0;
 
   const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
-  const avatarGlow = getAvatarGlow(member.profile.avatar_type);
-  const isRare = isRareAvatar(member.profile.avatar_type);
 
   return (
     <motion.div
@@ -72,7 +70,7 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
             <img 
               src={avatarImage} 
               alt={member.profile.username}
-              className="w-full h-full object-contain mix-blend-screen brightness-110"
+              className="w-full h-full object-contain"
               style={{ background: 'transparent' }}
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">

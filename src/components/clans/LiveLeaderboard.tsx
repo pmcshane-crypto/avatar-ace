@@ -1,5 +1,5 @@
 import { ClanMember } from '@/types/clan';
-import { getAvatarImage, getAvatarGlow, isRareAvatar, getAvatarBorderColor } from '@/lib/avatarImages';
+import { getAvatarImage, isRareAvatar } from '@/lib/avatarImages';
 import { Card } from '@/components/ui/card';
 import { ArrowUp, ArrowDown, Minus, Sparkles, Crown, Trophy, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,8 +24,6 @@ function LeaderboardRow({
   onTap 
 }: LeaderboardRowProps) {
   const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
-  const avatarGlow = getAvatarGlow(member.profile.avatar_type);
-  const borderColor = getAvatarBorderColor(member.profile.avatar_type);
   const isRare = isRareAvatar(member.profile.avatar_type);
 
   const getRankColor = (rank: number) => {
@@ -78,7 +76,7 @@ function LeaderboardRow({
           <img 
             src={avatarImage} 
             alt={member.profile.username}
-            className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRare ? 'saturate-150' : ''}`}
+            className={`w-full h-full object-contain ${isRare ? 'saturate-150' : ''}`}
             style={{ background: 'transparent' }}
           />
           <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
