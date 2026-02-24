@@ -1,5 +1,5 @@
 import { DailyChampion, WeeklyMVP } from '@/types/clan';
-import { getAvatarImage, getAvatarGlow, isRareAvatar } from '@/lib/avatarImages';
+import { getAvatarImage, isRareAvatar } from '@/lib/avatarImages';
 import { Card } from '@/components/ui/card';
 import { Crown, Trophy, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -33,7 +33,7 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
               <img 
                 src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
-                className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
                 style={{ background: 'transparent' }}
               />
             </motion.div>
@@ -76,7 +76,7 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
               <img 
                 src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
-                className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
                 style={{ background: 'transparent' }}
               />
             </motion.div>
