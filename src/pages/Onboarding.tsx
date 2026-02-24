@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, Users, TrendingUp, Zap } from "lucide-react";
 import betterBuddyIntro from "@/assets/better-buddy-intro.png";
+import clanBuddies from "@/assets/clan-buddies.png";
 
 const screens = [
   {
