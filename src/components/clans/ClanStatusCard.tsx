@@ -64,7 +64,11 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
 
         <div className="relative flex items-center gap-6">
           {/* Avatar */}
-          <div className={`relative w-24 h-24 flex-shrink-0 ${avatarGlow}`}>
+          <motion.div 
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-24 h-24 flex-shrink-0"
+          >
             <img 
               src={avatarImage} 
               alt={member.profile.username}
@@ -73,7 +77,7 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}
             </div>
-          </div>
+          </motion.div>
 
           {/* Stats */}
           <div className="flex-1 space-y-3">

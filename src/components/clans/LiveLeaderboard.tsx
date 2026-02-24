@@ -70,7 +70,11 @@ function LeaderboardRow({
         </div>
 
         {/* Avatar */}
-        <div className={`relative w-14 h-14 flex-shrink-0 ${isRare ? avatarGlow : ''}`}>
+        <motion.div 
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="relative w-14 h-14 flex-shrink-0"
+        >
           <img 
             src={avatarImage} 
             alt={member.profile.username}
@@ -79,7 +83,7 @@ function LeaderboardRow({
           <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
             {member.profile.avatar_level}
           </div>
-        </div>
+        </motion.div>
 
         {/* Name and badges */}
         <div className="flex-1 min-w-0">
