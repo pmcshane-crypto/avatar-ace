@@ -73,12 +73,13 @@ function LeaderboardRow({
         <motion.div 
           animate={{ y: [0, -4, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-14 h-14 flex-shrink-0"
+          className="relative w-14 h-14 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
         >
           <img 
             src={avatarImage} 
             alt={member.profile.username}
-            className={`w-full h-full object-contain mix-blend-screen ${isRare ? 'saturate-150' : ''}`}
+            className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRare ? 'saturate-150' : ''}`}
+            style={{ background: 'transparent' }}
           />
           <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
             {member.profile.avatar_level}
