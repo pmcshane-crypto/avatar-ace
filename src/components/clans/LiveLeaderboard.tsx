@@ -76,10 +76,6 @@ function LeaderboardRow({
             alt={member.profile.username}
             className={`w-full h-full object-cover ${isRare ? 'saturate-150' : ''}`}
           />
-          {/* Level badge */}
-          <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
-            {member.profile.avatar_level}
-          </div>
         </div>
 
         {/* Name and badges */}
@@ -95,6 +91,7 @@ function LeaderboardRow({
             {isWeeklyMVP && (
               <Trophy className="w-4 h-4 text-purple-400 flex-shrink-0" />
             )}
+            <span className="text-xs text-muted-foreground font-medium flex-shrink-0">Lv.{member.profile.avatar_level}</span>
             {member.profile.current_streak >= 7 && (
               <div className="flex items-center gap-0.5 text-orange-400">
                 <Flame className="w-3 h-3" />
