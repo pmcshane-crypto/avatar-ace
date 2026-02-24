@@ -25,19 +25,12 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <div className={`relative w-14 h-14 rounded-full overflow-hidden border-2 border-amber-400 ${getAvatarGlow(dailyChampion.avatar_type)}`}>
+            <div className={`relative w-16 h-16 flex-shrink-0 ${getAvatarGlow(dailyChampion.avatar_type)}`}>
               <img 
                 src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
-                className={`w-full h-full object-cover ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain drop-shadow-lg ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
               />
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Crown className="w-6 h-6 text-amber-400 drop-shadow-lg" style={{ transform: 'translateY(-24px)' }} />
-              </motion.div>
             </div>
             
             <div className="flex-1">
@@ -70,11 +63,11 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <div className={`relative w-14 h-14 rounded-full overflow-hidden border-2 border-purple-400 ${getAvatarGlow(weeklyMVP.avatar_type)}`}>
+            <div className={`relative w-16 h-16 flex-shrink-0 ${getAvatarGlow(weeklyMVP.avatar_type)}`}>
               <img 
                 src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
-                className={`w-full h-full object-cover ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain drop-shadow-lg ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
               />
             </div>
             
