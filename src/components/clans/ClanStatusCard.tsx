@@ -64,11 +64,11 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
 
         <div className="relative flex items-center gap-6">
           {/* Avatar */}
-          <div className={`relative w-20 h-20 rounded-full overflow-hidden border-2 ${isRare ? 'border-amber-400 animate-pulse' : 'border-primary/50'} ${avatarGlow}`}>
+          <div className={`relative w-24 h-24 flex-shrink-0 ${avatarGlow}`}>
             <img 
               src={avatarImage} 
               alt={member.profile.username}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain drop-shadow-lg"
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}
