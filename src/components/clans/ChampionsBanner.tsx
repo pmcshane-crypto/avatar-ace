@@ -1,5 +1,6 @@
 import { DailyChampion, WeeklyMVP } from '@/types/clan';
-import { getAvatarImage, isRareAvatar } from '@/lib/avatarImages';
+import { isRareAvatar } from '@/lib/avatarImages';
+import { BuddyAvatar } from '@/components/BuddyAvatar';
 import { Card } from '@/components/ui/card';
 import { Crown, Trophy, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -28,13 +29,13 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
             <motion.div 
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-16 h-16 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
             >
-              <img 
-                src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
+              <BuddyAvatar
+                avatarType={dailyChampion.avatar_type}
+                avatarLevel={dailyChampion.avatar_level}
                 alt={dailyChampion.username}
-                className={`w-full h-full object-contain ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
-                style={{ background: 'transparent' }}
+                wrapperClassName="w-16 h-16"
+                className={isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}
               />
             </motion.div>
             
@@ -71,13 +72,13 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
             <motion.div
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-              className="relative w-16 h-16 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
             >
-              <img 
-                src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
+              <BuddyAvatar
+                avatarType={weeklyMVP.avatar_type}
+                avatarLevel={weeklyMVP.avatar_level}
                 alt={weeklyMVP.username}
-                className={`w-full h-full object-contain ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
-                style={{ background: 'transparent' }}
+                wrapperClassName="w-16 h-16"
+                className={isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}
               />
             </motion.div>
             

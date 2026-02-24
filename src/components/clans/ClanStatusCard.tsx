@@ -1,5 +1,5 @@
 import { ClanMember } from '@/types/clan';
-import { getAvatarImage } from '@/lib/avatarImages';
+import { BuddyAvatar } from '@/components/BuddyAvatar';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowUp, ArrowDown, Crown, Trophy, Minus } from 'lucide-react';
@@ -24,8 +24,6 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
   const progressToNext = nextRankMember && member.todayMinutes > 0
     ? Math.max(0, Math.min(100, ((nextRankMember.todayMinutes / member.todayMinutes) * 100)))
     : member.rank === 1 ? 100 : 0;
-
-  const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
 
   return (
     <motion.div
@@ -65,13 +63,13 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
           <motion.div 
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative w-24 h-24 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
+            className="relative"
           >
-            <img 
-              src={avatarImage} 
+            <BuddyAvatar
+              avatarType={member.profile.avatar_type}
+              avatarLevel={member.profile.avatar_level}
               alt={member.profile.username}
-              className="w-full h-full object-contain"
-              style={{ background: 'transparent' }}
+              wrapperClassName="w-24 h-24"
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}
