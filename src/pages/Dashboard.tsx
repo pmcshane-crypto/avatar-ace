@@ -11,7 +11,7 @@ import { StreakFireAnimation } from "@/components/StreakFireAnimation";
 import { DailyWinCelebration } from "@/components/DailyWinCelebration";
 import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { Users, RefreshCw, Smartphone } from "lucide-react";
+import { Users, RefreshCw, Smartphone, User } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
@@ -303,7 +303,15 @@ const Dashboard = () => {
     <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2 relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 top-0"
+            onClick={() => navigate("/profile")}
+          >
+            <User className="w-5 h-5" />
+          </Button>
           <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
           {Capacitor.getPlatform() === 'ios' && screenTimeData.isAutomatic && (
@@ -374,7 +382,7 @@ const Dashboard = () => {
 
         {/* Screen Time Input - Only show if not automatic */}
         {!screenTimeData.isAutomatic && (
-          <ScreenTimeInput onSubmit={handleScreenTimeSubmit} />
+          <ScreenTimeInput onSubmit={handleScreenTimeSubmit} baseline={stats.baseline} avatarType={avatar.type} />
         )}
 
         {/* Change Better Buddy Button */}

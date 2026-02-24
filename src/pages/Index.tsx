@@ -56,7 +56,7 @@ const Index = () => {
         </div>
 
         <Button
-          onClick={() => navigate('/avatar-selection')}
+          onClick={() => navigate('/onboarding')}
           className="bg-primary text-primary-foreground hover:bg-primary/90 px-12 py-8 text-xl shadow-glow"
           size="lg"
         >
