@@ -1,5 +1,6 @@
 import { ClanMember } from '@/types/clan';
-import { getAvatarImage, getAvatarGlow, isRareAvatar } from '@/lib/avatarImages';
+import { isRareAvatar } from '@/lib/avatarImages';
+import { BuddyAvatar } from '@/components/BuddyAvatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -23,8 +24,6 @@ export function MemberProfilePreview({
 }: MemberProfilePreviewProps) {
   if (!member) return null;
 
-  const avatarImage = getAvatarImage(member.profile.avatar_type, member.profile.avatar_level);
-  const avatarGlow = getAvatarGlow(member.profile.avatar_type);
   const isRare = isRareAvatar(member.profile.avatar_type);
 
   const xpProgress = ((member.profile.avatar_level % 1) * 100) || 50;
@@ -42,12 +41,14 @@ export function MemberProfilePreview({
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className={`relative w-28 h-28 rounded-full overflow-hidden border-4 ${isRare ? 'border-amber-400' : 'border-primary/50'} ${avatarGlow}`}
+              className="relative"
             >
-              <img 
-                src={avatarImage}
+              <BuddyAvatar
+                avatarType={member.profile.avatar_type}
+                avatarLevel={member.profile.avatar_level}
                 alt={member.profile.username}
-                className={`w-full h-full object-cover ${isRare ? 'saturate-150' : ''}`}
+                wrapperClassName="w-28 h-28"
+                className={isRare ? 'saturate-150' : ''}
               />
               <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-sm font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-background">
                 {member.profile.avatar_level}
