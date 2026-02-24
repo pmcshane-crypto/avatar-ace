@@ -64,13 +64,17 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
 
         <div className="relative flex items-center gap-6">
           {/* Avatar */}
-          <div className={`relative w-20 h-20 rounded-full overflow-hidden border-2 ${isRare ? 'border-amber-400 animate-pulse' : 'border-primary/50'} ${avatarGlow}`}>
+          <motion.div
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className={`relative w-20 h-20 rounded-full overflow-hidden border-2 ${isRare ? 'border-amber-400' : 'border-primary/50'}`}
+          >
             <img 
               src={avatarImage} 
               alt={member.profile.username}
               className="w-full h-full object-cover"
             />
-          </div>
+          </motion.div>
 
           {/* Stats */}
           <div className="flex-1 space-y-3">
