@@ -310,7 +310,7 @@ const Dashboard = () => {
             className="absolute right-0 top-0"
             onClick={() => navigate("/profile")}
           >
-            <User className="w-5 h-5" />
+            <User className="w-10 h-10" />
           </Button>
           <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
