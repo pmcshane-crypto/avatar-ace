@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { TrendingDown, Flame, Award, Calendar, Clock, Lock, Sparkles } from "lucide-react";
+import { TrendingDown, Calendar, Clock, Sparkles } from "lucide-react";
 import { UserStats } from "@/types/avatar";
 
 interface StatsCardProps {
@@ -48,9 +48,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  const streakProgress = getProgressMessage(stats.currentStreak, 'streak');
   const reductionProgress = getProgressMessage(stats.totalReduction, 'reduction');
-  const bestProgress = getProgressMessage(stats.bestStreak, 'best');
 
   const statItems = [
     {
@@ -60,22 +58,6 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
       subtitle: reductionProgress?.subtitle,
       color: stats.totalReduction > 0 ? "text-success" : "text-muted-foreground",
       showLocked: reductionProgress?.showProgress,
-    },
-    {
-      icon: Flame,
-      label: "Current Streak",
-      value: streakProgress?.display ?? `${stats.currentStreak} days`,
-      subtitle: streakProgress?.subtitle,
-      color: stats.currentStreak > 0 ? "text-warning" : "text-muted-foreground",
-      showLocked: false, // Show "Day 1" styling differently
-    },
-    {
-      icon: Award,
-      label: "Best Streak",
-      value: bestProgress?.display ?? `${stats.bestStreak} days`,
-      subtitle: bestProgress?.subtitle,
-      color: stats.bestStreak > 0 ? "text-primary" : "text-muted-foreground",
-      showLocked: bestProgress?.showProgress,
     },
     {
       icon: Calendar,
