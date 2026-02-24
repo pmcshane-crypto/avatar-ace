@@ -360,15 +360,13 @@ const Dashboard = () => {
             onClick={() => navigate("/clans")}
             variant="outline"
             size="lg"
-            className="text-2xl px-12 py-8 h-auto flex flex-col items-center gap-3"
+            className="text-2xl px-12 py-6 h-auto"
           >
-            <div className="w-24 h-24 rounded-full border-4 border-primary/50 overflow-hidden flex-shrink-0">
+            <div className="w-16 h-16 rounded-full border-3 border-primary/50 overflow-hidden flex-shrink-0 mr-3">
               <img src={clanButtonImg} alt="Clan buddies" className="w-full h-full object-cover" />
             </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-7 h-7" />
-              View My Clans
-            </div>
+            <Users className="w-7 h-7 mr-2" />
+            View My Clans
           </Button>
         </div>
 
