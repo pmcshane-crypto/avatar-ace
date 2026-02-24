@@ -56,14 +56,12 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
       label: "Total Reduction",
       value: reductionProgress?.display ?? `${stats.totalReduction}%`,
       subtitle: reductionProgress?.subtitle,
-      color: stats.totalReduction > 0 ? "text-success" : "text-muted-foreground",
       showLocked: reductionProgress?.showProgress,
     },
     {
       icon: Calendar,
       label: "Weekly Avg",
       value: `${Math.floor(stats.weeklyAverage / 60)}h ${stats.weeklyAverage % 60}m`,
-      color: "text-accent",
       showSubtitle: (
         <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground/60 mt-1">
           <Clock className="w-3 h-3" />
@@ -101,13 +99,13 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
             
             <div className="relative flex flex-col items-center text-center space-y-2">
               <div className="relative">
-                <item.icon className={`w-5 h-5 ${item.color}`} />
+                <item.icon className="w-6 h-6 text-[hsl(120,80%,65%)]" />
                 {item.showLocked && (
                   <Sparkles className="w-3 h-3 text-accent absolute -top-1 -right-2 animate-pulse" />
                 )}
               </div>
-              <div className="text-xs text-muted-foreground">{item.label}</div>
-              <div className={`text-lg font-bold ${item.color}`}>{item.value}</div>
+              <div className="text-sm font-semibold text-[hsl(120,80%,65%)]">{item.label}</div>
+              <div className="text-2xl font-black text-[hsl(120,80%,65%)]">{item.value}</div>
               {item.subtitle && (
                 <div className="text-[10px] text-muted-foreground/60">{item.subtitle}</div>
               )}
