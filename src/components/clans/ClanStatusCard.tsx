@@ -67,12 +67,13 @@ export function ClanStatusCard({ member, members, userId, isDailyChampion, isWee
           <motion.div 
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative w-24 h-24 flex-shrink-0"
+            className="relative w-24 h-24 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
           >
             <img 
               src={avatarImage} 
               alt={member.profile.username}
-              className="w-full h-full object-contain mix-blend-screen"
+              className="w-full h-full object-contain mix-blend-screen brightness-110"
+              style={{ background: 'transparent' }}
             />
             <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-background">
               {member.profile.avatar_level}

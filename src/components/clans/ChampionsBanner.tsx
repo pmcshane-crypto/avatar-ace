@@ -28,12 +28,13 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
             <motion.div 
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-16 h-16 flex-shrink-0"
+              className="relative w-16 h-16 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
             >
               <img 
                 src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
-                className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
+                style={{ background: 'transparent' }}
               />
             </motion.div>
             
@@ -70,12 +71,13 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
             <motion.div
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-              className="relative w-16 h-16 flex-shrink-0"
+              className="relative w-16 h-16 flex-shrink-0 bg-transparent border-0 shadow-none p-0 rounded-none"
             >
               <img 
                 src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
-                className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
+                className={`w-full h-full object-contain mix-blend-screen brightness-110 ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
+                style={{ background: 'transparent' }}
               />
             </motion.div>
             
