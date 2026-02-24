@@ -18,7 +18,7 @@ import { Users, RefreshCw, Smartphone, User } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
-import clanBuddiesImg from "@/assets/clan-buddies.png";
+import clanButtonImg from "@/assets/clan-button-image.png";
 import { useGlobalRanking } from "@/hooks/useGlobalRanking";
 
 const getXpToNextLevel = (level: number): number => {
@@ -360,11 +360,15 @@ const Dashboard = () => {
             onClick={() => navigate("/clans")}
             variant="outline"
             size="lg"
-            className="text-2xl px-12 py-6 h-auto"
+            className="text-2xl px-12 py-8 h-auto flex flex-col items-center gap-3"
           >
-            <img src={clanBuddiesImg} alt="Clan buddies" className="w-12 h-12 rounded-full object-cover mr-3" />
-            <Users className="w-7 h-7 mr-2" />
-            View My Clans
+            <div className="w-24 h-24 rounded-full border-4 border-primary/50 overflow-hidden flex-shrink-0">
+              <img src={clanButtonImg} alt="Clan buddies" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-7 h-7" />
+              View My Clans
+            </div>
           </Button>
         </div>
 
