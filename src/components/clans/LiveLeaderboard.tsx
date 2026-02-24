@@ -74,7 +74,7 @@ function LeaderboardRow({
           <img 
             src={avatarImage} 
             alt={member.profile.username}
-            className={`w-full h-full object-contain drop-shadow-lg ${isRare ? 'saturate-150' : ''}`}
+            className={`w-full h-full object-contain mix-blend-screen ${isRare ? 'saturate-150' : ''}`}
           />
           <div className="absolute -bottom-0.5 -right-0.5 bg-background text-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border border-border">
             {member.profile.avatar_level}
