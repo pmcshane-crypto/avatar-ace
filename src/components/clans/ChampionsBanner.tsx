@@ -25,13 +25,17 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <div className={`relative w-16 h-16 flex-shrink-0 ${getAvatarGlow(dailyChampion.avatar_type)}`}>
+            <motion.div 
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="relative w-16 h-16 flex-shrink-0"
+            >
               <img 
                 src={getAvatarImage(dailyChampion.avatar_type, dailyChampion.avatar_level)}
                 alt={dailyChampion.username}
                 className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(dailyChampion.avatar_type) ? 'saturate-150' : ''}`}
               />
-            </div>
+            </motion.div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -63,13 +67,17 @@ export function ChampionsBanner({ dailyChampion, weeklyMVP }: ChampionsBannerPro
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-400/10 rounded-full blur-2xl" />
           
           <div className="relative flex items-center gap-4">
-            <div className={`relative w-16 h-16 flex-shrink-0 ${getAvatarGlow(weeklyMVP.avatar_type)}`}>
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+              className="relative w-16 h-16 flex-shrink-0"
+            >
               <img 
                 src={getAvatarImage(weeklyMVP.avatar_type, weeklyMVP.avatar_level)}
                 alt={weeklyMVP.username}
                 className={`w-full h-full object-contain mix-blend-screen ${isRareAvatar(weeklyMVP.avatar_type) ? 'saturate-150' : ''}`}
               />
-            </div>
+            </motion.div>
             
             <div className="flex-1">
               <div className="flex items-center gap-2">
