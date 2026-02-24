@@ -2,30 +2,7 @@ import { Avatar, EnergyLevel } from "@/types/avatar";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Zap, TrendingUp } from "lucide-react";
-import avatarFire from "@/assets/avatar-fire.png";
-import avatarFireLevel2 from "@/assets/avatar-fire-level2.png";
-import avatarFireLevel3 from "@/assets/avatar-fire-level3.png";
-import avatarWater from "@/assets/avatar-water.png";
-import avatarWaterLevel2 from "@/assets/avatar-water-level2.png";
-import avatarWaterLevel3 from "@/assets/avatar-water-level3.png";
-import avatarNature from "@/assets/avatar-nature.png";
-import avatarNatureLevel2 from "@/assets/avatar-nature-level2.png";
-import avatarNatureLevel3 from "@/assets/avatar-nature-level3.png";
-import avatarChungloid from "@/assets/avatar-chungloid.png";
-import avatarChungloidLevel2 from "@/assets/avatar-chungloid-level2.png";
-import avatarChungloidLevel3 from "@/assets/avatar-chungloid-level3.png";
-import avatarChickenNugget from "@/assets/avatar-chicken-nugget.png";
-import avatarChickenNuggetLevel2 from "@/assets/avatar-chicken-nugget-level2.png";
-import avatarChickenNuggetLevel3 from "@/assets/avatar-chicken-nugget-level3.png";
-import avatarFlarion from "@/assets/avatar-flarion.png";
-import avatarFlarionLevel2 from "@/assets/avatar-flarion-level2.png";
-import avatarFlarionLevel3 from "@/assets/avatar-flarion-level3.png";
-import avatarAuarlis from "@/assets/avatar-auarlis.png";
-import avatarAuarlisLevel2 from "@/assets/avatar-auarlis-level2.png";
-import avatarAuarlisLevel3 from "@/assets/avatar-auarlis-level3.png";
-import avatarTeddy from "@/assets/avatar-teddy.png";
-import avatarTeddyLevel2 from "@/assets/avatar-teddy-level2.png";
-import avatarTeddyLevel3 from "@/assets/avatar-teddy-level3.png";
+import { BuddyAvatar } from "@/components/BuddyAvatar";
 
 interface AvatarCardProps {
   avatar: Avatar;
@@ -97,45 +74,6 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
     lg: 'w-64 h-64'
   };
 
-  const getAvatarImage = () => {
-    switch (avatar.type) {
-      case 'fire':
-        if (avatar.level >= 3) return avatarFireLevel3;
-        if (avatar.level >= 2) return avatarFireLevel2;
-        return avatarFire;
-      case 'water':
-        if (avatar.level >= 3) return avatarWaterLevel3;
-        if (avatar.level >= 2) return avatarWaterLevel2;
-        return avatarWater;
-      case 'nature':
-        if (avatar.level >= 3) return avatarNatureLevel3;
-        if (avatar.level >= 2) return avatarNatureLevel2;
-        return avatarNature;
-      case 'chungloid':
-        if (avatar.level >= 3) return avatarChungloidLevel3;
-        if (avatar.level >= 2) return avatarChungloidLevel2;
-        return avatarChungloid;
-      case 'chicken-nugget':
-        if (avatar.level >= 3) return avatarChickenNuggetLevel3;
-        if (avatar.level >= 2) return avatarChickenNuggetLevel2;
-        return avatarChickenNugget;
-      case 'flarion':
-        if (avatar.level >= 3) return avatarFlarionLevel3;
-        if (avatar.level >= 2) return avatarFlarionLevel2;
-        return avatarFlarion;
-      case 'auarlis':
-        if (avatar.level >= 3) return avatarAuarlisLevel3;
-        if (avatar.level >= 2) return avatarAuarlisLevel2;
-        return avatarAuarlis;
-      case 'teddy':
-        if (avatar.level >= 3) return avatarTeddyLevel3;
-        if (avatar.level >= 2) return avatarTeddyLevel2;
-        return avatarTeddy;
-      default:
-        return avatarNature;
-    }
-  };
-
   const energyAnimations = getEnergyAnimations(avatar.energy);
 
   return (
@@ -163,30 +101,22 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
           transition={animate ? energyAnimations.glowTransition : undefined}
         />
         
-        {/* Avatar Image with Black Circle Background */}
+        {/* Avatar Image with transparent rendering */}
         <motion.div 
-          className={cn(
-            "relative w-full h-full rounded-full overflow-hidden shadow-energy bg-black",
-            avatar.type === 'fire' && "ring-4 ring-avatar-fire",
-            avatar.type === 'water' && "ring-4 ring-avatar-water",
-            avatar.type === 'nature' && "ring-4 ring-avatar-nature",
-            avatar.type === 'chungloid' && "ring-4 ring-purple-500",
-            avatar.type === 'chicken-nugget' && "ring-4 ring-amber-500",
-            avatar.type === 'flarion' && "ring-4 ring-violet-500",
-            avatar.type === 'auarlis' && "ring-4 ring-sky-400",
-            avatar.type === 'teddy' && "ring-4 ring-amber-400"
-          )}
+          className="relative w-full h-full bg-transparent border-0 shadow-none p-0 rounded-none overflow-visible"
           animate={animate && avatar.energy === 'low' ? energyAnimations.droop : undefined}
           transition={animate && avatar.energy === 'low' && energyAnimations.droopTransition ? energyAnimations.droopTransition : undefined}
         >
-          <img 
-            src={getAvatarImage()} 
+          <BuddyAvatar
+            avatarType={avatar.type}
+            avatarLevel={avatar.level}
             alt={avatar.name}
             className={cn(
-              "w-full h-full object-contain scale-90 transition-all duration-300",
+              "scale-90 transition-all duration-300",
               avatar.energy === 'low' && "saturate-75 brightness-90",
               avatar.energy === 'high' && "saturate-110 brightness-110"
             )}
+            wrapperClassName="w-full h-full"
           />
           
           {/* Energy-based overlay effects */}
