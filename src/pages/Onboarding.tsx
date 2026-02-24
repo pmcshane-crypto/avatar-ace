@@ -21,13 +21,6 @@ const screens = [
     gradient: "from-success/30 via-accent/20 to-success/10",
     animation: "friends",
   },
-  {
-    title: "Reduce. Evolve. Win.",
-    tagline: "The less you scroll, the stronger your buddy gets",
-    icon: TrendingUp,
-    gradient: "from-warning/30 via-destructive/20 to-warning/10",
-    animation: "xp",
-  },
 ];
 
 const Onboarding = () => {
@@ -99,32 +92,6 @@ const Onboarding = () => {
               />
             )}
 
-            {screen.animation === "xp" && (
-              <div className="flex flex-col items-center gap-3">
-                <motion.div
-                  className="text-5xl font-black text-primary"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  +XP
-                </motion.div>
-                <div className="w-36 h-3 bg-secondary rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-primary rounded-full"
-                    initial={{ width: "20%" }}
-                    animate={{ width: "85%" }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                  />
-                </div>
-                <motion.div
-                  className="text-xs text-accent font-bold"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  LEVEL UP! ✨
-                </motion.div>
-              </div>
-            )}
           </div>
 
           {/* Text content */}
