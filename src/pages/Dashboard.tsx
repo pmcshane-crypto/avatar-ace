@@ -306,8 +306,7 @@ const Dashboard = () => {
         <div className="text-center space-y-2 relative">
           <Button
             variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0"
+            className="absolute right-0 top-0 h-14 w-14 p-0"
             onClick={() => navigate("/profile")}
           >
             <User className="w-10 h-10" />
