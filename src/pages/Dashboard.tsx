@@ -345,7 +345,7 @@ const Dashboard = () => {
               <User className="w-10 h-10" />
             </Button>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Better Buddy</h1>
+          <h1 className="text-3xl font-bold text-foreground">Better Buddy's</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
           {Capacitor.getPlatform() === 'ios' && screenTimeData.isAutomatic && (
             <div className="flex items-center justify-center gap-2 text-sm text-primary">
