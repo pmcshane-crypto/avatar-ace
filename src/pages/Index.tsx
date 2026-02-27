@@ -21,7 +21,7 @@ const Index = () => {
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8">
         <div className="space-y-4 max-w-3xl">
           <h1 className="text-5xl md:text-7xl font-bold text-foreground animate-float">
-            Better Buddy
+            Better Buddy's
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground">
             Transform screen time into an adventure
