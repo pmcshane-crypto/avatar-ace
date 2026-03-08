@@ -101,7 +101,7 @@ const AvatarSelection = () => {
                   <img 
                     src={avatar.image} 
                     alt={avatar.name}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
+                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-110 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05] scale-90"
                   />
                 </div>
                 <div className="text-center space-y-2">
