@@ -117,7 +117,7 @@ const AvatarSelection = () => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center py-3">
           <Button
             onClick={handleContinue}
             disabled={!selectedAvatar || isLoading}
