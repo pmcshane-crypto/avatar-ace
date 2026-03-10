@@ -65,12 +65,12 @@ const AvatarSelection = () => {
           <h1 className="text-4xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-2">
           {avatarOptions.map((avatar) => (
             <Card
               key={avatar.type}
               className={cn(
-                "p-6 cursor-pointer transition-all duration-300 hover:scale-105 relative",
+                "p-2 cursor-pointer transition-all duration-300 hover:scale-105 relative aspect-square flex flex-col items-center justify-center",
                 "bg-gradient-card border-2",
                 selectedAvatar === avatar.type
                   ? avatar.type === 'fire' 
@@ -82,41 +82,37 @@ const AvatarSelection = () => {
               )}
               onClick={() => setSelectedAvatar(avatar.type)}
             >
-              <div className="space-y-4">
-                <div className="w-full h-56 overflow-hidden rounded-xl flex items-center justify-center relative">
-                  <div className={cn(
-                    "absolute inset-0 rounded-xl",
-                    avatar.type === 'fire' && "bg-gradient-to-br from-orange-500/20 via-red-500/10 to-yellow-500/20",
-                    avatar.type === 'water' && "bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-teal-500/20",
-                    avatar.type === 'nature' && "bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-lime-500/20",
-                    avatar.type === 'chungloid' && "bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-fuchsia-500/20",
-                    avatar.type === 'chicken-nugget' && "bg-gradient-to-br from-yellow-500/20 via-amber-500/10 to-orange-500/20",
-                    avatar.type === 'flarion' && "bg-gradient-to-br from-purple-500/20 via-violet-500/10 to-indigo-500/20",
-                    avatar.type === 'auarlis' && "bg-gradient-to-br from-sky-500/20 via-blue-500/10 to-cyan-500/20",
-                    avatar.type === 'teddy' && "bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-orange-500/20"
-                  )} />
-                  <img 
-                    src={avatar.image} 
-                    alt={avatar.name}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
-                  />
-                </div>
-                <div className="text-center">
-                  <h3 className={cn(
-                    "text-xl font-bold",
-                    avatar.type === 'fire' && "text-avatar-fire",
-                    avatar.type === 'water' && "text-avatar-water",
-                    avatar.type === 'nature' && "text-avatar-nature",
-                    avatar.type === 'chungloid' && "text-primary",
-                    avatar.type === 'chicken-nugget' && "text-primary",
-                    avatar.type === 'flarion' && "text-purple-400",
-                    avatar.type === 'auarlis' && "text-sky-400",
-                    avatar.type === 'teddy' && "text-amber-400"
-                  )}>
-                    {avatar.name}
-                  </h3>
-                </div>
+              <div className="w-full flex-1 overflow-hidden rounded-lg flex items-center justify-center relative">
+                <div className={cn(
+                  "absolute inset-0 rounded-lg",
+                  avatar.type === 'fire' && "bg-gradient-to-br from-orange-500/20 via-red-500/10 to-yellow-500/20",
+                  avatar.type === 'water' && "bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-teal-500/20",
+                  avatar.type === 'nature' && "bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-lime-500/20",
+                  avatar.type === 'chungloid' && "bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-fuchsia-500/20",
+                  avatar.type === 'chicken-nugget' && "bg-gradient-to-br from-yellow-500/20 via-amber-500/10 to-orange-500/20",
+                  avatar.type === 'flarion' && "bg-gradient-to-br from-purple-500/20 via-violet-500/10 to-indigo-500/20",
+                  avatar.type === 'auarlis' && "bg-gradient-to-br from-sky-500/20 via-blue-500/10 to-cyan-500/20",
+                  avatar.type === 'teddy' && "bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-orange-500/20"
+                )} />
+                <img 
+                  src={avatar.image} 
+                  alt={avatar.name}
+                  className="w-full h-full object-contain p-1 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
+                />
               </div>
+              <p className={cn(
+                "text-[10px] sm:text-sm font-bold mt-1 text-center leading-tight truncate w-full",
+                avatar.type === 'fire' && "text-avatar-fire",
+                avatar.type === 'water' && "text-avatar-water",
+                avatar.type === 'nature' && "text-avatar-nature",
+                avatar.type === 'chungloid' && "text-primary",
+                avatar.type === 'chicken-nugget' && "text-primary",
+                avatar.type === 'flarion' && "text-purple-400",
+                avatar.type === 'auarlis' && "text-sky-400",
+                avatar.type === 'teddy' && "text-amber-400"
+              )}>
+                {avatar.name}
+              </p>
             </Card>
           ))}
         </div>
