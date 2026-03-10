@@ -59,13 +59,13 @@ const AvatarSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-6xl space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">Choose Your Buddy</h1>
+    <div className="min-h-screen bg-background flex flex-col p-4">
+      <div className="w-full max-w-6xl mx-auto flex flex-col flex-1">
+        <div className="text-center py-2">
+          <h1 className="text-2xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 gap-3 flex-1">
           {avatarOptions.map((avatar) => (
             <Card
               key={avatar.type}
@@ -117,7 +117,7 @@ const AvatarSelection = () => {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center py-3">
           <Button
             onClick={handleContinue}
             disabled={!selectedAvatar || isLoading}
