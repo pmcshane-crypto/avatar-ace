@@ -94,7 +94,7 @@ export const AvatarCard = ({ avatar, showStats = true, size = 'md', animate = tr
   const sizeClasses = {
     sm: 'w-24 h-24',
     md: 'w-40 h-40',
-    lg: 'w-64 h-64'
+    lg: 'w-72 h-72 sm:w-64 sm:h-64'
   };
 
   const getAvatarImage = () => {

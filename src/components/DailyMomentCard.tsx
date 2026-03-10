@@ -89,7 +89,7 @@ export function DailyMomentCard({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <Card className={`relative overflow-hidden bg-gradient-to-r ${content.gradient} border ${content.borderColor} p-4`}>
+      <Card className={`relative overflow-hidden bg-gradient-to-r ${content.gradient} border ${content.borderColor} p-6 sm:p-4`}>
         {/* Subtle animated background */}
         <div className="absolute inset-0 opacity-30">
           <motion.div 

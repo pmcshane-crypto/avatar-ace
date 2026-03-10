@@ -86,7 +86,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
         >
-          <Card className={`p-4 bg-gradient-card border-border/50 relative overflow-hidden ${
+          <Card className={`p-6 sm:p-4 bg-gradient-card border-border/50 relative overflow-hidden ${
             item.showLocked ? 'opacity-80' : ''
           }`}>
             {/* Active streak glow */}
