@@ -63,9 +63,6 @@ const AvatarSelection = () => {
       <div className="w-full max-w-6xl space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">Choose Your Buddy</h1>
-          <p className="text-muted-foreground">
-            Select your avatar companion to begin your screen time reduction journey
-          </p>
         </div>
 
         <div className="grid grid-cols-4 gap-6">
