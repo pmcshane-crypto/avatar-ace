@@ -326,8 +326,8 @@ const Dashboard = () => {
       <StreakFireAnimation show={showStreakFire} streak={stats.currentStreak} />
       <DailyWinCelebration show={showDailyWin} reductionPercent={Math.floor(stats.totalReduction)} />
 
-    <div className={`min-h-screen ${getBackgroundClass()} px-4 sm:px-6 py-6 transition-all duration-700`}>
-      <div className="w-full max-w-4xl mx-auto space-y-8">
+    <div className={`min-h-screen ${getBackgroundClass()} px-5 sm:px-6 py-8 transition-all duration-700`}>
+      <div className="w-full max-w-4xl mx-auto space-y-10 sm:space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 relative">
           <div className="absolute right-0 top-0 flex items-center gap-1">
@@ -389,7 +389,7 @@ const Dashboard = () => {
         )}
 
         {/* Avatar Display */}
-        <div className={`bg-black rounded-3xl p-8 transition-all duration-500 ${
+        <div className={`bg-black rounded-3xl p-10 sm:p-8 transition-all duration-500 ${
           isLevelingUp 
             ? 'shadow-[0_0_60px_hsl(var(--primary)/0.8),0_0_100px_hsl(var(--accent)/0.6)] scale-105' 
             : 'shadow-glow'
