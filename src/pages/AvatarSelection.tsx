@@ -104,7 +104,7 @@ const AvatarSelection = () => {
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
                   />
                 </div>
-                <div className="text-center space-y-2">
+                <div className="text-center">
                   <h3 className={cn(
                     "text-xl font-bold",
                     avatar.type === 'fire' && "text-avatar-fire",
@@ -118,9 +118,6 @@ const AvatarSelection = () => {
                   )}>
                     {avatar.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {avatar.description}
-                  </p>
                 </div>
               </div>
             </Card>
