@@ -78,7 +78,7 @@ export const StatsCard = ({ stats }: StatsCardProps) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-4">
       {statItems.map((item, index) => (
         <motion.div
           key={index}
