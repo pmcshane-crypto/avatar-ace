@@ -326,8 +326,8 @@ const Dashboard = () => {
       <StreakFireAnimation show={showStreakFire} streak={stats.currentStreak} />
       <DailyWinCelebration show={showDailyWin} reductionPercent={Math.floor(stats.totalReduction)} />
 
-    <div className={`min-h-screen ${getBackgroundClass()} p-6 transition-all duration-700`}>
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className={`min-h-screen ${getBackgroundClass()} px-4 sm:px-6 py-6 transition-all duration-700`}>
+      <div className="w-full max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-2 relative">
           <div className="absolute right-0 top-0 flex items-center gap-1">
