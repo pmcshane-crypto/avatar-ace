@@ -337,13 +337,6 @@ const Dashboard = () => {
               onMarkAsRead={markAsRead}
               onMarkAllAsRead={markAllAsRead}
             />
-            <Button
-              variant="ghost"
-              className="h-14 w-14 p-0"
-              onClick={() => navigate("/profile")}
-            >
-              <User className="w-10 h-10" />
-            </Button>
           </div>
           <h1 className="text-3xl font-bold text-foreground">Better Buddy's</h1>
           <p className="text-muted-foreground">Your screen time companion</p>
