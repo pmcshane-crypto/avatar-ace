@@ -65,13 +65,17 @@ const AvatarSelection = () => {
           <h1 className="text-xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1 min-h-0">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1 min-h-0 content-center">
           {avatarOptions.map((avatar) => (
-            <Card
+            <div
               key={avatar.type}
               className={cn(
-                "p-1.5 cursor-pointer transition-all duration-300 hover:scale-105 relative flex flex-col items-center justify-center",
-                "bg-gradient-card border-2",
+                "cursor-pointer transition-all duration-300 hover:scale-105 flex flex-col items-center gap-1",
+              )}
+              onClick={() => setSelectedAvatar(avatar.type)}
+            >
+              <div className={cn(
+                "aspect-square w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center border-2 transition-all duration-300",
                 selectedAvatar === avatar.type
                   ? avatar.type === 'fire' 
                     ? "border-avatar-fire shadow-glow" 
@@ -79,29 +83,15 @@ const AvatarSelection = () => {
                     ? "border-avatar-water shadow-glow"
                     : "border-avatar-nature shadow-glow"
                   : "border-border/50"
-              )}
-              onClick={() => setSelectedAvatar(avatar.type)}
-            >
-              <div className="w-full flex-1 min-h-0 overflow-hidden rounded-lg flex items-center justify-center relative">
-                <div className={cn(
-                  "absolute inset-0 rounded-lg",
-                  avatar.type === 'fire' && "bg-gradient-to-br from-orange-500/20 via-red-500/10 to-yellow-500/20",
-                  avatar.type === 'water' && "bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-teal-500/20",
-                  avatar.type === 'nature' && "bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-lime-500/20",
-                  avatar.type === 'chungloid' && "bg-gradient-to-br from-pink-500/20 via-purple-500/10 to-fuchsia-500/20",
-                  avatar.type === 'chicken-nugget' && "bg-gradient-to-br from-yellow-500/20 via-amber-500/10 to-orange-500/20",
-                  avatar.type === 'flarion' && "bg-gradient-to-br from-purple-500/20 via-violet-500/10 to-indigo-500/20",
-                  avatar.type === 'auarlis' && "bg-gradient-to-br from-sky-500/20 via-blue-500/10 to-cyan-500/20",
-                  avatar.type === 'teddy' && "bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-orange-500/20"
-                )} />
+              )}>
                 <img 
                   src={avatar.image} 
                   alt={avatar.name}
-                  className="w-full h-full object-contain p-0.5 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
+                  className="w-[85%] h-[85%] object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]"
                 />
               </div>
               <p className={cn(
-                "text-[10px] sm:text-xs font-bold mt-0.5 text-center leading-tight truncate w-full",
+                "text-[10px] sm:text-xs font-bold text-center leading-tight truncate w-full",
                 avatar.type === 'fire' && "text-avatar-fire",
                 avatar.type === 'water' && "text-avatar-water",
                 avatar.type === 'nature' && "text-avatar-nature",
@@ -113,7 +103,7 @@ const AvatarSelection = () => {
               )}>
                 {avatar.name}
               </p>
-            </Card>
+            </div>
           ))}
         </div>
 
