@@ -59,18 +59,18 @@ const AvatarSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col p-4">
-      <div className="w-full max-w-6xl mx-auto flex flex-col flex-1">
-        <div className="text-center py-2">
-          <h1 className="text-2xl font-bold text-foreground">Choose Your Buddy</h1>
+    <div className="h-[100dvh] bg-background flex flex-col p-3 overflow-hidden">
+      <div className="w-full max-w-6xl mx-auto flex flex-col flex-1 min-h-0">
+        <div className="text-center py-1.5">
+          <h1 className="text-xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 flex-1">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1 min-h-0">
           {avatarOptions.map((avatar) => (
             <Card
               key={avatar.type}
               className={cn(
-                "p-2 cursor-pointer transition-all duration-300 hover:scale-105 relative aspect-square flex flex-col items-center justify-center",
+                "p-1.5 cursor-pointer transition-all duration-300 hover:scale-105 relative flex flex-col items-center justify-center",
                 "bg-gradient-card border-2",
                 selectedAvatar === avatar.type
                   ? avatar.type === 'fire' 
@@ -82,7 +82,7 @@ const AvatarSelection = () => {
               )}
               onClick={() => setSelectedAvatar(avatar.type)}
             >
-              <div className="w-full flex-1 overflow-hidden rounded-lg flex items-center justify-center relative">
+              <div className="w-full flex-1 min-h-0 overflow-hidden rounded-lg flex items-center justify-center relative">
                 <div className={cn(
                   "absolute inset-0 rounded-lg",
                   avatar.type === 'fire' && "bg-gradient-to-br from-orange-500/20 via-red-500/10 to-yellow-500/20",
@@ -97,11 +97,11 @@ const AvatarSelection = () => {
                 <img 
                   src={avatar.image} 
                   alt={avatar.name}
-                  className="w-full h-full object-contain p-1 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
+                  className="w-full h-full object-contain p-0.5 relative z-10 saturate-[1.2] contrast-[1.05] brightness-[1.05]"
                 />
               </div>
               <p className={cn(
-                "text-[10px] sm:text-sm font-bold mt-1 text-center leading-tight truncate w-full",
+                "text-[10px] sm:text-xs font-bold mt-0.5 text-center leading-tight truncate w-full",
                 avatar.type === 'fire' && "text-avatar-fire",
                 avatar.type === 'water' && "text-avatar-water",
                 avatar.type === 'nature' && "text-avatar-nature",
@@ -117,11 +117,11 @@ const AvatarSelection = () => {
           ))}
         </div>
 
-        <div className="flex justify-center py-3">
+        <div className="flex justify-center py-2">
           <Button
             onClick={handleContinue}
             disabled={!selectedAvatar || isLoading}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-5 text-base"
             size="lg"
           >
             Continue
