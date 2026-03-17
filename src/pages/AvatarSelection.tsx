@@ -89,7 +89,7 @@ const AvatarSelection = () => {
                   alt={avatar.name}
                   className={cn(
                     "object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]",
-                    (avatar.type === 'nature' || avatar.type === 'water') ? "w-[120%] h-[120%]" : "w-full h-full"
+                    (avatar.type === 'nature' || avatar.type === 'water') ? "w-[140%] h-[140%]" : "w-full h-full"
                   )}
                 />
               </div>
