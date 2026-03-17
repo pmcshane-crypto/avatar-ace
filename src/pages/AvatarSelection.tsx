@@ -87,7 +87,10 @@ const AvatarSelection = () => {
                 <img 
                   src={avatar.image} 
                   alt={avatar.name}
-                  className="w-full h-full object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]"
+                  className={cn(
+                    "object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]",
+                    (avatar.type === 'nature' || avatar.type === 'water') ? "w-[120%] h-[120%]" : "w-full h-full"
+                  )}
                 />
               </div>
               <p className={cn(
