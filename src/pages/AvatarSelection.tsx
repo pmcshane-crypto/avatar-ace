@@ -94,7 +94,7 @@ const AvatarSelection = () => {
                 />
               </div>
               <p className={cn(
-                "text-[10px] sm:text-xs font-bold text-center leading-tight truncate w-full",
+                "text-[30px] sm:text-4xl font-bold text-center leading-tight truncate w-full",
                 avatar.type === 'fire' && "text-avatar-fire",
                 avatar.type === 'water' && "text-avatar-water",
                 avatar.type === 'nature' && "text-avatar-nature",
