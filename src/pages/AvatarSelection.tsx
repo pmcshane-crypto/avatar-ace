@@ -59,13 +59,13 @@ const AvatarSelection = () => {
   };
 
   return (
-    <div className="h-[100dvh] bg-background flex flex-col p-3 overflow-hidden">
+    <div className="h-[100dvh] bg-background flex flex-col p-2 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col flex-1 min-h-0">
-        <div className="text-center py-1.5">
+        <div className="text-center py-1">
           <h1 className="text-xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 auto-rows-fr flex-1 min-h-0 place-content-center">
+        <div className="grid grid-cols-3 gap-2 auto-rows-fr flex-1 min-h-0 place-content-center">
           {avatarOptions.map((avatar) => (
             <div
               key={avatar.type}
