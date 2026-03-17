@@ -87,7 +87,7 @@ const AvatarSelection = () => {
                 <img 
                   src={avatar.image} 
                   alt={avatar.name}
-                  className="w-[85%] h-[85%] object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]"
+                  className="w-full h-full object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]"
                 />
               </div>
               <p className={cn(
