@@ -65,7 +65,7 @@ const AvatarSelection = () => {
           <h1 className="text-xl font-bold text-foreground">Choose Your Buddy</h1>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 flex-1 min-h-0 content-center">
+        <div className="grid grid-cols-3 gap-3 auto-rows-fr flex-1 min-h-0 place-content-center">
           {avatarOptions.map((avatar) => (
             <div
               key={avatar.type}
