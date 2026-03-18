@@ -409,10 +409,11 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Screen Time Input - Only show if not automatic */}
-        {!screenTimeData.isAutomatic && (
-          <ScreenTimeInput onSubmit={handleScreenTimeSubmit} baseline={stats.baseline} avatarType={avatar.type} />
-        )}
+        {/* Screen Time Status */}
+        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 border border-border/30 flex items-center justify-center gap-3">
+          <CheckCircle className="w-5 h-5 text-success" />
+          <span className="text-foreground font-medium">Screen Time connected via Apple Settings</span>
+        </div>
 
         {/* Change Better Buddy Button */}
         <Button

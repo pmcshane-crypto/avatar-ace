@@ -26,7 +26,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/avatar-selection" element={<AvatarSelection />} />
-          <Route path="/baseline-setup" element={<BaselineSetup />} />
+          
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/clans" element={<Clans />} />
