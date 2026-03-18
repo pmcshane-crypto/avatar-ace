@@ -14,7 +14,7 @@ import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/hooks/useNotifications";
 import { checkMilestones } from "@/lib/milestones";
-import { Users, RefreshCw, Smartphone, User } from "lucide-react";
+import { Users, RefreshCw, Smartphone, User, CheckCircle } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
