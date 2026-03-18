@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AvatarCard } from "@/components/AvatarCard";
-import { ScreenTimeInput } from "@/components/ScreenTimeInput";
+
 import { StatsCard } from "@/components/StatsCard";
 import { DailyMomentCard } from "@/components/DailyMomentCard";
 import { LevelUpOverlay } from "@/components/LevelUpOverlay";
@@ -14,7 +14,7 @@ import { Avatar, AvatarType, UserStats } from "@/types/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/hooks/useNotifications";
 import { checkMilestones } from "@/lib/milestones";
-import { Users, RefreshCw, Smartphone, User } from "lucide-react";
+import { Users, RefreshCw, Smartphone, User, CheckCircle } from "lucide-react";
 import { useScreenTime } from "@/hooks/useScreenTime";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
@@ -409,10 +409,11 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Screen Time Input - Only show if not automatic */}
-        {!screenTimeData.isAutomatic && (
-          <ScreenTimeInput onSubmit={handleScreenTimeSubmit} baseline={stats.baseline} avatarType={avatar.type} />
-        )}
+        {/* Screen Time Status */}
+        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 border border-border/30 flex items-center justify-center gap-3">
+          <CheckCircle className="w-5 h-5 text-success" />
+          <span className="text-foreground font-medium">Screen Time connected via Apple Settings</span>
+        </div>
 
         {/* Change Better Buddy Button */}
         <Button

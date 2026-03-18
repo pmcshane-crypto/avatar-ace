@@ -53,8 +53,7 @@ const AvatarSelection = () => {
       localStorage.setItem('selectedAvatarType', selectedAvatar);
       
       setIsLoading(false);
-      const baseline = localStorage.getItem('baseline');
-      navigate(baseline ? '/dashboard' : '/baseline-setup');
+      navigate('/dashboard');
     }
   };
 
