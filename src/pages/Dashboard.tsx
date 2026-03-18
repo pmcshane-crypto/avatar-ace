@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AvatarCard } from "@/components/AvatarCard";
-import { ScreenTimeInput } from "@/components/ScreenTimeInput";
+
 import { StatsCard } from "@/components/StatsCard";
 import { DailyMomentCard } from "@/components/DailyMomentCard";
 import { LevelUpOverlay } from "@/components/LevelUpOverlay";
