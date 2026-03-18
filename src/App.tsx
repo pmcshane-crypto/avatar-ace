@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Onboarding from "./pages/Onboarding";
 import AvatarSelection from "./pages/AvatarSelection";
-import BaselineSetup from "./pages/BaselineSetup";
+
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Clans from "./pages/Clans";
