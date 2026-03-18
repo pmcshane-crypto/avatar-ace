@@ -1,6 +1,5 @@
 import { ClanMember } from '@/types/clan';
 import { getAvatarImage, getAvatarGlow, isRareAvatar, getAvatarBorderColor } from '@/lib/avatarImages';
-import { Card } from '@/components/ui/card';
 import { ArrowUp, ArrowDown, Minus, Sparkles, Crown, Trophy, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,6 +14,13 @@ interface LeaderboardRowProps {
 
 const REACTION_EMOJIS = ['🔥', '👀', '💪'];
 
+const formatMinutes = (minutes: number): string => {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m}m`;
+  return `${h}h ${m}m`;
+};
+
 function LeaderboardRow({ 
   member, 
   isCurrentUser, 
@@ -28,6 +34,11 @@ function LeaderboardRow({
   const borderColor = getAvatarBorderColor(member.profile.avatar_type);
   const isRare = isRareAvatar(member.profile.avatar_type);
 
+  const baseline = member.baselineMinutes || 0;
+  const reduction = baseline > 0 
+    ? Math.round(((baseline - member.todayMinutes) / baseline) * 100)
+    : 0;
+
   const getRankColor = (rank: number) => {
     if (rank === 1) return 'text-amber-400';
     if (rank === 2) return 'text-slate-300';
@@ -37,14 +48,10 @@ function LeaderboardRow({
 
   const getMovementIcon = () => {
     switch (member.movement) {
-      case 'up':
-        return <ArrowUp className="w-4 h-4 text-green-400" />;
-      case 'down':
-        return <ArrowDown className="w-4 h-4 text-red-400" />;
-      case 'new':
-        return <Sparkles className="w-4 h-4 text-accent" />;
-      default:
-        return <Minus className="w-3 h-3 text-muted-foreground" />;
+      case 'up': return <ArrowUp className="w-4 h-4 text-green-400" />;
+      case 'down': return <ArrowDown className="w-4 h-4 text-red-400" />;
+      case 'new': return <Sparkles className="w-4 h-4 text-accent" />;
+      default: return <Minus className="w-3 h-3 text-muted-foreground" />;
     }
   };
 
@@ -78,26 +85,24 @@ function LeaderboardRow({
           />
         </div>
 
-        {/* Name and badges */}
+        {/* Name, baseline, and badges */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className={`font-medium truncate ${isCurrentUser ? 'text-primary' : 'text-foreground'}`}>
               {member.profile.username}
               {isCurrentUser && <span className="text-muted-foreground ml-1">(you)</span>}
             </span>
-            {isDailyChampion && (
-              <Crown className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            )}
-            {isWeeklyMVP && (
-              <Trophy className="w-4 h-4 text-purple-400 flex-shrink-0" />
-            )}
-            <span className="text-xs text-muted-foreground font-medium flex-shrink-0">Lv.{member.profile.avatar_level}</span>
+            {isDailyChampion && <Crown className="w-4 h-4 text-amber-400 flex-shrink-0" />}
+            {isWeeklyMVP && <Trophy className="w-4 h-4 text-purple-400 flex-shrink-0" />}
             {member.profile.current_streak >= 7 && (
               <div className="flex items-center gap-0.5 text-orange-400">
                 <Flame className="w-3 h-3" />
                 <span className="text-xs">{member.profile.current_streak}</span>
               </div>
             )}
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            Competing against: {formatMinutes(baseline)}/day baseline
           </div>
           
           {/* Reactions */}
@@ -122,10 +127,12 @@ function LeaderboardRow({
           {getMovementIcon()}
         </div>
 
-        {/* Today's contribution */}
+        {/* % Reduction */}
         <div className="text-right">
-          <div className="font-semibold text-foreground">{member.todayMinutes}m</div>
-          <div className="text-xs text-muted-foreground">today</div>
+          <div className={`font-bold text-lg ${reduction > 0 ? 'text-green-500' : reduction < 0 ? 'text-destructive' : 'text-foreground'}`}>
+            {reduction > 0 ? '+' : ''}{reduction}%
+          </div>
+          <div className="text-xs text-muted-foreground">reduction</div>
         </div>
 
         {/* Quick reactions */}
@@ -171,7 +178,7 @@ export function LiveLeaderboard({
         <h2 className="text-xl font-bold text-foreground">Live Leaderboard</h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span>Live</span>
+          <span>Ranked by % reduction</span>
         </div>
       </div>
 

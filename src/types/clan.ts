@@ -18,6 +18,8 @@ export interface ClanMember {
   profile: ClanMemberProfile;
   todayMinutes: number;
   yesterdayMinutes: number;
+  baselineMinutes: number;
+  percentReduction: number;
   rank: number;
   previousRank: number;
   movement: 'up' | 'down' | 'same' | 'new';

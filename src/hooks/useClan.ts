@@ -71,7 +71,7 @@ export function useClan() {
       const userIds = membersData.map(m => m.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak, weekly_average')
+        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak, weekly_average, baseline_minutes')
         .in('id', userIds);
 
       // Get today's screen time for all members
@@ -98,9 +98,12 @@ export function useClan() {
         const todayEntry = todayEntries?.find(e => e.user_id === member.user_id);
         const yesterdayEntry = yesterdayEntries?.find(e => e.user_id === member.user_id);
         
-        // Calculate reduction as contribution (baseline - actual)
         const todayMinutes = todayEntry?.actual_minutes || 0;
         const yesterdayMinutes = yesterdayEntry?.actual_minutes || 0;
+        const baselineMinutes = profile?.baseline_minutes || 0;
+        const percentReduction = baselineMinutes > 0
+          ? Math.round(((baselineMinutes - todayMinutes) / baselineMinutes) * 100)
+          : 0;
 
         return {
           id: member.id,
@@ -118,6 +121,8 @@ export function useClan() {
           },
           todayMinutes,
           yesterdayMinutes,
+          baselineMinutes,
+          percentReduction,
           rank: 0,
           previousRank: 0,
           movement: 'same' as const,
@@ -125,9 +130,8 @@ export function useClan() {
         };
       });
 
-      // Sort by today's contribution (lower screen time = better contribution)
-      // We invert so lower actual_minutes = higher rank
-      membersWithData.sort((a, b) => a.todayMinutes - b.todayMinutes);
+      // Sort by % reduction (highest reduction = rank 1)
+      membersWithData.sort((a, b) => b.percentReduction - a.percentReduction);
       
       // Assign ranks
       membersWithData.forEach((member, index) => {
