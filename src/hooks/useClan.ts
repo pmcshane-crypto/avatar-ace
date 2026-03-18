@@ -71,7 +71,7 @@ export function useClan() {
       const userIds = membersData.map(m => m.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak, weekly_average')
+        .select('id, username, avatar_type, avatar_level, avatar_energy, current_streak, best_streak, weekly_average, baseline_minutes')
         .in('id', userIds);
 
       // Get today's screen time for all members
