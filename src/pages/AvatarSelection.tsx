@@ -71,7 +71,7 @@ const AvatarSelection = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-x-1 gap-y-2 mt-2">
-          {avatarOptions.map((avatar) => (
+          {avatarOptions.map((avatar, index) => (
             <div
               key={avatar.type}
               className={cn(
