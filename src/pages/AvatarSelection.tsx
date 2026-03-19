@@ -60,7 +60,7 @@ const AvatarSelection = () => {
   return (
     <div className="h-[100dvh] bg-background flex flex-col p-2 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col flex-1 min-h-0">
-        <div className="text-center pt-6 pb-2">
+        <div className="text-center pt-2 pb-1">
           <motion.h1
             className="text-3xl font-bold text-foreground"
             animate={{ y: [0, -6, 0] }}
@@ -70,7 +70,7 @@ const AvatarSelection = () => {
           </motion.h1>
         </div>
 
-        <div className="grid grid-cols-3 gap-1 auto-rows-fr flex-1 min-h-0 place-content-center">
+        <div className="grid grid-cols-3 gap-x-1 gap-y-2 mt-2">
           {avatarOptions.map((avatar) => (
             <div
               key={avatar.type}
