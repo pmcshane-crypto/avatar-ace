@@ -81,6 +81,24 @@ export const useScreenTime = () => {
     }
   }, []);
 
+  // Listen for native screenTimeUpdate events
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      const { todayMinutes, baselineMinutes, percentReduction } = e.detail;
+      setScreenTimeData(prev => ({
+        ...prev,
+        todayMinutes,
+        baselineMinutes,
+        percentReduction,
+        isConnected: true,
+        isSyncing: false,
+      }));
+      setHasPermission(true);
+    };
+    window.addEventListener('screenTimeUpdate', handler as EventListener);
+    return () => window.removeEventListener('screenTimeUpdate', handler as EventListener);
+  }, []);
+
   useEffect(() => {
     syncScreenTime();
     const interval = setInterval(syncScreenTime, 3600000);
