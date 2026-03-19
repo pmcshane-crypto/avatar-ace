@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import clanBeachBg from '@/assets/clan-beach-bg.png';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
