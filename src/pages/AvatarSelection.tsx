@@ -66,7 +66,7 @@ const AvatarSelection = () => {
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            Choose Your Buddy
+            Choose Your Better Buddy
           </motion.h1>
         </div>
 
