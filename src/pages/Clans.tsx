@@ -12,7 +12,7 @@ import { NoClanView } from '@/components/clans/NoClanView';
 import { TimeCountdown } from '@/components/clans/TimeCountdown';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Settings, RefreshCw } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
