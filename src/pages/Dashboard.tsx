@@ -190,7 +190,7 @@ const Dashboard = () => {
               onClick={() => navigate("/clans")}
               variant="outline"
               size="lg"
-              className="text-2xl px-12 py-6 h-auto"
+              className="text-2xl px-12 py-6 h-auto bg-green-500 hover:bg-green-400 text-white border-none"
             >
               <div className="w-16 h-16 rounded-full border-3 border-primary/50 overflow-hidden flex-shrink-0 mr-3">
                 <img src={clanButtonImg} alt="Clan buddies" className="w-full h-full object-cover" />
