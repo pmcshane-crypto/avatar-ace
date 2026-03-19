@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { AvatarType } from "@/types/avatar";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import avatarFire from "@/assets/avatar-fire.png";
 import avatarWater from "@/assets/avatar-water.png";
 import avatarNature from "@/assets/avatar-nature.png";
@@ -60,16 +60,22 @@ const AvatarSelection = () => {
   return (
     <div className="h-[100dvh] bg-background flex flex-col p-2 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col flex-1 min-h-0">
-        <div className="text-center py-1">
-          <h1 className="text-xl font-bold text-foreground">Choose Your Buddy</h1>
+        <div className="text-center pt-6 pb-2">
+          <motion.h1
+            className="text-3xl font-bold text-foreground"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            Choose Your Buddy
+          </motion.h1>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 auto-rows-fr flex-1 min-h-0 place-content-center">
+        <div className="grid grid-cols-3 gap-1 auto-rows-fr flex-1 min-h-0 place-content-center">
           {avatarOptions.map((avatar) => (
             <div
               key={avatar.type}
               className={cn(
-                "cursor-pointer transition-all duration-300 hover:scale-105 flex flex-col items-center gap-1",
+                "cursor-pointer transition-all duration-300 hover:scale-105 flex flex-col items-center gap-0.5",
               )}
               onClick={() => setSelectedAvatar(avatar.type)}
             >
@@ -93,7 +99,7 @@ const AvatarSelection = () => {
                 />
               </div>
               <p className={cn(
-                "text-[30px] sm:text-4xl font-bold text-center leading-tight truncate w-full",
+                "text-[18px] sm:text-xl font-bold text-center leading-tight truncate w-full",
                 avatar.type === 'fire' && "text-avatar-fire",
                 avatar.type === 'water' && "text-avatar-water",
                 avatar.type === 'nature' && "text-avatar-nature",
