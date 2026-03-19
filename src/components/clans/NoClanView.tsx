@@ -20,10 +20,10 @@ interface NoClanViewProps {
 export function NoClanView({ userId, onJoinClan }: NoClanViewProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [showCreate, setShowCreate] = useState(false);
-  const [showJoin, setShowJoin] = useState(false);
+  const [activeTab, setActiveTab] = useState<'main' | 'code' | 'browse' | 'create'>('main');
   const [isLoading, setIsLoading] = useState(false);
   const [publicClans, setPublicClans] = useState<Clan[]>([]);
+  const [joinCode, setJoinCode] = useState('');
   
   const [newClan, setNewClan] = useState({
     name: '',

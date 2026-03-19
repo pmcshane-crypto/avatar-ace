@@ -7,12 +7,13 @@ import { LiveLeaderboard } from '@/components/clans/LiveLeaderboard';
 import { ClanGoalCard } from '@/components/clans/ClanGoalCard';
 import { ChampionsBanner } from '@/components/clans/ChampionsBanner';
 import { MemberProfilePreview } from '@/components/clans/MemberProfilePreview';
-import { InviteCTA } from '@/components/clans/InviteCTA';
+import { ClanActionsCard } from '@/components/clans/ClanActionsCard';
+import { SwitchClanModal } from '@/components/clans/SwitchClanModal';
 import { NoClanView } from '@/components/clans/NoClanView';
 import { TimeCountdown } from '@/components/clans/TimeCountdown';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LogOut, RefreshCw, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -21,41 +22,44 @@ export default function Clans() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const {
-    clan,
-    members,
-    userRank,
-    dailyChampion,
-    weeklyMVP,
-    todayTotal,
-    dynamicGoalMinutes,
-    goalMet,
-    isLoading,
-    userId,
-    refresh,
+    clan, members, userRank, dailyChampion, weeklyMVP,
+    todayTotal, dynamicGoalMinutes, goalMet, isLoading, userId, refresh,
   } = useClan();
 
   const [selectedMember, setSelectedMember] = useState<ClanMember | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
 
-  // Check auth
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate('/auth');
-      }
+      if (!user) navigate('/auth');
     };
     checkAuth();
   }, [navigate]);
 
   const handleReact = async (memberId: string, emoji: string) => {
-    // In a real implementation, this would save to the database
     toast({ title: `${emoji} sent!` });
   };
 
   const handleMemberTap = (member: ClanMember) => {
     setSelectedMember(member);
     setIsProfileOpen(true);
+  };
+
+  const handleLeaveClan = async () => {
+    if (!userId || !clan) return;
+    setIsLeaving(true);
+    try {
+      await supabase.from('clan_members').delete().eq('user_id', userId).eq('clan_id', clan.id);
+      toast({ title: 'Left clan' });
+      refresh();
+    } catch (error: any) {
+      toast({ title: 'Error leaving clan', variant: 'destructive' });
+    } finally {
+      setIsLeaving(false);
+    }
   };
 
   const currentUserMember = members.find(m => m.user_id === userId) || null;
@@ -79,43 +83,65 @@ export default function Clans() {
 
   return (
     <div className="min-h-screen bg-gradient-radial from-background via-background to-primary/5">
-      {/* Header */}
+      {/* Clan Identity Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/30 px-4 pt-14 pb-3"
+        className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/30 px-4 pt-14 pb-4"
       >
-        <div className="max-w-2xl mx-auto flex items-center">
-          <motion.div
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute left-4"
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/dashboard')}
-              className="rounded-full bg-green-500 hover:bg-green-400 text-white"
-            >
+        <div className="max-w-2xl mx-auto">
+          {/* Top row: back + leave */}
+          <div className="flex items-center justify-between mb-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')} className="rounded-full">
               <ArrowLeft className="w-5 h-5" />
             </Button>
-          </motion.div>
-          <div className="flex flex-col items-center gap-1 w-full">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{clan.icon_emoji}</span>
-              <h1 className="text-xl font-bold text-foreground">{clan.name}</h1>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLeaveClan}
+              disabled={isLeaving}
+              className="text-xs text-muted-foreground hover:text-destructive gap-1"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Leave
+            </Button>
+          </div>
+
+          {/* Clan identity - centered */}
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-4xl">{clan.icon_emoji}</span>
+            <h1 className="text-2xl font-bold text-foreground">{clan.name}</h1>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span>Level {clan.clan_level}</span>
+              <span>·</span>
+              <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{members.length} members</span>
+              <span>·</span>
+              <span>🔥 {clan.clan_streak} streak</span>
             </div>
-            <p className="text-xs text-muted-foreground">Level {clan.clan_level}</p>
           </div>
         </div>
       </motion.header>
 
       {/* Main content */}
-      <main className="max-w-2xl mx-auto p-4 space-y-6 pb-20">
+      <main className="max-w-2xl mx-auto p-4 space-y-4 pb-20">
+        {/* Actions: Invite + codes */}
+        <ClanActionsCard clanId={clan.id} clanName={clan.name} />
+
+        {/* Switch clan button */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full gap-2 text-muted-foreground"
+          onClick={() => setShowSwitchModal(true)}
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Switch Clan
+        </Button>
+
         {/* Time countdown */}
         <TimeCountdown />
 
-        {/* User's clan status */}
+        {/* Your rank */}
         <ClanStatusCard
           member={currentUserMember}
           members={members}
@@ -124,7 +150,7 @@ export default function Clans() {
           isWeeklyMVP={weeklyMVP?.user_id === userId}
         />
 
-        {/* Clan goal */}
+        {/* Daily goal */}
         <ClanGoalCard
           clan={clan}
           memberCount={members.length}
@@ -134,12 +160,9 @@ export default function Clans() {
         />
 
         {/* Champions */}
-        <ChampionsBanner
-          dailyChampion={dailyChampion}
-          weeklyMVP={weeklyMVP}
-        />
+        <ChampionsBanner dailyChampion={dailyChampion} weeklyMVP={weeklyMVP} />
 
-        {/* Live leaderboard */}
+        {/* Leaderboard */}
         <LiveLeaderboard
           members={members}
           userId={userId}
@@ -148,14 +171,16 @@ export default function Clans() {
           onReact={handleReact}
           onMemberTap={handleMemberTap}
         />
-
-        {/* Invite CTA */}
-        <InviteCTA
-          clanId={clan.id}
-          clanName={clan.name}
-          memberCount={members.length}
-        />
       </main>
+
+      {/* Switch Clan Modal */}
+      <SwitchClanModal
+        isOpen={showSwitchModal}
+        onClose={() => setShowSwitchModal(false)}
+        userId={userId}
+        currentClanId={clan.id}
+        onSwitch={refresh}
+      />
 
       {/* Member profile preview */}
       <MemberProfilePreview
