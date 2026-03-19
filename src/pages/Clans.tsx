@@ -83,7 +83,7 @@ export default function Clans() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/30 px-4 py-3"
+        className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/30 px-4 pt-10 pb-3"
       >
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
