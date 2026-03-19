@@ -185,19 +185,31 @@ const Dashboard = () => {
           </div>
 
           {/* Clan Button */}
-          <div className="flex justify-center">
-            <Button
+          <div className="flex justify-center mt-6">
+            <motion.button
               onClick={() => navigate("/clans")}
-              variant="outline"
-              size="lg"
-              className="text-2xl px-12 py-6 h-auto bg-green-500 hover:bg-green-400 text-white border-none"
+              className="relative flex items-center gap-3 text-2xl font-bold px-6 py-4 rounded-2xl text-white border-none cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #22c55e, #16a34a)",
+                boxShadow: "0 8px 25px rgba(34, 197, 94, 0.4)",
+              }}
+              whileHover={{ scale: 1.05, boxShadow: "0 12px 30px rgba(34, 197, 94, 0.6)" }}
+              whileTap={{ scale: 0.97 }}
+              animate={{
+                boxShadow: [
+                  "0 8px 25px rgba(34, 197, 94, 0.4)",
+                  "0 12px 35px rgba(34, 197, 94, 0.65)",
+                  "0 8px 25px rgba(34, 197, 94, 0.4)",
+                ],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             >
-              <div className="w-16 h-16 rounded-full border-3 border-primary/50 overflow-hidden flex-shrink-0 mr-3">
+              <div className="w-14 h-14 rounded-full border-2 border-white/30 overflow-hidden flex-shrink-0">
                 <img src={clanButtonImg} alt="Clan buddies" className="w-full h-full object-cover" />
               </div>
-              <Users className="w-7 h-7 mr-2" />
+              <Users className="w-8 h-8" />
               View My Clans
-            </Button>
+            </motion.button>
           </div>
 
           {/* Screen Time Overview Card */}
