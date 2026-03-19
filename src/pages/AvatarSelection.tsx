@@ -146,6 +146,7 @@ const AvatarSelection = () => {
             View onboarding again
           </Button>
         </div>
+      </div>
     </div>
   );
 };
