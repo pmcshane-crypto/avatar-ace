@@ -93,7 +93,7 @@ const AvatarSelection = () => {
                   src={avatar.image} 
                   alt={avatar.name}
                   animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 1.5 }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: index * 0.2 }}
                   className={cn(
                     "object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.35)]",
                     (avatar.type === 'nature' || avatar.type === 'water') ? "w-[140%] h-[140%]" : "w-full h-full"
