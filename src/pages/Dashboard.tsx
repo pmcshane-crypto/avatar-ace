@@ -171,7 +171,7 @@ const Dashboard = () => {
       <div className={`min-h-screen ${getBackgroundClass()} px-5 sm:px-6 py-8 transition-all duration-700`}>
         <div className="w-full max-w-4xl mx-auto space-y-10 sm:space-y-8">
           {/* Header */}
-          <div className="text-center space-y-2 relative">
+          <div className="text-center space-y-2 relative pt-8">
             <div className="absolute right-0 top-0 flex items-center gap-1">
               <NotificationBell
                 notifications={notifications}
