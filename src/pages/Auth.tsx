@@ -6,33 +6,33 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Phone, ArrowRight, KeyRound } from "lucide-react";
+import { Mail, ArrowRight, KeyRound } from "lucide-react";
 
-type AuthView = "signin" | "signup" | "forgot" | "reset";
+type AuthView = "signin" | "signup" | "forgot";
 
 export default function Auth() {
   const [view, setView] = useState<AuthView>("signin");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [otp, setOtp] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !password || !username) {
+    if (!email || !password || !username) {
       toast({ title: "Please fill in all fields" });
       return;
     }
     setIsLoading(true);
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        phone,
+        email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
 
       if (authError) {
@@ -55,7 +55,7 @@ export default function Auth() {
           return;
         }
 
-        toast({ title: "Account created!" });
+        toast({ title: "Account created! Check your email to verify." });
         navigate("/avatar-selection");
       }
     } finally {
@@ -65,14 +65,14 @@ export default function Auth() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !password) {
+    if (!email || !password) {
       toast({ title: "Please fill in all fields" });
       return;
     }
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        phone,
+        email,
         password,
       });
 
@@ -88,58 +88,25 @@ export default function Auth() {
     }
   };
 
-  const handleSendResetOtp = async () => {
-    if (!phone) {
-      toast({ title: "Please enter your phone number" });
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ phone });
-      if (error) {
-        toast({ title: "Error sending code", description: error.message });
-        return;
-      }
-      setOtpSent(true);
-      toast({ title: "Verification code sent!" });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otp || !newPassword) {
-      toast({ title: "Please fill in all fields" });
+    if (!email) {
+      toast({ title: "Please enter your email" });
       return;
     }
     setIsLoading(true);
     try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        phone,
-        token: otp,
-        type: "sms",
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      if (verifyError) {
-        toast({ title: "Invalid code", description: verifyError.message });
+      if (error) {
+        toast({ title: "Error", description: error.message });
         return;
       }
 
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
-
-      if (updateError) {
-        toast({ title: "Error resetting password", description: updateError.message });
-        return;
-      }
-
-      toast({ title: "Password reset successfully!" });
+      toast({ title: "Password reset email sent! Check your inbox." });
       setView("signin");
-      setOtpSent(false);
-      setOtp("");
-      setNewPassword("");
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +120,7 @@ export default function Auth() {
             {view === "forgot" ? (
               <KeyRound className="w-7 h-7 text-primary" />
             ) : (
-              <Phone className="w-7 h-7 text-primary" />
+              <Mail className="w-7 h-7 text-primary" />
             )}
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -161,10 +128,10 @@ export default function Auth() {
           </CardTitle>
           <p className="text-muted-foreground text-sm">
             {view === "signup"
-              ? "Sign up with your phone number"
+              ? "Create your account to get started"
               : view === "forgot"
-              ? "We'll send a code to your phone"
-              : "Sign in with your phone number"}
+              ? "We'll send a reset link to your email"
+              : "Sign in to continue"}
           </p>
         </CardHeader>
         <CardContent>
@@ -172,13 +139,13 @@ export default function Auth() {
           {view === "signin" && (
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1234567890"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -222,13 +189,13 @@ export default function Auth() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-phone">Phone Number</Label>
+                <Label htmlFor="signup-email">Email</Label>
                 <Input
-                  id="signup-phone"
-                  type="tel"
-                  placeholder="+1234567890"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  id="signup-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -255,67 +222,23 @@ export default function Auth() {
 
           {/* FORGOT PASSWORD */}
           {view === "forgot" && (
-            <form onSubmit={handleResetPassword} className="space-y-4">
+            <form onSubmit={handleForgotPassword} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="reset-phone">Phone Number</Label>
+                <Label htmlFor="reset-email">Email</Label>
                 <Input
-                  id="reset-phone"
-                  type="tel"
-                  placeholder="+1234567890"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  disabled={otpSent}
+                  id="reset-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-
-              {otpSent ? (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="otp">Verification Code</Label>
-                    <Input
-                      id="otp"
-                      type="text"
-                      placeholder="Enter 6-digit code"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      maxLength={6}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input
-                      id="new-password"
-                      type="password"
-                      placeholder="Choose a new password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Resetting..." : "Reset Password"}
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className="w-full text-sm"
-                    onClick={handleSendResetOtp}
-                    disabled={isLoading}
-                  >
-                    Resend code
-                  </Button>
-                </>
-              ) : (
-                <Button type="button" className="w-full" onClick={handleSendResetOtp} disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send Verification Code"}
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              )}
-
-              <Button type="button" variant="ghost" className="w-full text-sm" onClick={() => { setView("signin"); setOtpSent(false); setOtp(""); }}>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Sending..." : "Send Reset Link"}
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+              <Button type="button" variant="ghost" className="w-full text-sm" onClick={() => setView("signin")}>
                 Back to sign in
               </Button>
             </form>
