@@ -311,6 +311,7 @@ export function NoClanView({ userId, onJoinClan }: NoClanViewProps) {
           Back to Dashboard
         </Button>
       </div>
+      </div>
     </div>
   );
 }
