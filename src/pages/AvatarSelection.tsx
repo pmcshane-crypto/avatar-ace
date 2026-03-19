@@ -124,7 +124,7 @@ const AvatarSelection = () => {
           ))}
         </div>
 
-        <div className="flex justify-center py-2">
+        <div className="flex flex-col items-center gap-4 py-2">
           <Button
             onClick={handleContinue}
             disabled={!selectedAvatar || isLoading}
@@ -133,6 +133,17 @@ const AvatarSelection = () => {
           >
             Continue
             <ChevronRight className="ml-2 w-5 h-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-muted-foreground"
+            onClick={() => {
+              localStorage.removeItem('onboardingComplete');
+              navigate('/onboarding');
+            }}
+          >
+            View onboarding again
           </Button>
         </div>
       </div>
