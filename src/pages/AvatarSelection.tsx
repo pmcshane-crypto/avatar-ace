@@ -105,13 +105,20 @@ const AvatarSelection = () => {
                 avatar.type === 'fire' && "text-avatar-fire",
                 avatar.type === 'water' && "text-avatar-water",
                 avatar.type === 'nature' && "text-avatar-nature",
-                avatar.type === 'chungloid' && "text-primary",
-                avatar.type === 'chicken-nugget' && "text-primary",
+                avatar.type === 'chungloid' && "text-pink-400",
                 avatar.type === 'flarion' && "text-purple-400",
                 avatar.type === 'auarlis' && "text-sky-400",
                 avatar.type === 'teddy' && "text-amber-400"
               )}>
-                {avatar.name}
+                {avatar.type === 'chicken-nugget' ? (
+                  <span>
+                    {avatar.name.split('').map((char, i) => (
+                      <span key={i} style={{ color: char === ' ' ? undefined : i % 2 === 0 ? 'hsl(210, 100%, 60%)' : 'hsl(330, 100%, 60%)' }}>
+                        {char}
+                      </span>
+                    ))}
+                  </span>
+                ) : avatar.name}
               </p>
             </div>
           ))}
