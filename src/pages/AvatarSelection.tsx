@@ -60,7 +60,7 @@ const AvatarSelection = () => {
   return (
     <div className="h-[100dvh] bg-background flex flex-col p-2 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col flex-1 min-h-0">
-        <div className="text-center pt-12 pb-1">
+        <div className="text-center pt-16 pb-1">
           <motion.h1
             className="text-3xl font-bold text-foreground"
             animate={{ y: [0, -6, 0] }}
