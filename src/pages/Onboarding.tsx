@@ -68,7 +68,7 @@ const Onboarding = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -80 }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
-          className="flex flex-col items-center text-center space-y-10 max-w-md w-full"
+          className="relative z-10 flex flex-col items-center text-center space-y-10 max-w-md w-full"
         >
           {/* Animated illustration area */}
           <div className={`relative w-56 h-56 rounded-full bg-gradient-to-br ${screen.gradient} flex items-center justify-center`}>
