@@ -12,7 +12,7 @@ import { NoClanView } from '@/components/clans/NoClanView';
 import { TimeCountdown } from '@/components/clans/TimeCountdown';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Settings, RefreshCw } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -85,46 +85,27 @@ export default function Clans() {
         animate={{ opacity: 1, y: 0 }}
         className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/30 px-4 pt-14 pb-3"
       >
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        <div className="max-w-2xl mx-auto flex items-center">
+          <motion.div
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-4"
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/dashboard')}
+              className="rounded-full bg-green-500 hover:bg-green-400 text-white"
             >
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate('/dashboard')}
-                className="rounded-full bg-green-500 hover:bg-green-400 text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </motion.div>
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </motion.div>
+          <div className="flex flex-col items-center gap-1 w-full">
             <div className="flex items-center gap-2">
               <span className="text-2xl">{clan.icon_emoji}</span>
-              <div>
-                <h1 className="font-bold text-foreground">{clan.name}</h1>
-                <p className="text-xs text-muted-foreground">Level {clan.clan_level}</p>
-              </div>
+              <h1 className="text-xl font-bold text-foreground">{clan.name}</h1>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={refresh}
-              className="rounded-full"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-            >
-              <Settings className="w-4 h-4" />
-            </Button>
+            <p className="text-xs text-muted-foreground">Level {clan.clan_level}</p>
           </div>
         </div>
       </motion.header>
