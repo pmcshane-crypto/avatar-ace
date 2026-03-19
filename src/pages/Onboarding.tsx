@@ -9,7 +9,7 @@ import clanBuddies from "@/assets/clan-buddies.png";
 const screens = [
   {
     title: "Welcome to Better Buddy",
-    tagline: "Your phone addiction ends here",
+    tagline: "The best FREE screen time app where friends and family compete, stay accountable, and level up their Better Buddys together!",
     icon: Sparkles,
     gradient: "from-primary/30 via-accent/20 to-primary/10",
     animation: "evolve",
