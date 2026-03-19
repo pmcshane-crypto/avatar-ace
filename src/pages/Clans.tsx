@@ -87,14 +87,19 @@ export default function Clans() {
       >
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/dashboard')}
-              className="rounded-full"
+            <motion.div
+              animate={{ y: [0, -4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/dashboard')}
+                className="rounded-full bg-green-500 hover:bg-green-400 text-white"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            </motion.div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">{clan.icon_emoji}</span>
               <div>
