@@ -47,7 +47,20 @@ const Onboarding = () => {
   const isLast = currentScreen === screens.length - 1;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 overflow-hidden">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden relative"
+      style={screen.animation === "friends" ? {
+        backgroundImage: `url(${clanBeachBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      } : {}}
+    >
+      {screen.animation === "friends" && (
+        <div className="absolute inset-0 bg-background/60 backdrop-blur-[1px]" />
+      )}
+      {screen.animation !== "friends" && (
+        <div className="absolute inset-0 bg-background" />
+      )}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentScreen}
