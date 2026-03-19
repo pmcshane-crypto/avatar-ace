@@ -208,7 +208,7 @@ const Dashboard = () => {
                 <img src={clanButtonImg} alt="Clan buddies" className="w-full h-full object-cover" />
               </div>
               <Users className="w-8 h-8" />
-              My Clans
+              My Clan
             </motion.button>
           </div>
 
