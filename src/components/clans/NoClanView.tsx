@@ -113,7 +113,13 @@ export function NoClanView({ userId, onJoinClan }: NoClanViewProps) {
   const emojiOptions = ['🔥', '⚡', '🌟', '🎯', '💪', '🚀', '🌈', '🎮', '📱', '🧘'];
 
   return (
-    <div className="min-h-screen bg-gradient-radial from-background via-background to-primary/5 p-6">
+    <div className="min-h-screen relative overflow-hidden">
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${clanBeachBg})` }}
+      />
+      <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
+      <div className="relative p-6">
       <div className="max-w-lg mx-auto space-y-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
